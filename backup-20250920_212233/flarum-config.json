@@ -1,0 +1,24 @@
+{
+    "debug": false,
+    "database": {
+        "driver": "mysql",
+        "host": "localhost",
+        "port": 3306,
+        "database": "flarum",
+        "username": "root",
+        "password": "",
+        "prefix": ""
+    },
+    "url": "https://bambumoon.cn/forum",
+    "admin": {
+        "username": "admin",
+        "password": "admin123456",
+        "password_confirmation": "admin123456",
+        "email": "admin@bambumoon.cn"
+    },
+    "settings": {
+        "forum_title": "中年自救论坛",
+        "forum_description": "中年人交流互助社区",
+        "default_locale": "zh-hans"
+    }
+}
