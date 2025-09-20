@@ -129,32 +129,80 @@ const Career = () => {
             职场发展文章
           </Typography>
           
-          <Grid container spacing={3}>
+          <Stack spacing={2}>
             {careerArticles.map((article, index) => (
-              <Grid item xs={12} md={6} lg={4} key={article.id || index}>
-                <Card 
-                  sx={{ 
-                    height: '100%',
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    transition: 'all 0.2s ease',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 3
-                    }
+              <Paper
+                key={article.id || index}
+                elevation={0}
+                onClick={() => navigate(`/article/${article.id}`)}
+                sx={{
+                  display: 'flex',
+                  backgroundColor: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }
+                }}
+              >
+                {/* 左侧图片 */}
+                <Box
+                  sx={{
+                    width: '33.333%',
+                    height: 200,
+                    flexShrink: 0,
+                    backgroundColor: '#f5f5f5',
+                    backgroundImage: article.image ? `url(${article.image})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                  onClick={() => navigate(`/article/${article.id}`)}
                 >
-                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                  {!article.image && (
+                    <Box sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                      color: '#ccc'
+                    }}>
+                      <Box sx={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: '#2563eb',
+                        borderRadius: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '1.2rem',
+                        fontWeight: 600
+                      }}>
+                        职
+                      </Box>
+                      <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
+                        职场发展
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+
+                {/* 右侧内容 */}
+                <Box sx={{ flex: 1, p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  {/* 标题和摘要 */}
+                  <Box>
                     <Typography 
                       variant="h6" 
-                      component="h3" 
-                      gutterBottom 
                       sx={{ 
                         fontWeight: 600, 
+                        mb: 1.5,
                         color: 'text.primary',
-                        mb: 2,
+                        fontSize: '1.1rem',
                         lineHeight: 1.3
                       }}
                     >
@@ -164,47 +212,48 @@ const Career = () => {
                     <Typography 
                       variant="body2" 
                       color="text.secondary" 
-                      sx={{ 
-                        mb: 3, 
-                        lineHeight: 1.6,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden'
-                      }}
+                      sx={{ mb: 2, lineHeight: 1.5 }}
                     >
                       {article.excerpt}
                     </Typography>
-                    
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: 'primary.main' }}>
-                          职
-                        </Avatar>
-                        <Typography variant="caption" color="text.secondary">
-                          {article.category}
-                        </Typography>
-                      </Stack>
-                      <Typography variant="caption" color="text.secondary">
+                  </Box>
+
+                  {/* 底部元信息 */}
+                  <Stack 
+                    direction="row" 
+                    spacing={2} 
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#1976d2' }}>
+                        {article.author?.charAt(0) || 'A'}
+                      </Avatar>
+                      <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
+                        {article.author}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                         {article.readTime}
                       </Typography>
                     </Stack>
-                    
-                    <Chip 
-                      label={article.category}
-                      size="small"
-                      sx={{
-                        backgroundColor: 'primary.main',
-                        color: 'white',
-                        fontWeight: 500,
-                        fontSize: '0.75rem'
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
+
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Chip 
+                        label={article.category}
+                        size="small"
+                        sx={{
+                          backgroundColor: '#2563eb',
+                          color: 'white',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }}
+                      />
+                    </Stack>
+                  </Stack>
+                </Box>
+              </Paper>
             ))}
-          </Grid>
+          </Stack>
         </Box>
 
         {/* Career Paths Grid - EXISTING CONTENT */}

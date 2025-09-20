@@ -30,7 +30,7 @@ const Footer = () => {
                   color: 'white'
                 }}
               >
-                中年人自救指南
+                中年自救指南
               </Typography>
               <Typography 
                 variant="body2" 
@@ -95,7 +95,7 @@ const Footer = () => {
                   快速导航
                 </Typography>
                 <Stack spacing={1}>
-                  {['首页', '文章', '好物', '心理', '职业', '牢骚'].map((item) => (
+                  {['首页', '家庭', '职场', '心理', '兴趣', '财务', '好物'].map((item) => (
                     <Link
                       key={item}
                       href="#"
@@ -128,7 +128,7 @@ const Footer = () => {
                   热门分类
                 </Typography>
                 <Stack spacing={1}>
-                  {['技能提升', '职业规划', '心理调节', '副业创收'].map((item) => (
+                  {['职场转型', '理财规划', '家庭沟通', '心理调节'].map((item) => (
                     <Link
                       key={item}
                       href="#"
@@ -192,12 +192,34 @@ const Footer = () => {
             alignItems="center"
             spacing={2}
           >
-            <Typography 
-              variant="body2" 
-              sx={{ color: 'rgba(255,255,255,0.6)' }}
+            <Stack 
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              alignItems="center"
             >
-              © 2024 中年人自救指南. 保留所有权利.
-            </Typography>
+              <Typography 
+                variant="body2" 
+                sx={{ color: 'rgba(255,255,255,0.6)' }}
+              >
+                © 2024 中年自救指南. 保留所有权利.
+              </Typography>
+              <Link
+                href="https://beian.miit.gov.cn/"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ 
+                  color: 'rgba(255,255,255,0.6)',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  '&:hover': { 
+                    color: 'white',
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                皖ICP备2023009170号
+              </Link>
+            </Stack>
             <Typography 
               variant="body2" 
               sx={{ color: 'rgba(255,255,255,0.6)' }}

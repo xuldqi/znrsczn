@@ -1,14 +1,14 @@
 import { Container, Typography, Box, Grid, Card, CardContent, Button, Chip, Paper, Stack, Avatar } from '@mui/material'
-import { Group, Home, Favorite, School, Work, CalendarToday, AccessTime } from '@mui/icons-material'
+import { Psychology, TrendingDown, Help, SelfImprovement, Lightbulb, Psychology as PsychIcon } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
 
-const Family = () => {
+const MidlifeCrisis = () => {
   const navigate = useNavigate()
   const { getArticlesByCategory } = useArticles()
   
-  // 获取家庭关系类文章
-  const familyArticles = getArticlesByCategory('家庭关系')
+  // 获取中年危机类文章
+  const midlifeCrisisArticles = getArticlesByCategory('中年危机')
 
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
@@ -26,7 +26,7 @@ const Family = () => {
               fontSize: { xs: '2.5rem', md: '3rem' }
             }}
           >
-            家庭关系
+            中年危机
           </Typography>
           
           <Typography 
@@ -40,18 +40,18 @@ const Family = () => {
               mx: 'auto'
             }}
           >
-            处理家庭关系中的各种挑战：夫妻沟通、子女教育、老人赡养等实用指导
+            面对中年危机不要恐慌：理解、接受、转化，让人生的转折点成为新的起点
           </Typography>
           
           <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ mb: 4 }}>
-            <Chip label="夫妻关系" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="子女教育" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="家庭沟通" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="理财规划" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="职业危机" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="情感困惑" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="人生意义" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="重新出发" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
           </Stack>
         </Box>
 
-        {/* Family Articles Section */}
+        {/* Midlife Crisis Articles Section */}
         <Box sx={{ mb: 8 }}>
           <Typography 
             variant="h4" 
@@ -64,11 +64,11 @@ const Family = () => {
               textAlign: 'center'
             }}
           >
-            家庭关系文章
+            中年危机文章
           </Typography>
           
           <Stack spacing={2}>
-            {familyArticles.map((article, index) => (
+            {midlifeCrisisArticles.map((article, index) => (
               <Paper
                 key={article.id || index}
                 elevation={0}
@@ -112,7 +112,7 @@ const Family = () => {
                       <Box sx={{
                         width: 40,
                         height: 40,
-                        backgroundColor: '#ec4899',
+                        backgroundColor: '#ef4444',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',
@@ -121,10 +121,10 @@ const Family = () => {
                         fontSize: '1.2rem',
                         fontWeight: 600
                       }}>
-                        家
+                        🤔
                       </Box>
                       <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
-                        家庭关系
+                        中年危机
                       </Typography>
                     </Box>
                   )}
@@ -164,7 +164,7 @@ const Family = () => {
                     justifyContent="space-between"
                   >
                     <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#ec4899' }}>
+                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#5d4037' }}>
                         {article.author?.charAt(0) || 'A'}
                       </Avatar>
                       <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
@@ -180,7 +180,7 @@ const Family = () => {
                         label={article.category}
                         size="small"
                         sx={{
-                          backgroundColor: '#ec4899',
+                          backgroundColor: '#ef4444',
                           color: 'white',
                           fontWeight: 500,
                           fontSize: '0.75rem'
@@ -206,7 +206,7 @@ const Family = () => {
               mb: 2
             }}
           >
-            改善家庭关系从现在开始
+            走出迷茫，重新出发
           </Typography>
           
           <Typography 
@@ -219,7 +219,7 @@ const Family = () => {
               mx: 'auto'
             }}
           >
-            学习实用的家庭沟通技巧，建立更和谐的家庭关系，让家人之间的情感更加深厚。
+            中年危机并不可怕，它是人生的一个重要转折点。让我们一起面对挑战，找到新的人生方向。
           </Typography>
           
           <Button 
@@ -230,13 +230,13 @@ const Family = () => {
               py: 1.5,
               fontSize: '1.1rem',
               fontWeight: 600,
-              backgroundColor: '#ec4899',
+              backgroundColor: '#ef4444',
               '&:hover': {
-                backgroundColor: '#db2777'
+                backgroundColor: '#dc2626'
               }
             }}
           >
-            开始改善关系
+            寻找新方向
           </Button>
         </Box>
       </Container>
@@ -244,4 +244,4 @@ const Family = () => {
   )
 }
 
-export default Family
+export default MidlifeCrisis

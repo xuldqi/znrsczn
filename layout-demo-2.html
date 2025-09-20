@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>布局2: 卡片瀑布流 - 中年自救指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2D3748;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 25px;
+            background: #F7FAFC;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .user-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            grid-auto-rows: masonry;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            height: 200px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+        }
+
+        .card-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .card-excerpt {
+            color: #718096;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #A0AEC0;
+        }
+
+        .card-engagement {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .author-info {
+            font-size: 0.9rem;
+        }
+
+        .author-name {
+            font-weight: 600;
+        }
+
+        .author-date {
+            color: #A0AEC0;
+            font-size: 0.8rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: #F7FAFC;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #EDF2F7;
+            transform: scale(1.1);
+        }
+
+        /* 不同高度的卡片 */
+        .card.tall .card-image {
+            height: 280px;
+        }
+
+        .card.short .card-image {
+            height: 160px;
+        }
+
+        .layout-info {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            z-index: 90;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            z-index: 90;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                display: none;
+            }
+
+            .masonry-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-info">
+        <h4>布局2: 卡片瀑布流</h4>
+        <p>• Pinterest风格<br>• 响应式网格<br>• 视觉冲击力强</p>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🎨 中年自救指南</div>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="搜索你感兴趣的话题...">
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">张</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="filters">
+            <button class="filter-btn active">全部</button>
+            <button class="filter-btn">职场发展</button>
+            <button class="filter-btn">家庭关系</button>
+            <button class="filter-btn">理财投资</button>
+            <button class="filter-btn">健康生活</button>
+            <button class="filter-btn">心理调节</button>
+        </div>
+
+        <div class="masonry-grid">
+            <div class="card tall">
+                <div class="card-image">📈</div>
+                <div class="card-category">职场发展</div>
+                <div class="card-content">
+                    <h3 class="card-title">35岁程序员的转型之路：从技术专家到技术管理者</h3>
+                    <p class="card-excerpt">在技术日新月异的今天，35岁的程序员面临着职业发展的十字路口。是继续深耕技术，还是转向管理？本文分享一位资深程序员的转型经验。</p>
+                    <div class="card-stats">
+                        <div class="card-engagement">
+                            <span>👍 234</span>
+                            <span>💬 56</span>
+                            <span>📖 8分钟</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-author">
+                            <div class="author-avatar">李</div>
+                            <div class="author-info">
+                                <div class="author-name">李技术</div>
+                                <div class="author-date">2小时前</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn">💝</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card short">
+                <div class="card-image">💰</div>
+                <div class="card-category">理财投资</div>
+                <div class="card-content">
+                    <h3 class="card-title">基金定投的艺术</h3>
+                    <p class="card-excerpt">中年人理财的核心是稳健，基金定投是一个不错的选择。</p>
+                    <div class="card-stats">
+                        <div class="card-engagement">
+                            <span>👍 156</span>
+                            <span>💬 23</span>
+                            <span>📖 3分钟</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-author">
+                            <div class="author-avatar">王</div>
+                            <div class="author-info">
+                                <div class="author-name">王理财</div>
+                                <div class="author-date">1天前</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn">💝</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">👨‍👩‍👧‍👦</div>
+                <div class="card-category">家庭关系</div>
+                <div class="card-content">
+                    <h3 class="card-title">中年夫妻如何重燃爱情的火花</h3>
+                    <p class="card-excerpt">结婚十几年，生活变成了柴米油盐，还有爱情吗？当然有！重要的是如何去发现和培养。</p>
+                    <div class="card-stats">
+                        <div class="card-engagement">
+                            <span>👍 89</span>
+                            <span>💬 45</span>
+                            <span>📖 6分钟</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-author">
+                            <div class="author-avatar">赵</div>
+                            <div class="author-info">
+                                <div class="author-name">赵心理师</div>
+                                <div class="author-date">3小时前</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn">💝</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card tall">
+                <div class="card-image">🏃‍♂️</div>
+                <div class="card-category">健康生活</div>
+                <div class="card-content">
+                    <h3 class="card-title">中年男性健身指南：从啤酒肚到马甲线的蜕变</h3>
+                    <p class="card-excerpt">40岁开始健身晚吗？当然不晚！只要方法对，中年男性也能拥有好身材。这里有一套专门针对中年人的健身计划。</p>
+                    <div class="card-stats">
+                        <div class="card-engagement">
+                            <span>👍 312</span>
+                            <span>💬 78</span>
+                            <span>📖 12分钟</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-author">
+                            <div class="author-avatar">刘</div>
+                            <div class="author-info">
+                                <div class="author-name">刘教练</div>
+                                <div class="author-date">5小时前</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn">💝</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-image">🧘‍♂️</div>
+                <div class="card-category">心理调节</div>
+                <div class="card-content">
+                    <h3 class="card-title">中年危机不可怕</h3>
+                    <p class="card-excerpt">每个人都会经历中年危机，关键是如何正确面对和处理。</p>
+                    <div class="card-stats">
+                        <div class="card-engagement">
+                            <span>👍 67</span>
+                            <span>💬 34</span>
+                            <span>📖 5分钟</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-author">
+                            <div class="author-avatar">陈</div>
+                            <div class="author-info">
+                                <div class="author-name">陈咨询师</div>
+                                <div class="author-date">1天前</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn">💝</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card short">
+                <div class="card-image">🎯</div>
+                <div class="card-category">职场发展</div>
+                <div class="card-content">
+                    <h3 class="card-title">副业赚钱的5个思路</h3>
+                    <p class="card-excerpt">主业不够副业凑，中年人如何开启副业之路？</p>
+                    <div class="card-stats">
+                        <div class="card-engagement">
+                            <span>👍 189</span>
+                            <span>💬 67</span>
+                            <span>📖 4分钟</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-author">
+                            <div class="author-avatar">周</div>
+                            <div class="author-info">
+                                <div class="author-name">周创业</div>
+                                <div class="author-date">6小时前</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn">💝</button>
+                            <button class="action-btn">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-action">✏️</button>
+</body>
+</html>

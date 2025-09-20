@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
+import { ARTICLE_CATEGORIES } from '../config/categories'
 import {
   Container,
   Typography,
@@ -10,7 +11,8 @@ import {
   Avatar,
   Chip,
   Tabs,
-  Tab
+  Tab,
+  Button
 } from '@mui/material'
 import {
   AccessTime,
@@ -31,56 +33,17 @@ const Home = () => {
   console.log('已发布文章数量:', publishedArticles.length)
   console.log('已发布文章列表:', publishedArticles.map(a => a.title))
   
-  // 如果没有文章，创建一些示例数据
-  const sampleArticles = [
-    {
-      id: '1',
-      title: '35岁职场转折：如何重新定义自己的价值',
-      excerpt: '当你发现自己在职场中的优势不再明显，年轻同事的冲击让你感到压力时，是时候重新审视和定义自己的价值了。',
-      author: '职场导师',
-      readTime: '8分钟',
-      category: '职场发展',
-      status: 'published'
-    },
-    {
-      id: '2', 
-      title: '中年焦虑症的五个阶段及应对策略',
-      excerpt: '从否认到接受，中年焦虑往往经历五个心理阶段。了解这些阶段，能帮助我们更好地管理情绪，找到内心平静。',
-      author: '心理咨询师',
-      readTime: '12分钟', 
-      category: '心理健康',
-      status: 'published'
-    },
-    {
-      id: '3',
-      title: '财务自由还是精神富足：中年人的选择困境',
-      excerpt: '在追求更高收入和寻找生活意义之间，中年人往往面临两难选择。如何在现实压力和理想追求中找到平衡？',
-      author: '生活规划师',
-      readTime: '10分钟',
-      category: '职场发展', 
-      status: 'published'
-    },
-    {
-      id: '4',
-      title: '副业赚钱：适合中年人的5个方向',
-      excerpt: '分享适合中年人的副业选择和实操经验，增加收入来源的具体方法。',
-      author: '副业专家',
-      readTime: '15分钟',
-      category: '职场发展',
-      status: 'published'
-    }
-  ]
-  
-  const articlesData = publishedArticles.length > 0 ? publishedArticles : sampleArticles
+  // 只使用从API获取的真实数据
+  const articlesData = publishedArticles
 
   // 文章分类
   const articleTabs = [
     { name: '推荐', description: '编辑精选内容', articles: articlesData.slice(0, 6) },
-    { name: '技能提升', description: '职场方法和工具', articles: articlesData.slice(1, 7) },
-    { name: '经验分享', description: '职场前辈案例', articles: articlesData.slice(2, 8) },
-    { name: '工具推荐', description: '效率提升工具', articles: articlesData.slice(3, 9) },
-    { name: '职业拓展', description: '副业和投资方向', articles: articlesData.slice(0, 6) },
-    { name: '心理建设', description: '心理问题解决方案', articles: articlesData.filter(a => a.category === '心理健康') }
+    { name: '技能提升', description: '职场方法和工具', articles: articlesData.filter(a => a.category === '职场发展').slice(0, 6) },
+    { name: '经验分享', description: '职场前辈案例', articles: articlesData.slice(0, 6) },
+    { name: '工具推荐', description: '效率提升工具', articles: articlesData.slice(0, 6) },
+    { name: '职业拓展', description: '副业和投资方向', articles: articlesData.filter(a => a.category === '财务管理' || a.category === '副业指南').slice(0, 6) },
+    { name: '心理建设', description: '心理问题解决方案', articles: articlesData.filter(a => a.category === '心理健康').slice(0, 6) }
   ]
 
   const handleTabChange = (event, newValue) => {
@@ -90,31 +53,95 @@ const Home = () => {
   const currentTabArticles = articleTabs[activeTab]?.articles || []
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       {/* Banner轮播区域 - 全屏宽度 */}
       <Box 
         sx={{ 
           width: '100vw',
-          height: 300,
+          height: 400,
           marginLeft: 'calc(-50vw + 50%)',
           marginRight: 'calc(-50vw + 50%)',
           mb: 4,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'linear-gradient(135deg, #6db4c4 0%, #5ba3b5 50%, #4a92a3 100%)',
+          background: `url('/images/beach-banner-optimized.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           color: 'white',
           position: 'relative',
           overflow: 'hidden'
         }}
       >
         <Box sx={{ textAlign: 'center', zIndex: 2, px: 2 }}>
-          <Typography variant="h2" sx={{ fontWeight: 700, mb: 2 }}>
-            中年人自救指南
+          <Typography variant="h2" sx={{ 
+            fontWeight: 700, 
+            mb: 2,
+            color: 'white',
+            textShadow: '0 4px 8px rgba(0,0,0,0.4)',
+            fontSize: { xs: '2rem', md: '2.8rem' },
+            letterSpacing: '-0.02em'
+          }}>
+            中年自救指南
           </Typography>
-          <Typography variant="h5" sx={{ opacity: 0.95 }}>
+          <Typography variant="h5" sx={{ 
+            opacity: 0.95,
+            fontWeight: 400,
+            textShadow: '0 2px 4px rgba(0,0,0,0.4)',
+            fontSize: { xs: '1.1rem', md: '1.3rem' },
+            maxWidth: '700px',
+            mx: 'auto',
+            mb: 4,
+            lineHeight: 1.5
+          }}>
             当中年人遇到职业困境时的实用解决方案
           </Typography>
+          <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              size="large"
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                color: '#2563eb',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 1)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                }
+              }}
+            >
+              开始探索
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                borderColor: 'rgba(255, 255, 255, 0.6)',
+                color: 'white',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                '&:hover': {
+                  borderColor: 'rgba(255, 255, 255, 0.9)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  transform: 'translateY(-2px)',
+                }
+              }}
+            >
+              了解更多
+            </Button>
+          </Box>
         </Box>
       </Box>
 
@@ -342,19 +369,9 @@ const Home = () => {
                   分类导航
                 </Typography>
                 <Stack spacing={1.5}>
-                  {[
-                    { name: '家庭关系', count: 15, color: '#e91e63' },
-                    { name: '职场发展', count: 12, color: '#1976d2' },
-                    { name: '心理健康', count: 18, color: '#388e3c' },
-                    { name: '兴趣爱好', count: 8, color: '#ff9800' },
-                    { name: '生活技能', count: 10, color: '#7b1fa2' },
-                    { name: '财务管理', count: 6, color: '#d32f2f' },
-                    { name: '副业指南', count: 7, color: '#0288d1' },
-                    { name: '中年危机', count: 9, color: '#5d4037' },
-                    { name: '转型升级', count: 4, color: '#616161' }
-                  ].map((category) => (
+                  {ARTICLE_CATEGORIES.map((category) => (
                     <Box
-                      key={category.name}
+                      key={category.id}
                       onClick={() => navigate(`/articles?category=${encodeURIComponent(category.name)}`)}
                       sx={{
                         display: 'flex',
@@ -401,7 +418,7 @@ const Home = () => {
                           fontSize: '0.75rem'
                         }}
                       >
-                        {category.count}
+                        {articlesData.filter(a => a.category === category.name).length}
                       </Typography>
                     </Box>
                   ))}

@@ -1,14 +1,14 @@
 import { Container, Typography, Box, Grid, Card, CardContent, Button, Chip, Paper, Stack, Avatar } from '@mui/material'
-import { Group, Home, Favorite, School, Work, CalendarToday, AccessTime } from '@mui/icons-material'
+import { BusinessCenter, MonetizationOn, TrendingUp, School, Computer, Build } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
 
-const Family = () => {
+const SideBusiness = () => {
   const navigate = useNavigate()
   const { getArticlesByCategory } = useArticles()
   
-  // 获取家庭关系类文章
-  const familyArticles = getArticlesByCategory('家庭关系')
+  // 获取副业指南类文章
+  const sideBusinessArticles = getArticlesByCategory('副业指南')
 
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
@@ -26,7 +26,7 @@ const Family = () => {
               fontSize: { xs: '2.5rem', md: '3rem' }
             }}
           >
-            家庭关系
+            副业指南
           </Typography>
           
           <Typography 
@@ -40,18 +40,18 @@ const Family = () => {
               mx: 'auto'
             }}
           >
-            处理家庭关系中的各种挑战：夫妻沟通、子女教育、老人赡养等实用指导
+            开启你的副业之路：将技能变现，创造被动收入，实现财务自由的多元化策略
           </Typography>
           
           <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ mb: 4 }}>
-            <Chip label="夫妻关系" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="子女教育" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="家庭沟通" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="理财规划" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="技能变现" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="在线教育" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="内容创作" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="被动收入" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
           </Stack>
         </Box>
 
-        {/* Family Articles Section */}
+        {/* Side Business Articles Section */}
         <Box sx={{ mb: 8 }}>
           <Typography 
             variant="h4" 
@@ -64,11 +64,11 @@ const Family = () => {
               textAlign: 'center'
             }}
           >
-            家庭关系文章
+            副业指南文章
           </Typography>
           
           <Stack spacing={2}>
-            {familyArticles.map((article, index) => (
+            {sideBusinessArticles.map((article, index) => (
               <Paper
                 key={article.id || index}
                 elevation={0}
@@ -112,7 +112,7 @@ const Family = () => {
                       <Box sx={{
                         width: 40,
                         height: 40,
-                        backgroundColor: '#ec4899',
+                        backgroundColor: '#06b6d4',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',
@@ -121,10 +121,10 @@ const Family = () => {
                         fontSize: '1.2rem',
                         fontWeight: 600
                       }}>
-                        家
+                        💼
                       </Box>
                       <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
-                        家庭关系
+                        副业指南
                       </Typography>
                     </Box>
                   )}
@@ -164,7 +164,7 @@ const Family = () => {
                     justifyContent="space-between"
                   >
                     <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#ec4899' }}>
+                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#0288d1' }}>
                         {article.author?.charAt(0) || 'A'}
                       </Avatar>
                       <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
@@ -180,7 +180,7 @@ const Family = () => {
                         label={article.category}
                         size="small"
                         sx={{
-                          backgroundColor: '#ec4899',
+                          backgroundColor: '#06b6d4',
                           color: 'white',
                           fontWeight: 500,
                           fontSize: '0.75rem'
@@ -206,7 +206,7 @@ const Family = () => {
               mb: 2
             }}
           >
-            改善家庭关系从现在开始
+            开始你的副业之路
           </Typography>
           
           <Typography 
@@ -219,7 +219,7 @@ const Family = () => {
               mx: 'auto'
             }}
           >
-            学习实用的家庭沟通技巧，建立更和谐的家庭关系，让家人之间的情感更加深厚。
+            选择适合自己的副业方向，利用现有技能创造额外收入，让你的专业知识成为财富来源。
           </Typography>
           
           <Button 
@@ -230,13 +230,13 @@ const Family = () => {
               py: 1.5,
               fontSize: '1.1rem',
               fontWeight: 600,
-              backgroundColor: '#ec4899',
+              backgroundColor: '#06b6d4',
               '&:hover': {
-                backgroundColor: '#db2777'
+                backgroundColor: '#0891b2'
               }
             }}
           >
-            开始改善关系
+            探索副业机会
           </Button>
         </Box>
       </Container>
@@ -244,4 +244,4 @@ const Family = () => {
   )
 }
 
-export default Family
+export default SideBusiness

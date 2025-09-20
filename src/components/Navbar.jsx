@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, FamilyRestroom, Work, Psychology, SportsEsports, Store, MoodBad } from '@mui/icons-material'
+import { Home, FamilyRestroom, Work, Psychology, SportsEsports, Store, AccountBalance } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 
 const Navbar = () => {
@@ -12,6 +12,7 @@ const Navbar = () => {
     { path: '/career', label: '职场', icon: <Work /> },
     { path: '/psychology', label: '心理', icon: <Psychology /> },
     { path: '/interests', label: '兴趣', icon: <SportsEsports /> },
+    { path: '/finance', label: '财务', icon: <AccountBalance /> },
     { path: '/products', label: '好物', icon: <Store /> },
   ]
 
@@ -30,21 +31,7 @@ const Navbar = () => {
         margin: '0 auto',
         width: '100%'
       }}>
-        <Toolbar sx={{ px: { xs: 2, md: 0 } }}>
-        <Typography 
-          variant="h6" 
-          component="div" 
-          sx={{ 
-            flexGrow: 0,
-            fontWeight: 700,
-            color: 'text.primary',
-            fontSize: { xs: '1rem', md: '1.25rem' },
-            mr: { xs: 2, md: 4 }
-          }}
-        >
-          Ss
-        </Typography>
-        
+        <Toolbar sx={{ px: { xs: 2, md: 0 } }}>        
         <Box sx={{ 
           display: 'flex', 
           alignItems: 'center', 

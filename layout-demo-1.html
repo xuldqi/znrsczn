@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>布局1: 杂志风格 - 中年自救指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background-color: #FEFEFE;
+            color: #2D3748;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #1A202C;
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.7;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+
+        .main-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .featured-article {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 400px;
+        }
+
+        .featured-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
+
+        .featured-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-category {
+            color: #E53E3E;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .featured-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .featured-excerpt {
+            color: #718096;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .featured-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #A0AEC0;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .article-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .article-image {
+            height: 180px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .article-content {
+            padding: 1.5rem;
+        }
+
+        .article-category {
+            color: #805AD5;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .article-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .article-excerpt {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #A0AEC0;
+        }
+
+        .sidebar {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .widget-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #2D3748;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 0.5rem;
+        }
+
+        .popular-list {
+            list-style: none;
+        }
+
+        .popular-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F7FAFC;
+        }
+
+        .popular-number {
+            background: #4299E1;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .popular-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .popular-meta {
+            font-size: 0.8rem;
+            color: #A0AEC0;
+        }
+
+        .categories-list {
+            list-style: none;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #F7FAFC;
+            transition: color 0.2s;
+        }
+
+        .category-item:hover {
+            color: #4299E1;
+        }
+
+        .category-count {
+            background: #EDF2F7;
+            color: #718096;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .layout-info {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #1A202C;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 90;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .featured-article {
+                grid-template-columns: 1fr;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-info">
+        <h4>布局1: 杂志风格</h4>
+        <p>• 双栏布局<br>• 大图展示<br>• 内容层次分明</p>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">📰 中年自救指南</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">职场</a></li>
+                    <li><a href="#">家庭</a></li>
+                    <li><a href="#">理财</a></li>
+                    <li><a href="#">健康</a></li>
+                    <li><a href="#">论坛</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <main class="main-content">
+            <!-- 头条文章 -->
+            <article class="featured-article">
+                <div class="featured-image">📈</div>
+                <div class="featured-content">
+                    <div class="featured-category">职场发展</div>
+                    <h1 class="featured-title">35岁后的职场新策略：从执行者到领导者的转变</h1>
+                    <p class="featured-excerpt">
+                        中年职场人面临的最大挑战不是技能过时，而是思维模式的转变。学会从单纯的执行者转变为团队领导者，是35岁后职场成功的关键。
+                    </p>
+                    <div class="featured-meta">
+                        <span>张明华</span>
+                        <span>2025-09-10</span>
+                        <span>8分钟阅读</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 文章网格 -->
+            <section class="articles-grid">
+                <article class="article-card">
+                    <div class="article-image">👨‍👩‍👧‍👦</div>
+                    <div class="article-content">
+                        <div class="article-category">家庭关系</div>
+                        <h3 class="article-title">与青春期孩子相处的智慧</h3>
+                        <p class="article-excerpt">青春期的孩子就像一颗定时炸弹？其实不然，掌握正确的沟通方式...</p>
+                        <div class="article-meta">
+                            <span>李家长</span>
+                            <span>5分钟前</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">💰</div>
+                    <div class="article-content">
+                        <div class="article-category">理财投资</div>
+                        <h3 class="article-title">中年理财的三个黄金法则</h3>
+                        <p class="article-excerpt">40岁开始理财会不会太晚？永远不会！中年理财有独特的优势...</p>
+                        <div class="article-meta">
+                            <span>王理财</span>
+                            <span>1小时前</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">🏃‍♂️</div>
+                    <div class="article-content">
+                        <div class="article-category">健康生活</div>
+                        <h3 class="article-title">中年男性的健康管理指南</h3>
+                        <p class="article-excerpt">身体是革命的本钱，中年后更要好好保养。这份健康指南请收好...</p>
+                        <div class="article-meta">
+                            <span>Dr.健康</span>
+                            <span>2小时前</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <div class="article-image">🎯</div>
+                    <div class="article-content">
+                        <div class="article-category">心理健康</div>
+                        <h3 class="article-title">中年焦虑症的自我疗愈</h3>
+                        <p class="article-excerpt">焦虑是中年人的常客，学会与它和平相处，才能获得内心的平静...</p>
+                        <div class="article-meta">
+                            <span>心理师</span>
+                            <span>3小时前</span>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+
+        <aside class="sidebar">
+            <!-- 热门文章 -->
+            <div class="widget">
+                <h3 class="widget-title">本周热门</h3>
+                <ol class="popular-list">
+                    <li class="popular-item">
+                        <div class="popular-number">1</div>
+                        <div class="popular-content">
+                            <h4>40岁跳槽成功的5个关键因素</h4>
+                            <div class="popular-meta">18.5K 阅读 · 2天前</div>
+                        </div>
+                    </li>
+                    <li class="popular-item">
+                        <div class="popular-number">2</div>
+                        <div class="popular-content">
+                            <h4>如何与更年期的妻子相处</h4>
+                            <div class="popular-meta">15.2K 阅读 · 3天前</div>
+                        </div>
+                    </li>
+                    <li class="popular-item">
+                        <div class="popular-number">3</div>
+                        <div class="popular-content">
+                            <h4>中年人的基金投资策略</h4>
+                            <div class="popular-meta">12.8K 阅读 · 1周前</div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- 分类目录 -->
+            <div class="widget">
+                <h3 class="widget-title">热门分类</h3>
+                <ul class="categories-list">
+                    <li class="category-item">
+                        <span>职场发展</span>
+                        <span class="category-count">128</span>
+                    </li>
+                    <li class="category-item">
+                        <span>家庭关系</span>
+                        <span class="category-count">95</span>
+                    </li>
+                    <li class="category-item">
+                        <span>理财投资</span>
+                        <span class="category-count">87</span>
+                    </li>
+                    <li class="category-item">
+                        <span>健康生活</span>
+                        <span class="category-count">76</span>
+                    </li>
+                    <li class="category-item">
+                        <span>心理健康</span>
+                        <span class="category-count">63</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

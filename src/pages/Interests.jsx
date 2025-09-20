@@ -1,5 +1,5 @@
 import { Container, Typography, Box, Grid, Card, CardContent, Button, Chip, Paper, Stack, Avatar } from '@mui/material'
-import { SportsEsports, Brush, Camera, AudioFile, MenuBook, FitnessCenter } from '@mui/icons-material'
+import { SportsEsports, Brush, Camera, MusicNote, Book, FitnessCenter } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
 
@@ -67,32 +67,80 @@ const Interests = () => {
             兴趣爱好文章
           </Typography>
           
-          <Grid container spacing={3}>
+          <Stack spacing={2}>
             {interestsArticles.map((article, index) => (
-              <Grid item xs={12} md={6} key={article.id || index}>
-                <Card 
-                  sx={{ 
-                    height: '100%',
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    transition: 'all 0.2s ease',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: 3
-                    }
+              <Paper
+                key={article.id || index}
+                elevation={0}
+                onClick={() => navigate(`/article/${article.id}`)}
+                sx={{
+                  display: 'flex',
+                  backgroundColor: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  }
+                }}
+              >
+                {/* 左侧图片 */}
+                <Box
+                  sx={{
+                    width: '33.333%',
+                    height: 200,
+                    flexShrink: 0,
+                    backgroundColor: '#f5f5f5',
+                    backgroundImage: article.image ? `url(${article.image})` : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                  onClick={() => navigate(`/article/${article.id}`)}
                 >
-                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                  {!article.image && (
+                    <Box sx={{ 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
+                      color: '#ccc'
+                    }}>
+                      <Box sx={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '1.2rem',
+                        fontWeight: 600
+                      }}>
+                        🎨
+                      </Box>
+                      <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
+                        兴趣爱好
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+
+                {/* 右侧内容 */}
+                <Box sx={{ flex: 1, p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  {/* 标题和摘要 */}
+                  <Box>
                     <Typography 
                       variant="h6" 
-                      component="h3" 
-                      gutterBottom 
                       sx={{ 
                         fontWeight: 600, 
+                        mb: 1.5,
                         color: 'text.primary',
-                        mb: 2,
+                        fontSize: '1.1rem',
                         lineHeight: 1.3
                       }}
                     >
@@ -102,47 +150,48 @@ const Interests = () => {
                     <Typography 
                       variant="body2" 
                       color="text.secondary" 
-                      sx={{ 
-                        mb: 3, 
-                        lineHeight: 1.6,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden'
-                      }}
+                      sx={{ mb: 2, lineHeight: 1.5 }}
                     >
                       {article.excerpt}
                     </Typography>
-                    
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#ff9800' }}>
-                          趣
-                        </Avatar>
-                        <Typography variant="caption" color="text.secondary">
-                          {article.category}
-                        </Typography>
-                      </Stack>
-                      <Typography variant="caption" color="text.secondary">
+                  </Box>
+
+                  {/* 底部元信息 */}
+                  <Stack 
+                    direction="row" 
+                    spacing={2} 
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#ff9800' }}>
+                        {article.author?.charAt(0) || 'A'}
+                      </Avatar>
+                      <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
+                        {article.author}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
                         {article.readTime}
                       </Typography>
                     </Stack>
-                    
-                    <Chip 
-                      label={article.category}
-                      size="small"
-                      sx={{
-                        backgroundColor: '#ff9800',
-                        color: 'white',
-                        fontWeight: 500,
-                        fontSize: '0.75rem'
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
+
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Chip 
+                        label={article.category}
+                        size="small"
+                        sx={{
+                          backgroundColor: '#f59e0b',
+                          color: 'white',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }}
+                      />
+                    </Stack>
+                  </Stack>
+                </Box>
+              </Paper>
             ))}
-          </Grid>
+          </Stack>
         </Box>
 
         {/* CTA Section */}
@@ -181,9 +230,9 @@ const Interests = () => {
               py: 1.5,
               fontSize: '1.1rem',
               fontWeight: 600,
-              backgroundColor: '#ff9800',
+              backgroundColor: '#f59e0b',
               '&:hover': {
-                backgroundColor: '#f57c00'
+                backgroundColor: '#d97706'
               }
             }}
           >

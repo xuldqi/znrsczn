@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>增强版CMS管理后台 - 支持图片上传</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger-color: #dc2626;
+            --danger-hover: #b91c1c;
+            --success-color: #16a34a;
+            --success-hover: #15803d;
+            --warning-color: #d97706;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --border-radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-card p {
+            color: var(--gray-600);
+            margin-top: 0.5rem;
+        }
+
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--gray-200);
+            color: var(--gray-800);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-300);
+        }
+
+        .search-box, .select-box {
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            min-width: 200px;
+        }
+
+        .search-box:focus, .select-box:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            ring: 2px solid var(--primary-color);
+            ring-opacity: 0.2;
+        }
+
+        .article-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .article-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .article-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .article-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .article-actions {
+            padding: 1rem 1.5rem;
+            background-color: var(--gray-50);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--gray-900);
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .close:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 300px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        /* 图片上传样式 */
+        .image-upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: var(--gray-50);
+        }
+
+        .image-upload-area.dragover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .uploaded-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-item {
+            position: relative;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .image-item .remove-image {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .image-item .copy-url {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 163, 74, 0.1);
+            border: 1px solid rgba(16, 163, 74, 0.2);
+            color: var(--success-color);
+        }
+
+        .alert-error {
+            background-color: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            color: var(--danger-color);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box, .select-box {
+                min-width: auto;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 1rem auto;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 增强版CMS管理后台</h1>
+    </div>
+
+    <div class="container">
+        <!-- 统计信息 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="total-articles">0</h3>
+                <p>总文章数</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="published-articles">0</h3>
+                <p>已发布</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="categories-count">0</h3>
+                <p>分类数量</p>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="controls">
+            <div class="controls-row">
+                <button class="btn btn-primary" onclick="showCreateModal()">
+                    ➕ 新建文章
+                </button>
+                
+                <input type="text" class="search-box" id="searchInput" placeholder="搜索文章..." onkeyup="filterArticles()">
+                
+                <select class="select-box" id="categoryFilter" onchange="filterArticles()">
+                    <option value="">所有分类</option>
+                </select>
+                
+                <select class="select-box" id="sortSelect" onchange="sortArticles()">
+                    <option value="custom">自定义排序</option>
+                    <option value="newest">最新发布</option>
+                    <option value="oldest">最早发布</option>
+                    <option value="title">按标题</option>
+                    <option value="category">按分类</option>
+                </select>
+
+                <button class="btn btn-secondary" onclick="refreshArticles()">
+                    🔄 刷新
+                </button>
+            </div>
+        </div>
+
+        <!-- 文章列表 -->
+        <div class="article-grid" id="articleList">
+            <!-- 文章将在这里动态加载 -->
+        </div>
+    </div>
+
+    <!-- 编辑文章模态框 -->
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">编辑文章</h2>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalAlert"></div>
+                
+                <form id="articleForm">
+                    <div class="form-group">
+                        <label for="articleTitle">标题</label>
+                        <input type="text" id="articleTitle" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleExcerpt">摘要</label>
+                        <textarea id="articleExcerpt" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleAuthor">作者</label>
+                        <input type="text" id="articleAuthor" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleCategory">分类</label>
+                        <input type="text" id="articleCategory" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleTags">标签（用逗号分隔）</label>
+                        <input type="text" id="articleTags" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleReadTime">阅读时长</label>
+                        <input type="text" id="articleReadTime" class="form-control" placeholder="如：5分钟">
+                    </div>
+
+                    <!-- 图片上传区域 -->
+                    <div class="form-group">
+                        <label>图片管理</label>
+                        <div class="image-upload-area" id="uploadArea" onclick="document.getElementById('imageInput').click()">
+                            <div class="upload-icon">📁</div>
+                            <div class="upload-text">点击或拖拽上传图片</div>
+                            <div class="upload-text">支持 JPG, PNG, GIF 格式，最大 5MB</div>
+                        </div>
+                        <input type="file" id="imageInput" class="file-input" accept="image/*" multiple onchange="handleImageUpload(this.files)">
+                        
+                        <div class="uploaded-images" id="uploadedImages">
+                            <!-- 上传的图片将显示在这里 -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleContent">内容（Markdown格式）</label>
+                        <textarea id="articleContent" class="form-control" rows="15" placeholder="支持Markdown格式，可以插入上传的图片..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleStatus">状态</label>
+                        <select id="articleStatus" class="form-control">
+                            <option value="published">已发布</option>
+                            <option value="draft">草稿</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                        <button type="submit" class="btn btn-success" id="saveButton">
+                            💾 保存文章
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentArticles = [];
+        let currentEditingId = null;
+        let uploadedImages = [];
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticles();
+            initializeUpload();
+        });
+
+        // 初始化拖拽上传
+        function initializeUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleImageUpload(e.dataTransfer.files);
+            });
+        }
+
+        // 处理图片上传
+        async function handleImageUpload(files) {
+            const uploadArea = document.getElementById('uploadArea');
+            const originalContent = uploadArea.innerHTML;
+            
+            for (let file of files) {
+                if (!file.type.startsWith('image/')) {
+                    showAlert('只能上传图片文件！', 'error');
+                    continue;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('文件大小不能超过5MB！', 'error');
+                    continue;
+                }
+
+                // 显示上传状态
+                uploadArea.innerHTML = '<div class="loading"></div><div>上传中...</div>';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await fetch(`${API_BASE}/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        uploadedImages.push({
+                            url: result.url,
+                            filename: result.filename,
+                            originalName: file.name
+                        });
+                        displayUploadedImages();
+                        showAlert('图片上传成功！', 'success');
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    showAlert('上传失败：' + error.message, 'error');
+                }
+            }
+
+            // 恢复上传区域
+            uploadArea.innerHTML = originalContent;
+        }
+
+        // 显示已上传的图片
+        function displayUploadedImages() {
+            const container = document.getElementById('uploadedImages');
+            container.innerHTML = '';
+
+            uploadedImages.forEach((image, index) => {
+                const imageItem = document.createElement('div');
+                imageItem.className = 'image-item';
+                imageItem.innerHTML = `
+                    <img src="${image.url}" alt="${image.originalName}">
+                    <button class="remove-image" onclick="removeImage(${index})">&times;</button>
+                    <button class="copy-url" onclick="copyImageUrl('${image.url}')">复制链接</button>
+                `;
+                container.appendChild(imageItem);
+            });
+        }
+
+        // 删除图片
+        async function removeImage(index) {
+            const image = uploadedImages[index];
+            
+            try {
+                const response = await fetch(`${API_BASE}/upload/${image.filename}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    uploadedImages.splice(index, 1);
+                    displayUploadedImages();
+                    showAlert('图片删除成功！', 'success');
+                } else {
+                    throw new Error('删除失败');
+                }
+            } catch (error) {
+                showAlert('删除图片失败：' + error.message, 'error');
+            }
+        }
+
+        // 复制图片URL
+        function copyImageUrl(url) {
+            const fullUrl = window.location.origin + url;
+            const markdownLink = `![图片描述](${fullUrl})`;
+            
+            navigator.clipboard.writeText(markdownLink).then(() => {
+                showAlert('Markdown格式链接已复制到剪贴板！', 'success');
+            }).catch(() => {
+                // 备用方案
+                const textarea = document.createElement('textarea');
+                textarea.value = markdownLink;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showAlert('图片链接已复制！', 'success');
+            });
+        }
+
+        // 加载文章列表
+        async function loadArticles() {
+            try {
+                const response = await fetch(`${API_BASE}/articles`);
+                const articles = await response.json();
+                currentArticles = articles;
+                displayArticles(articles);
+                updateStats(articles);
+                updateCategoryFilter(articles);
+            } catch (error) {
+                console.error('加载文章失败:', error);
+                showAlert('加载文章失败', 'error');
+            }
+        }
+
+        // 显示文章列表
+        function displayArticles(articles) {
+            const container = document.getElementById('articleList');
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">暂无文章</div>';
+                return;
+            }
+
+            container.innerHTML = articles.map(article => `
+                <div class="article-card">
+                    <div class="article-header">
+                        <div class="article-title">${article.title}</div>
+                        <div class="article-meta">
+                            <span>📅 ${article.date}</span>
+                            <span>👤 ${article.author}</span>
+                            <span>🏷️ ${article.category}</span>
+                            <span>⏱️ ${article.readTime}</span>
+                            <span class="status-${article.status}">${article.status === 'published' ? '✅ 已发布' : '📝 草稿'}</span>
+                        </div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="btn btn-primary" onclick="editArticle('${article.id}')">✏️ 编辑</button>
+                        <button class="btn btn-danger" onclick="deleteArticle('${article.id}')">🗑️ 删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 更新统计信息
+        function updateStats(articles) {
+            document.getElementById('total-articles').textContent = articles.length;
+            document.getElementById('published-articles').textContent = articles.filter(a => a.status === 'published').length;
+            
+            const categories = [...new Set(articles.map(a => a.category))];
+            document.getElementById('categories-count').textContent = categories.length;
+        }
+
+        // 更新分类筛选器
+        function updateCategoryFilter(articles) {
+            const categories = [...new Set(articles.map(a => a.category))];
+            const select = document.getElementById('categoryFilter');
+            
+            select.innerHTML = '<option value="">所有分类</option>';
+            categories.forEach(cat => {
+                select.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+        }
+
+        // 筛选文章
+        function filterArticles() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            const filtered = currentArticles.filter(article => {
+                const matchesSearch = !searchTerm || 
+                    article.title.toLowerCase().includes(searchTerm) ||
+                    article.content.toLowerCase().includes(searchTerm) ||
+                    article.excerpt.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !categoryFilter || article.category === categoryFilter;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            displayArticles(filtered);
+        }
+
+        // 排序文章
+        async function sortArticles() {
+            const sortBy = document.getElementById('sortSelect').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/articles?sort=${sortBy}`);
+                const articles = await response.json();
+                currentArticles = articles;
+                displayArticles(articles);
+            } catch (error) {
+                console.error('排序失败:', error);
+            }
+        }
+
+        // 显示新建文章模态框
+        function showCreateModal() {
+            currentEditingId = null;
+            uploadedImages = [];
+            document.getElementById('modalTitle').textContent = '新建文章';
+            document.getElementById('articleForm').reset();
+            document.getElementById('uploadedImages').innerHTML = '';
+            showModal();
+        }
+
+        // 编辑文章
+        async function editArticle(id) {
+            try {
+                const response = await fetch(`${API_BASE}/articles/${id}`);
+                const article = await response.json();
+                
+                currentEditingId = id;
+                uploadedImages = [];
+                
+                document.getElementById('modalTitle').textContent = '编辑文章';
+                document.getElementById('articleTitle').value = article.title;
+                document.getElementById('articleExcerpt').value = article.excerpt || '';
+                document.getElementById('articleAuthor').value = article.author || '';
+                document.getElementById('articleCategory').value = article.category || '';
+                document.getElementById('articleTags').value = article.tags ? article.tags.join(', ') : '';
+                document.getElementById('articleReadTime').value = article.readTime || '';
+                document.getElementById('articleContent').value = article.content || '';
+                document.getElementById('articleStatus').value = article.status || 'published';
+                
+                document.getElementById('uploadedImages').innerHTML = '';
+                showModal();
+            } catch (error) {
+                console.error('加载文章失败:', error);
+                showAlert('加载文章失败', 'error');
+            }
+        }
+
+        // 保存文章
+        document.getElementById('articleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const saveButton = document.getElementById('saveButton');
+            const originalText = saveButton.innerHTML;
+            saveButton.innerHTML = '<div class="loading"></div> 保存中...';
+            saveButton.disabled = true;
+
+            const articleData = {
+                title: document.getElementById('articleTitle').value,
+                excerpt: document.getElementById('articleExcerpt').value,
+                author: document.getElementById('articleAuthor').value,
+                category: document.getElementById('articleCategory').value,
+                tags: document.getElementById('articleTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                readTime: document.getElementById('articleReadTime').value,
+                content: document.getElementById('articleContent').value,
+                status: document.getElementById('articleStatus').value
+            };
+
+            try {
+                let response;
+                if (currentEditingId) {
+                    response = await fetch(`${API_BASE}/articles/${currentEditingId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(articleData)
+                    });
+                } else {
+                    response = await fetch(`${API_BASE}/articles`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(articleData)
+                    });
+                }
+
+                if (response.ok) {
+                    showAlert('文章保存成功！', 'success');
+                    setTimeout(() => {
+                        closeModal();
+                        loadArticles();
+                    }, 1000);
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error);
+                }
+            } catch (error) {
+                showAlert('保存失败：' + error.message, 'error');
+            } finally {
+                saveButton.innerHTML = originalText;
+                saveButton.disabled = false;
+            }
+        });
+
+        // 删除文章
+        async function deleteArticle(id) {
+            if (!confirm('确定要删除这篇文章吗？')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/articles/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('文章删除成功！', 'success');
+                    loadArticles();
+                } else {
+                    throw new Error('删除失败');
+                }
+            } catch (error) {
+                showAlert('删除失败：' + error.message, 'error');
+            }
+        }
+
+        // 模态框管理
+        function showModal() {
+            document.getElementById('articleModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('modalAlert').innerHTML = '';
+            uploadedImages = [];
+        }
+
+        // 显示提示信息
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('modalAlert');
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // 刷新文章列表
+        function refreshArticles() {
+            loadArticles();
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('articleModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

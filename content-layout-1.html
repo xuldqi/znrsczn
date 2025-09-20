@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容布局1: 文章流 - 中年自救指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #F9FAFB;
+            color: #374151;
+            line-height: 1.7;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .write-btn {
+            background: #3B82F6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .tab {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #6B7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #3B82F6;
+            border-bottom-color: #3B82F6;
+        }
+
+        .article-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .article {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            border: 1px solid #E5E7EB;
+            transition: border-color 0.2s;
+        }
+
+        .article:hover {
+            border-color: #D1D5DB;
+        }
+
+        .article-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .article-meta {
+            color: #6B7280;
+            font-size: 0.85rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .article-category {
+            background: #EFF6FF;
+            color: #2563EB;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-content {
+            color: #4B5563;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.5rem;
+            color: #1F2937;
+        }
+
+        .article-content p {
+            margin-bottom: 1rem;
+        }
+
+        .article-content ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #F3F4F6;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: #6B7280;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #3B82F6;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #F3F4F6;
+            color: #6B7280;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .load-more-btn {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            color: #374151;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background: #F3F4F6;
+            border-color: #D1D5DB;
+        }
+
+        .layout-info {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            border: 1px solid #E5E7EB;
+            z-index: 90;
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                padding: 1rem;
+            }
+            
+            .article {
+                padding: 1.5rem;
+            }
+            
+            .article-title {
+                font-size: 1.2rem;
+            }
+            
+            .filter-tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-info">
+        <h4>内容布局1: 文章流</h4>
+        <p>• 以内容为中心<br>• 完整文章展示<br>• 类似知乎/微博</p>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">中年自救指南</div>
+            <div class="user-actions">
+                <button class="write-btn">写文章</button>
+                <div class="author-avatar">我</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="filter-tabs">
+            <button class="tab active">推荐</button>
+            <button class="tab">职场发展</button>
+            <button class="tab">家庭关系</button>
+            <button class="tab">理财投资</button>
+            <button class="tab">健康生活</button>
+            <button class="tab">关注</button>
+        </div>
+
+        <div class="article-stream">
+            <!-- 完整文章1 -->
+            <article class="article">
+                <div class="article-header">
+                    <div class="author-avatar">张</div>
+                    <div class="author-info">
+                        <div class="author-name">张明华（前阿里P7）</div>
+                        <div class="article-meta">
+                            <span class="article-category">职场发展</span>
+                            <span>•</span>
+                            <span>2小时前</span>
+                            <span>•</span>
+                            <span>已有234人赞同</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="article-title">35岁被裁员后，我是如何在3个月内找到更好工作的</h2>
+
+                <div class="article-content">
+                    <p>去年12月，我在阿里工作了6年后突然被裁员。35岁的年纪，上有老下有小，房贷车贷压力巨大。当时感觉天都塌了。</p>
+                    
+                    <p>但是现在回头看，这次被裁员反而成了我职业生涯的一个转机。3个月后，我不仅找到了新工作，薪资还涨了30%。今天分享一下我的求职经验，希望能帮到同样处境的朋友。</p>
+
+                    <h3>第一步：调整心态，重新审视自己</h3>
+                    <p>被裁员的前几天我确实很消沉，但很快我意识到，自怨自艾解决不了任何问题。我开始重新审视自己的职业规划：</p>
+                    
+                    <ul>
+                        <li>我的核心竞争力是什么？</li>
+                        <li>我想要什么样的工作环境？</li>
+                        <li>我的薪资期望是否合理？</li>
+                        <li>我还有哪些技能需要提升？</li>
+                    </ul>
+
+                    <h3>第二步：系统性地提升自己</h3>
+                    <p>在求职期间，我没有盲目投简历，而是先花了一个月时间充电：</p>
+                    <ul>
+                        <li>学习了最新的技术栈</li>
+                        <li>完善了个人作品集</li>
+                        <li>优化了简历结构</li>
+                        <li>准备了面试话术</li>
+                    </ul>
+
+                    <p>这一个月的投资是值得的，后来面试时明显感觉自己更有底气了。</p>
+                </div>
+
+                <div class="article-footer">
+                    <div class="article-actions">
+                        <button class="action-btn">👍 234</button>
+                        <button class="action-btn">💬 56</button>
+                        <button class="action-btn">🔗 分享</button>
+                        <button class="action-btn">⭐ 收藏</button>
+                    </div>
+                    <div class="article-tags">
+                        <a href="#" class="tag">求职经验</a>
+                        <a href="#" class="tag">职业规划</a>
+                        <a href="#" class="tag">中年转型</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 完整文章2 -->
+            <article class="article">
+                <div class="article-header">
+                    <div class="author-avatar">李</div>
+                    <div class="author-info">
+                        <div class="author-name">李心理师</div>
+                        <div class="article-meta">
+                            <span class="article-category">家庭关系</span>
+                            <span>•</span>
+                            <span>5小时前</span>
+                            <span>•</span>
+                            <span>已有189人赞同</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="article-title">和青春期儿子"冷战"半年后，我终于找到了正确的沟通方式</h2>
+
+                <div class="article-content">
+                    <p>儿子今年16岁，从去年开始就和我们越来越疏远。不管我们说什么，他都是"嗯"、"哦"、"知道了"三个词打发。有时候实在忍不住想说教几句，他就直接回房间把门一关。</p>
+                    
+                    <p>作为一个心理咨询师，我帮助过很多家庭处理亲子关系问题，但轮到自己的孩子时却束手无策。这让我深深反思了自己的教育方式。</p>
+
+                    <h3>问题出在哪里？</h3>
+                    <p>经过几个月的观察和反思，我发现问题主要出在三个方面：</p>
+                    
+                    <ul>
+                        <li>总是站在成人的角度给他建议</li>
+                        <li>习惯性地否定他的想法</li>
+                        <li>缺乏真正的倾听和理解</li>
+                    </ul>
+
+                    <p>青春期的孩子需要的不是说教，而是理解和尊重。当我意识到这一点后，开始尝试改变自己的沟通方式。</p>
+                </div>
+
+                <div class="article-footer">
+                    <div class="article-actions">
+                        <button class="action-btn">👍 189</button>
+                        <button class="action-btn">💬 43</button>
+                        <button class="action-btn">🔗 分享</button>
+                        <button class="action-btn">⭐ 收藏</button>
+                    </div>
+                    <div class="article-tags">
+                        <a href="#" class="tag">亲子沟通</a>
+                        <a href="#" class="tag">青春期</a>
+                        <a href="#" class="tag">家庭教育</a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 完整文章3 -->
+            <article class="article">
+                <div class="article-header">
+                    <div class="author-avatar">王</div>
+                    <div class="author-info">
+                        <div class="author-name">王理财师（10年经验）</div>
+                        <div class="article-meta">
+                            <span class="article-category">理财投资</span>
+                            <span>•</span>
+                            <span>8小时前</span>
+                            <span>•</span>
+                            <span>已有156人赞同</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="article-title">我40岁开始理财，5年攒了100万，分享几个实用策略</h2>
+
+                <div class="article-content">
+                    <p>很多人问我，40岁才开始理财会不会太晚？我用自己的经历告诉你们：永远不会太晚！</p>
+                    
+                    <p>5年前，我40岁，存款只有不到10万。当时孩子刚上小学，房贷压力很大，每个月基本月光。但就是从那时开始，我下定决心要改变财务状况。</p>
+
+                    <h3>策略一：记账+预算，控制消费</h3>
+                    <p>最开始我连自己每个月花多少钱都不知道。通过3个月的详细记账，我发现了很多不必要的支出：</p>
+                    
+                    <ul>
+                        <li>外卖费用每月超过2000元</li>
+                        <li>各种会员充值但很少使用</li>
+                        <li>冲动购物，特别是打折商品</li>
+                    </ul>
+
+                    <p>调整后，每月可以节省出3000-4000元用于投资。</p>
+                </div>
+
+                <div class="article-footer">
+                    <div class="article-actions">
+                        <button class="action-btn">👍 156</button>
+                        <button class="action-btn">💬 34</button>
+                        <button class="action-btn">🔗 分享</button>
+                        <button class="action-btn">⭐ 收藏</button>
+                    </div>
+                    <div class="article-tags">
+                        <a href="#" class="tag">中年理财</a>
+                        <a href="#" class="tag">投资策略</a>
+                        <a href="#" class="tag">财务管理</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="load-more">
+            <button class="load-more-btn">查看更多文章</button>
+        </div>
+    </main>
+</body>
+</html>

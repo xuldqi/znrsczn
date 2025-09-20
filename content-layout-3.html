@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容布局3: 社区讨论 - 中年自救指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #F7F8FA;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #E1E4E8;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .post-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10B981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #E1E4E8;
+        }
+
+        .sidebar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+
+        .hot-topics {
+            list-style: none;
+        }
+
+        .hot-topic {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #F3F4F6;
+            font-size: 0.9rem;
+        }
+
+        .hot-topic:last-child {
+            border-bottom: none;
+        }
+
+        .topic-rank {
+            background: #FEF3C7;
+            color: #D97706;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .topic-rank.top3 {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .online-users {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E1E4E8;
+            overflow: hidden;
+        }
+
+        .forum-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .forum-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .forum-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+
+        .post-list {
+            divide: solid #F3F4F6;
+        }
+
+        .post-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #F9FAFB;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-item:hover {
+            background: #FAFBFC;
+        }
+
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .post-content {
+            flex: 1;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 0.95rem;
+        }
+
+        .post-time {
+            color: #6B7280;
+            font-size: 0.8rem;
+        }
+
+        .post-badge {
+            background: #DBEAFE;
+            color: #1D4ED8;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .post-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .post-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .post-title a:hover {
+            color: #10B981;
+        }
+
+        .post-preview {
+            color: #6B7280;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .post-tag {
+            background: #F0FDF4;
+            color: #16A34A;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #6B7280;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .pagination {
+            padding: 1.5rem;
+            border-top: 1px solid #F3F4F6;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #E5E7EB;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #374151;
+        }
+
+        .page-btn.active {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .layout-info {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            border: 1px solid #E5E7EB;
+            z-index: 90;
+        }
+
+        .pinned-post {
+            background: #FFFBEB;
+            border-left: 4px solid #F59E0B;
+        }
+
+        .pinned-badge {
+            background: #FEF3C7;
+            color: #D97706;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+                grid-template-columns: 1fr 1fr;
+                display: grid;
+            }
+            
+            .post-item {
+                padding: 1rem;
+            }
+            
+            .post-avatar {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-info">
+        <h4>内容布局3: 社区讨论</h4>
+        <p>• 论坛式交流<br>• 用户互动强<br>• 类似豆瓣小组</p>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">中年自救指南 • 社区</div>
+                <div class="user-section">
+                    <button class="post-btn">发帖</button>
+                    <div class="user-avatar">我</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-layout">
+            <aside class="sidebar">
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">热门话题</h3>
+                    <ul class="hot-topics">
+                        <li class="hot-topic">
+                            <span class="topic-rank top3">1</span>
+                            <span>35岁职场焦虑</span>
+                        </li>
+                        <li class="hot-topic">
+                            <span class="topic-rank top3">2</span>
+                            <span>中年理财规划</span>
+                        </li>
+                        <li class="hot-topic">
+                            <span class="topic-rank top3">3</span>
+                            <span>亲子关系处理</span>
+                        </li>
+                        <li class="hot-topic">
+                            <span class="topic-rank">4</span>
+                            <span>夫妻沟通技巧</span>
+                        </li>
+                        <li class="hot-topic">
+                            <span class="topic-rank">5</span>
+                            <span>健康养生心得</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">社区状态</h3>
+                    <div class="online-users">
+                        <span class="online-dot"></span>
+                        <span>1,234 人在线</span>
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.85rem; color: #6B7280;">
+                        <div>今日新帖: 156</div>
+                        <div>本周活跃: 2,890</div>
+                        <div>总成员数: 15,678</div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content-area">
+                <div class="forum-header">
+                    <h2 class="forum-title">最新讨论</h2>
+                    <div class="forum-stats">
+                        <span>156 今日新帖</span>
+                        <span>2,890 本周回复</span>
+                    </div>
+                </div>
+
+                <div class="post-list">
+                    <!-- 置顶帖 -->
+                    <div class="post-item pinned-post">
+                        <div class="post-avatar">管</div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="post-author">社区管理员</span>
+                                <span class="pinned-badge">置顶</span>
+                                <span class="post-time">3天前</span>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="#">【社区公告】如何更好地在中年阶段实现自我提升</a>
+                            </h3>
+                            <div class="post-preview">
+                                欢迎大家来到中年自救指南社区！这里是一个专门为中年朋友提供互助和交流的平台。无论你在职场、家庭、健康还是理财方面遇到什么困惑，都可以在这里找到志同道合的朋友...
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-tags">
+                                    <a href="#" class="post-tag">社区公告</a>
+                                    <a href="#" class="post-tag">新人必读</a>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="post-action">👍 456</div>
+                                    <div class="post-action">💬 89</div>
+                                    <div class="post-action">👁 1.2k</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 普通帖子 -->
+                    <div class="post-item">
+                        <div class="post-avatar">老</div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="post-author">老王谈职场</span>
+                                <span class="post-badge">活跃用户</span>
+                                <span class="post-time">2小时前</span>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="#">分享：40岁跳槽成功经验，从月薪1.2万到2万的蜕变</a>
+                            </h3>
+                            <div class="post-preview">
+                                去年这个时候我还在为是否要跳槽而纠结，毕竟40岁了，上有老下有小，换工作风险挺大的。但现在回头看，这次跳槽是我做过最正确的决定之一。不仅薪资涨了近70%，工作环境和发展前景也更好了。今天详细分享一下我的跳槽心得...
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-tags">
+                                    <a href="#" class="post-tag">跳槽经验</a>
+                                    <a href="#" class="post-tag">职场发展</a>
+                                    <a href="#" class="post-tag">薪资谈判</a>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="post-action">👍 89</div>
+                                    <div class="post-action">💬 34</div>
+                                    <div class="post-action">👁 567</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="post-item">
+                        <div class="post-avatar">妈</div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="post-author">智慧妈妈</span>
+                                <span class="post-time">3小时前</span>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="#">求助：15岁儿子开始早恋，我该如何处理？</a>
+                            </h3>
+                            <div class="post-preview">
+                                昨天无意中发现儿子手机里和一个女同学的聊天记录，内容比较亲密。儿子今年刚上高一，正是学习的关键时期。我和老公都很担心，但又不知道该怎么和他沟通。直接禁止肯定不行，但放任不管也不合适。有经验的家长能给点建议吗？
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-tags">
+                                    <a href="#" class="post-tag">青春期教育</a>
+                                    <a href="#" class="post-tag">早恋处理</a>
+                                    <a href="#" class="post-tag">亲子沟通</a>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="post-action">👍 45</div>
+                                    <div class="post-action">💬 78</div>
+                                    <div class="post-action">👁 234</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="post-item">
+                        <div class="post-avatar">理</div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="post-author">理财达人</span>
+                                <span class="post-badge">认证用户</span>
+                                <span class="post-time">5小时前</span>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="#">2025年中年人理财策略：风险与收益的平衡艺术</a>
+                            </h3>
+                            <div class="post-preview">
+                                经常有朋友问我，中年人理财和年轻人有什么区别？最大的区别就是我们承担风险的能力更有限，但同时我们也更有经验去判断什么是真正有价值的投资。今天分享一下我这些年总结的中年理财心得...
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-tags">
+                                    <a href="#" class="post-tag">理财策略</a>
+                                    <a href="#" class="post-tag">风险管理</a>
+                                    <a href="#" class="post-tag">投资组合</a>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="post-action">👍 123</div>
+                                    <div class="post-action">💬 56</div>
+                                    <div class="post-action">👁 789</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="post-item">
+                        <div class="post-avatar">健</div>
+                        <div class="post-content">
+                            <div class="post-header">
+                                <span class="post-author">健康生活家</span>
+                                <span class="post-time">8小时前</span>
+                            </div>
+                            <h3 class="post-title">
+                                <a href="#">中年男人的健身日记：从啤酒肚到马甲线的180天</a>
+                            </h3>
+                            <div class="post-preview">
+                                六个月前，我体重86公斤，肚子像怀孕5个月，爬3层楼都要喘。现在体重75公斤，腹肌隐约可见，精神状态完全不一样了。很多朋友问我是怎么做到的，今天详细分享一下我的健身历程...
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-tags">
+                                    <a href="#" class="post-tag">健身经验</a>
+                                    <a href="#" class="post-tag">减肥心得</a>
+                                    <a href="#" class="post-tag">生活方式</a>
+                                </div>
+                                <div class="post-actions">
+                                    <div class="post-action">👍 167</div>
+                                    <div class="post-action">💬 23</div>
+                                    <div class="post-action">👁 445</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <button class="page-btn">上一页</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <button class="page-btn">下一页</button>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

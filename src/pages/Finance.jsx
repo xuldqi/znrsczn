@@ -1,14 +1,14 @@
 import { Container, Typography, Box, Grid, Card, CardContent, Button, Chip, Paper, Stack, Avatar } from '@mui/material'
-import { Group, Home, Favorite, School, Work, CalendarToday, AccessTime } from '@mui/icons-material'
+import { AccountBalance, MoneyOff, TrendingUp, SavingsOutlined, Savings } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
 
-const Family = () => {
+const Finance = () => {
   const navigate = useNavigate()
   const { getArticlesByCategory } = useArticles()
   
-  // 获取家庭关系类文章
-  const familyArticles = getArticlesByCategory('家庭关系')
+  // 获取财务管理类文章
+  const financeArticles = getArticlesByCategory('财务管理')
 
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
@@ -26,7 +26,7 @@ const Family = () => {
               fontSize: { xs: '2.5rem', md: '3rem' }
             }}
           >
-            家庭关系
+            财务管理
           </Typography>
           
           <Typography 
@@ -40,18 +40,18 @@ const Family = () => {
               mx: 'auto'
             }}
           >
-            处理家庭关系中的各种挑战：夫妻沟通、子女教育、老人赡养等实用指导
+            中年人的理财规划：投资理财、风险控制、资产配置等实用指南
           </Typography>
           
           <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ mb: 4 }}>
-            <Chip label="夫妻关系" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="子女教育" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="家庭沟通" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
             <Chip label="理财规划" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="投资策略" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="风险控制" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
+            <Chip label="资产配置" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
           </Stack>
         </Box>
 
-        {/* Family Articles Section */}
+        {/* Finance Articles Section */}
         <Box sx={{ mb: 8 }}>
           <Typography 
             variant="h4" 
@@ -64,11 +64,11 @@ const Family = () => {
               textAlign: 'center'
             }}
           >
-            家庭关系文章
+            财务管理文章
           </Typography>
           
           <Stack spacing={2}>
-            {familyArticles.map((article, index) => (
+            {financeArticles.map((article, index) => (
               <Paper
                 key={article.id || index}
                 elevation={0}
@@ -112,7 +112,7 @@ const Family = () => {
                       <Box sx={{
                         width: 40,
                         height: 40,
-                        backgroundColor: '#ec4899',
+                        backgroundColor: '#10b981',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',
@@ -121,10 +121,10 @@ const Family = () => {
                         fontSize: '1.2rem',
                         fontWeight: 600
                       }}>
-                        家
+                        💰
                       </Box>
                       <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
-                        家庭关系
+                        财务管理
                       </Typography>
                     </Box>
                   )}
@@ -164,7 +164,7 @@ const Family = () => {
                     justifyContent="space-between"
                   >
                     <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#ec4899' }}>
+                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#4caf50' }}>
                         {article.author?.charAt(0) || 'A'}
                       </Avatar>
                       <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
@@ -180,7 +180,7 @@ const Family = () => {
                         label={article.category}
                         size="small"
                         sx={{
-                          backgroundColor: '#ec4899',
+                          backgroundColor: '#10b981',
                           color: 'white',
                           fontWeight: 500,
                           fontSize: '0.75rem'
@@ -206,7 +206,7 @@ const Family = () => {
               mb: 2
             }}
           >
-            改善家庭关系从现在开始
+            开始你的财务规划
           </Typography>
           
           <Typography 
@@ -219,7 +219,7 @@ const Family = () => {
               mx: 'auto'
             }}
           >
-            学习实用的家庭沟通技巧，建立更和谐的家庭关系，让家人之间的情感更加深厚。
+            学习理财知识，制定适合中年人的投资策略，实现财务自由和风险控制的平衡。
           </Typography>
           
           <Button 
@@ -230,13 +230,13 @@ const Family = () => {
               py: 1.5,
               fontSize: '1.1rem',
               fontWeight: 600,
-              backgroundColor: '#ec4899',
+              backgroundColor: '#10b981',
               '&:hover': {
-                backgroundColor: '#db2777'
+                backgroundColor: '#059669'
               }
             }}
           >
-            开始改善关系
+            制定理财计划
           </Button>
         </Box>
       </Container>
@@ -244,4 +244,4 @@ const Family = () => {
   )
 }
 
-export default Family
+export default Finance

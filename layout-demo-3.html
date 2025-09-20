@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>布局3: 极简单栏 - 中年自救指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #FAFBFC;
+            color: #2D3748;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #1A202C;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            color: #718096;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .nav a {
+            color: #718096;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: #2D3748;
+            border-bottom-color: #4299E1;
+        }
+
+        .main-content {
+            max-width: 100%;
+        }
+
+        .article {
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid #F7FAFC;
+        }
+
+        .article:last-child {
+            border-bottom: none;
+        }
+
+        .article-header {
+            margin-bottom: 2rem;
+        }
+
+        .article-category {
+            display: inline-block;
+            color: #4299E1;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .article-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1A202C;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #A0AEC0;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #4299E1, #805AD5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .article-excerpt {
+            font-size: 1.1rem;
+            color: #4A5568;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            margin: 2rem 0;
+        }
+
+        .article-content {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #2D3748;
+        }
+
+        .article-content h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: #1A202C;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content ul {
+            margin: 1.5rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .article-footer {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #F7FAFC;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #EDF2F7;
+            color: #4A5568;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .tag:hover {
+            background: #E2E8F0;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #A0AEC0;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn:hover {
+            color: #4A5568;
+        }
+
+        .load-more {
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .load-more-btn {
+            background: #4299E1;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background: #3182CE;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid #E2E8F0;
+            margin-top: 4rem;
+            color: #A0AEC0;
+        }
+
+        .layout-info {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 90;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 30%;
+            height: 3px;
+            background: #4299E1;
+            z-index: 100;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            .header {
+                padding: 2rem 0 1rem;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .nav {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .article-title {
+                font-size: 1.6rem;
+            }
+
+            .article-meta {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .article-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reading-progress"></div>
+    
+    <div class="layout-info">
+        <h4>布局3: 极简单栏</h4>
+        <p>• Medium风格<br>• 专注阅读体验<br>• 简洁优雅</p>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">中年自救指南</h1>
+            <p class="tagline">用智慧和经验，点亮中年人生的每一个瞬间</p>
+            <nav class="nav">
+                <a href="#" class="active">全部文章</a>
+                <a href="#">职场发展</a>
+                <a href="#">家庭关系</a>
+                <a href="#">理财投资</a>
+                <a href="#">健康生活</a>
+                <a href="#">关于我们</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <article class="article">
+                <header class="article-header">
+                    <div class="article-category">职场发展</div>
+                    <h2 class="article-title">重新定义35岁后的职场价值：从焦虑到自信的转变</h2>
+                    <div class="article-meta">
+                        <div class="author-info">
+                            <div class="author-avatar">张</div>
+                            <span>张明华</span>
+                        </div>
+                        <span>•</span>
+                        <span>2025年9月10日</span>
+                        <span>•</span>
+                        <span>8分钟阅读</span>
+                    </div>
+                </header>
+
+                <div class="article-excerpt">
+                    35岁，对很多职场人来说是一个敏感的数字。它象征着青春的尾声，也标志着人生下半场的开始。但谁说35岁就是职场的分水岭？
+                </div>
+
+                <div class="article-image">📈</div>
+
+                <div class="article-content">
+                    <h3>重新认识自己的价值</h3>
+                    <p>35岁的你，拥有年轻人没有的丰富经验和成熟判断力。你见过项目从零到一的全过程，经历过团队合作的酸甜苦辣，也品尝过成功与失败的滋味。这些都是无价的财富。</p>
+                    
+                    <p>不要总是盯着自己没有的东西——比如年轻人的冲劲和学习能力，而要发现自己独有的优势：</p>
+                    
+                    <ul>
+                        <li>丰富的项目经验和处理复杂问题的能力</li>
+                        <li>更好的情绪管理和人际沟通技巧</li>
+                        <li>对行业和市场的深度理解</li>
+                        <li>更强的责任心和稳定性</li>
+                    </ul>
+
+                    <h3>找到属于你的发展路径</h3>
+                    <p>35岁后的职场发展，不应该再是单纯的向上爬，而是要找到最适合自己的发展路径。有些人适合继续深耕专业技能，成为某个领域的专家；有些人则适合转向管理岗位，发挥自己的领导才能。</p>
+
+                    <p>关键是要诚实面对自己：你的兴趣在哪里？你的优势是什么？什么样的工作能让你获得成就感？</p>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="article-tags">
+                        <a href="#" class="tag">职场焦虑</a>
+                        <a href="#" class="tag">职业规划</a>
+                        <a href="#" class="tag">中年危机</a>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn">👍 234</button>
+                        <button class="action-btn">💬 56</button>
+                        <button class="action-btn">📤 分享</button>
+                    </div>
+                </footer>
+            </article>
+
+            <article class="article">
+                <header class="article-header">
+                    <div class="article-category">家庭关系</div>
+                    <h2 class="article-title">中年夫妻的沟通艺术：如何重新点燃爱情的火花</h2>
+                    <div class="article-meta">
+                        <div class="author-info">
+                            <div class="author-avatar">李</div>
+                            <span>李心理师</span>
+                        </div>
+                        <span>•</span>
+                        <span>2025年9月9日</span>
+                        <span>•</span>
+                        <span>6分钟阅读</span>
+                    </div>
+                </header>
+
+                <div class="article-excerpt">
+                    结婚十几年，激情渐退，生活变成了柴米油盐。很多中年夫妻都面临这样的困惑：我们还爱着对方吗？爱情还在吗？
+                </div>
+
+                <div class="article-image">❤️</div>
+
+                <div class="article-content">
+                    <h3>爱情需要刻意练习</h3>
+                    <p>很多人以为爱情是自然而然的，但其实长久的爱情需要刻意的维护和经营。就像任何技能一样，沟通和表达爱意也需要练习。</p>
+                    
+                    <p>试试这些简单但有效的方法：</p>
+                    
+                    <ul>
+                        <li>每天至少有15分钟的深度对话时间</li>
+                        <li>学会表达感激和赞美</li>
+                        <li>创造属于两个人的仪式感</li>
+                        <li>保持身体接触和亲密行为</li>
+                    </ul>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="article-tags">
+                        <a href="#" class="tag">夫妻关系</a>
+                        <a href="#" class="tag">爱情保鲜</a>
+                        <a href="#" class="tag">沟通技巧</a>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn">👍 189</button>
+                        <button class="action-btn">💬 43</button>
+                        <button class="action-btn">📤 分享</button>
+                    </div>
+                </footer>
+            </article>
+
+            <article class="article">
+                <header class="article-header">
+                    <div class="article-category">理财投资</div>
+                    <h2 class="article-title">40岁开始理财晚吗？中年理财的三个黄金法则</h2>
+                    <div class="article-meta">
+                        <div class="author-info">
+                            <div class="author-avatar">王</div>
+                            <span>王理财师</span>
+                        </div>
+                        <span>•</span>
+                        <span>2025年9月8日</span>
+                        <span>•</span>
+                        <span>5分钟阅读</span>
+                    </div>
+                </header>
+
+                <div class="article-excerpt">
+                    "40岁才开始理财，是不是太晚了？"这是很多中年人的困惑。答案是：永远不会太晚，但确实需要更智慧的策略。
+                </div>
+
+                <div class="article-image">💰</div>
+
+                <div class="article-content">
+                    <h3>中年理财的优势</h3>
+                    <p>虽然时间不如年轻人充裕，但中年人理财有独特的优势：</p>
+                    <ul>
+                        <li>收入相对稳定，现金流更可预期</li>
+                        <li>有了一定的人生阅历和风险意识</li>
+                        <li>对自己的需求更清楚</li>
+                    </ul>
+                </div>
+
+                <footer class="article-footer">
+                    <div class="article-tags">
+                        <a href="#" class="tag">中年理财</a>
+                        <a href="#" class="tag">投资策略</a>
+                        <a href="#" class="tag">财务规划</a>
+                    </div>
+                    <div class="article-actions">
+                        <button class="action-btn">👍 156</button>
+                        <button class="action-btn">💬 34</button>
+                        <button class="action-btn">📤 分享</button>
+                    </div>
+                </footer>
+            </article>
+        </main>
+
+        <div class="load-more">
+            <button class="load-more-btn">加载更多文章</button>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 中年自救指南 • 让中年生活更精彩</p>
+        </footer>
+    </div>
+</body>
+</html>

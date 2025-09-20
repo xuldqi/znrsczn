@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>布局4: 侧边导航 - 中年自救指南</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #F7FAFC;
+            color: #2D3748;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #1A365D 0%, #2A4A6B 100%);
+            color: white;
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .sidebar-nav {
+            padding: 0 1rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-icon {
+            font-size: 1.1rem;
+        }
+
+        .nav-badge {
+            background: #E53E3E;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .breadcrumb-link {
+            color: #4299E1;
+            text-decoration: none;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            padding: 0.5rem 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            width: 250px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4299E1, #805AD5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .content-area {
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1A202C;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .main-articles {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #E2E8F0;
+        }
+
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .article-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+        }
+
+        .article-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .article-body {
+            padding: 1.5rem;
+        }
+
+        .article-category {
+            color: #4299E1;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .article-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .article-excerpt {
+            color: #718096;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .article-author {
+            color: #4A5568;
+        }
+
+        .article-date {
+            color: #A0AEC0;
+        }
+
+        .sidebar-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #E2E8F0;
+        }
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1A202C;
+        }
+
+        .trending-list {
+            list-style: none;
+        }
+
+        .trending-item {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F7FAFC;
+        }
+
+        .trending-rank {
+            background: #EDF2F7;
+            color: #4A5568;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .trending-content h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .trending-stats {
+            font-size: 0.8rem;
+            color: #A0AEC0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #F7FAFC;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4299E1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 0.2rem;
+        }
+
+        .layout-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 90;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 1rem;
+            }
+
+            .top-bar {
+                padding: 1rem;
+            }
+
+            .search-box {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-info">
+        <h4>布局4: 侧边导航</h4>
+        <p>• 后台管理风格<br>• 功能导向<br>• 信息密度高</p>
+    </div>
+
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎯 中年自救指南</div>
+                <div class="sidebar-tagline">专业的中年人生活平台</div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">主要内容</div>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <span class="nav-icon">🏠</span>
+                                <span>首页动态</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">📈</span>
+                                <span>职场发展</span>
+                                <span class="nav-badge">28</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">👨‍👩‍👧‍👦</span>
+                                <span>家庭关系</span>
+                                <span class="nav-badge">15</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">💰</span>
+                                <span>理财投资</span>
+                                <span class="nav-badge">22</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">🏃‍♂️</span>
+                                <span>健康生活</span>
+                                <span class="nav-badge">19</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">社区功能</div>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">💬</span>
+                                <span>讨论论坛</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">❓</span>
+                                <span>问答中心</span>
+                                <span class="nav-badge">5</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">📚</span>
+                                <span>资源下载</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">🎯</span>
+                                <span>目标跟踪</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">个人中心</div>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">👤</span>
+                                <span>我的资料</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">❤️</span>
+                                <span>我的收藏</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <span class="nav-icon">⚙️</span>
+                                <span>设置</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="breadcrumb">
+                    <a href="#" class="breadcrumb-link">首页</a>
+                    <span>></span>
+                    <span>首页动态</span>
+                </div>
+                <div class="top-bar-actions">
+                    <input type="text" class="search-box" placeholder="搜索文章、作者或话题...">
+                    <div class="user-menu">
+                        <div class="user-avatar">张</div>
+                        <span>张三</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="page-header">
+                    <h1 class="page-title">欢迎回来</h1>
+                    <p class="page-description">发现最新的中年生活智慧和实用建议</p>
+                </div>
+
+                <div class="content-grid">
+                    <div class="main-articles">
+                        <article class="article-card">
+                            <div class="article-image">
+                                📊
+                                <div class="article-badge">热门</div>
+                            </div>
+                            <div class="article-body">
+                                <div class="article-category">职场发展</div>
+                                <h3 class="article-title">35岁职场人如何突破瓶颈期</h3>
+                                <p class="article-excerpt">面对职场天花板，中年人应该如何重新定位自己，找到新的发展方向？这篇文章将为你提供实用的建议。</p>
+                                <div class="article-footer">
+                                    <span class="article-author">by 职场导师</span>
+                                    <span class="article-date">2小时前</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-image">
+                                💰
+                                <div class="article-badge">推荐</div>
+                            </div>
+                            <div class="article-body">
+                                <div class="article-category">理财投资</div>
+                                <h3 class="article-title">中年理财的三个黄金原则</h3>
+                                <p class="article-excerpt">40岁开始理财晚吗？当然不晚！掌握这三个原则，让你的财富稳步增长。</p>
+                                <div class="article-footer">
+                                    <span class="article-author">by 理财专家</span>
+                                    <span class="article-date">5小时前</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <div class="article-image">❤️</div>
+                            <div class="article-body">
+                                <div class="article-category">家庭关系</div>
+                                <h3 class="article-title">与青春期孩子的沟通秘籍</h3>
+                                <p class="article-excerpt">青春期的孩子总是叛逆？其实问题可能出在沟通方式上。学会这几招，让亲子关系更和谐。</p>
+                                <div class="article-footer">
+                                    <span class="article-author">by 家庭顾问</span>
+                                    <span class="article-date">1天前</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="sidebar-content">
+                        <div class="widget">
+                            <h3 class="widget-title">本周热门</h3>
+                            <ul class="trending-list">
+                                <li class="trending-item">
+                                    <div class="trending-rank">1</div>
+                                    <div class="trending-content">
+                                        <h4>40岁跳槽的正确姿势</h4>
+                                        <div class="trending-stats">18.5K 阅读 · 256 讨论</div>
+                                    </div>
+                                </li>
+                                <li class="trending-item">
+                                    <div class="trending-rank">2</div>
+                                    <div class="trending-content">
+                                        <h4>中年人的副业选择指南</h4>
+                                        <div class="trending-stats">15.2K 阅读 · 189 讨论</div>
+                                    </div>
+                                </li>
+                                <li class="trending-item">
+                                    <div class="trending-rank">3</div>
+                                    <div class="trending-content">
+                                        <h4>如何与更年期妻子相处</h4>
+                                        <div class="trending-stats">12.8K 阅读 · 167 讨论</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="widget">
+                            <h3 class="widget-title">社区数据</h3>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-number">12.5K</div>
+                                    <div class="stat-label">活跃用户</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">1,234</div>
+                                    <div class="stat-label">精品文章</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">5,678</div>
+                                    <div class="stat-label">讨论话题</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number">89.5%</div>
+                                    <div class="stat-label">满意度</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
