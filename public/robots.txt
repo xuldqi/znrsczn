@@ -2,13 +2,19 @@ User-agent: *
 Allow: /
 
 # 网站地图
-Sitemap: https://pm-save-self.com/sitemap.xml
+Sitemap: https://bambumoon.cn/sitemap.xml
 
 # 禁止访问管理页面
 Disallow: /admin
 Disallow: /login
 
 # 允许访问所有其他页面
-Allow: /articles
-Allow: /products
-Allow: /devlog
+Allow: /career
+Allow: /family
+Allow: /psychology
+Allow: /finance
+Allow: /interests
+Allow: /life-skills
+Allow: /side-business
+Allow: /midlife-crisis
+Allow: /transformation
