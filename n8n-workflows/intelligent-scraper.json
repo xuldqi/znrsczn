@@ -1,0 +1,256 @@
+{
+  "name": "智能文章爬虫和整理工作流",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "scraper-cron",
+      "name": "爬虫定时器",
+      "type": "n8n-nodes-base.cron", 
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.zhihu.com/api/v4/search_v3",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "t", "value": "general"},
+            {"name": "q", "value": "中年危机 职场发展"},
+            {"name": "correction", "value": "1"},
+            {"name": "offset", "value": "0"},
+            {"name": "limit", "value": "20"}
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+          ]
+        }
+      },
+      "id": "scrape-zhihu",
+      "name": "爬取知乎内容",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://www.xiaohongshu.com/web_api/sns/v1/search/notes",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "keyword", "value": "中年人生活 理财规划"},
+            {"name": "page", "value": "1"},
+            {"name": "page_size", "value": "20"}
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "User-Agent", "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)"}
+          ]
+        }
+      },
+      "id": "scrape-xiaohongshu",
+      "name": "爬取小红书内容",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 处理知乎数据\nconst zhihuItems = items[0].json.data || [];\nconst xiaohongshuItems = items[1].json.data?.items || [];\n\nconst processedArticles = [];\n\n// 处理知乎数据\nzhihuItems.forEach(item => {\n  if (item.type === 'search_result' && item.object?.excerpt) {\n    processedArticles.push({\n      title: item.object.title || item.highlight?.title || '无标题',\n      content: item.object.excerpt || item.highlight?.excerpt || '',\n      platform: 'zhihu',\n      sourceUrl: `https://www.zhihu.com/question/${item.object.id}`,\n      author: item.object.author?.name || '匿名',\n      category: 'career', // 根据搜索关键词设置分类\n      tags: ['职场发展', '中年危机', '知乎精选'],\n      originalData: item\n    });\n  }\n});\n\n// 处理小红书数据\nxiaohongshuItems.forEach(item => {\n  if (item.note_card?.display_title) {\n    processedArticles.push({\n      title: item.note_card.display_title,\n      content: item.note_card.desc || '',\n      platform: 'xiaohongshu',\n      sourceUrl: `https://www.xiaohongshu.com/explore/${item.id}`,\n      author: item.note_card.user?.nickname || '匿名',\n      category: 'finance', // 根据搜索关键词设置分类\n      tags: ['理财规划', '生活指南', '小红书精选'],\n      originalData: item\n    });\n  }\n});\n\n// 过滤和去重\nconst filteredArticles = processedArticles\n  .filter(article => \n    article.title.length > 10 && \n    article.content.length > 50 &&\n    !article.title.includes('广告') &&\n    !article.content.includes('推广')\n  )\n  .slice(0, 10); // 限制数量\n\nreturn filteredArticles.map(article => ({ json: article }));"
+      },
+      "id": "process-scraped-data",
+      "name": "处理爬虫数据",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "你是一个内容质量评估专家。请评估以下文章的质量，并给出0-100的分数。评估标准：1) 内容原创性和深度 2) 对中年人的实用价值 3) 信息准确性 4) 表达清晰度。只返回分数和简短评价，格式：{\"score\": 85, \"reason\": \"内容深度好，实用性强\"}"
+            },
+            {
+              "role": "user",
+              "content": "标题：{{ $json.title }}\\n内容：{{ $json.content }}\\n来源：{{ $json.platform }}"
+            }
+          ]
+        }
+      },
+      "id": "quality-assessment",
+      "name": "内容质量评估",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": {
+            "value1": "={{ JSON.parse($node['内容质量评估'].json.choices[0].message.content).score }}",
+            "operation": "largerEqual",
+            "value2": 70
+          }
+        }
+      },
+      "id": "quality-filter",
+      "name": "质量筛选",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "请将以下文章改写为适合中年人阅读的原创内容。要求：1) 保持核心观点不变 2) 调整语言风格更亲切 3) 增加中年人相关的实例 4) 字数控制在800-1200字 5) 添加实用建议"
+            },
+            {
+              "role": "user",
+              "content": "原文标题：{{ $json.title }}\\n原文内容：{{ $json.content }}\\n来源平台：{{ $json.platform }}"
+            }
+          ]
+        }
+      },
+      "id": "content-rewrite",
+      "name": "内容改写",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:1337/api/n8n/articles/scraped",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"{{ $json.title }}\",\n  \"content\": \"{{ $node['内容改写'].json.choices[0].message.content }}\",\n  \"category\": \"{{ $json.category }}\",\n  \"tags\": {{ JSON.stringify($json.tags) }},\n  \"sourceUrl\": \"{{ $json.sourceUrl }}\",\n  \"author\": \"{{ $json.author }}\"\n}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "save-article",
+      "name": "保存文章",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1560, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "API认证"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "爬虫定时器": {
+      "main": [
+        [
+          {
+            "node": "爬取知乎内容",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "爬取小红书内容",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "爬取知乎内容": {
+      "main": [
+        [
+          {
+            "node": "处理爬虫数据",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "爬取小红书内容": {
+      "main": [
+        [
+          {
+            "node": "处理爬虫数据",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "处理爬虫数据": {
+      "main": [
+        [
+          {
+            "node": "内容质量评估",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "内容质量评估": {
+      "main": [
+        [
+          {
+            "node": "质量筛选",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "质量筛选": {
+      "main": [
+        [
+          {
+            "node": "内容改写",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "内容改写": {
+      "main": [
+        [
+          {
+            "node": "保存文章",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-20T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,427 @@
+{
+  "name": "多平台自动发布工作流",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 8
+            }
+          ]
+        }
+      },
+      "id": "publish-cron",
+      "name": "发布定时器",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:1337/api/n8n/articles/pending",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "get-pending-articles",
+      "name": "获取待发布文章",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "API认证"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": {
+            "value1": "={{ $json.articles.length }}",
+            "operation": "larger",
+            "value2": 0
+          }
+        }
+      },
+      "id": "check-articles-exist",
+      "name": "检查是否有文章",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 选择要发布的文章（随机选择一篇）\nconst articles = items[0].json.articles;\nif (articles.length === 0) {\n  return [];\n}\n\nconst randomIndex = Math.floor(Math.random() * articles.length);\nconst selectedArticle = articles[randomIndex];\n\n// 为不同平台格式化内容\nconst platforms = {\n  weibo: {\n    name: 'weibo',\n    content: `${selectedArticle.title}\\n\\n${selectedArticle.content.substring(0, 100)}...\\n\\n阅读全文：https://bambumoon.cn/${selectedArticle.category}\\n\\n#中年自救 #${selectedArticle.category === 'career' ? '职场发展' : selectedArticle.category === 'finance' ? '理财规划' : '生活指南'}`,\n    maxLength: 140\n  },\n  twitter: {\n    name: 'twitter',\n    content: `${selectedArticle.title}\\n\\n${selectedArticle.content.substring(0, 200)}...\\n\\n#MiddleAge #SelfImprovement\\n\\nhttps://bambumoon.cn/${selectedArticle.category}`,\n    maxLength: 280\n  },\n  xiaohongshu: {\n    name: 'xiaohongshu',\n    content: `${selectedArticle.title}\\n\\n${selectedArticle.content.substring(0, 800)}\\n\\n#中年人生活 #实用指南 #${selectedArticle.category}`,\n    maxLength: 1000\n  },\n  wechat: {\n    name: 'wechat',\n    content: selectedArticle.content,\n    title: selectedArticle.title,\n    summary: selectedArticle.content.substring(0, 150) + '...',\n    maxLength: 20000\n  }\n};\n\nreturn Object.values(platforms).map(platform => ({\n  json: {\n    ...selectedArticle,\n    platform: platform.name,\n    formattedContent: platform.content,\n    platformTitle: platform.title || selectedArticle.title,\n    platformSummary: platform.summary || selectedArticle.content.substring(0, 100)\n  }\n}));"
+      },
+      "id": "format-for-platforms",
+      "name": "格式化多平台内容",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": {
+            "value1": "={{ $json.platform }}",
+            "operation": "equal",
+            "value2": "weibo"
+          }
+        }
+      },
+      "id": "route-weibo",
+      "name": "微博路由",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": {
+            "value1": "={{ $json.platform }}",
+            "operation": "equal",
+            "value2": "twitter"
+          }
+        }
+      },
+      "id": "route-twitter",
+      "name": "Twitter路由",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": {
+            "value1": "={{ $json.platform }}",
+            "operation": "equal",
+            "value2": "xiaohongshu"
+          }
+        }
+      },
+      "id": "route-xiaohongshu",
+      "name": "小红书路由",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": {
+            "value1": "={{ $json.platform }}",
+            "operation": "equal",
+            "value2": "wechat"
+          }
+        }
+      },
+      "id": "route-wechat",
+      "name": "微信路由",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://api.weibo.com/2/statuses/update.json",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "={{ $json.formattedContent }}"
+            },
+            {
+              "name": "access_token",
+              "value": "YOUR_WEIBO_ACCESS_TOKEN"
+            }
+          ]
+        }
+      },
+      "id": "publish-to-weibo",
+      "name": "发布到微博",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twitter.com/2/tweets",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_TWITTER_BEARER_TOKEN"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"{{ $json.formattedContent }}\"\n}"
+      },
+      "id": "publish-to-twitter",
+      "name": "发布到Twitter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.xiaohongshu.com/api/sns/v1/note",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "YOUR_XIAOHONGSHU_TOKEN"
+            },
+            {
+              "name": "Content-Type", 
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"{{ $json.platformTitle }}\",\n  \"desc\": \"{{ $json.formattedContent }}\",\n  \"type\": \"normal\"\n}"
+      },
+      "id": "publish-to-xiaohongshu",
+      "name": "发布到小红书",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://api.weixin.qq.com/cgi-bin/draft/add",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "YOUR_WECHAT_ACCESS_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"articles\": [{\n    \"title\": \"{{ $json.platformTitle }}\",\n    \"author\": \"中年自救指南\",\n    \"digest\": \"{{ $json.platformSummary }}\",\n    \"content\": \"{{ $json.formattedContent }}\",\n    \"content_source_url\": \"https://bambumoon.cn/{{ $json.category }}\",\n    \"need_open_comment\": 1,\n    \"only_fans_can_comment\": 0\n  }]\n}"
+      },
+      "id": "publish-to-wechat",
+      "name": "发布到微信公众号",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1340, 500]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:1337/api/n8n/articles/{{ $json.id }}/publish-status",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"publishStatus\": \"published\",\n  \"platform\": \"{{ $json.platform }}\",\n  \"publishedAt\": \"{{ DateTime.now().toISO() }}\"\n}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "update-publish-status",
+      "name": "更新发布状态",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1560, 350],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "API认证"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 汇总发布结果\nconst results = items.map(item => ({\n  platform: item.json.platform || 'unknown',\n  success: item.json.id ? true : false,\n  articleId: item.json.id,\n  response: item.json\n}));\n\nconst summary = {\n  totalAttempts: results.length,\n  successful: results.filter(r => r.success).length,\n  failed: results.filter(r => !r.success).length,\n  platforms: results.map(r => r.platform),\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: summary }];"
+      },
+      "id": "summarize-results",
+      "name": "汇总发布结果",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 350]
+    }
+  ],
+  "connections": {
+    "发布定时器": {
+      "main": [
+        [
+          {
+            "node": "获取待发布文章",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取待发布文章": {
+      "main": [
+        [
+          {
+            "node": "检查是否有文章",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "检查是否有文章": {
+      "main": [
+        [
+          {
+            "node": "格式化多平台内容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "格式化多平台内容": {
+      "main": [
+        [
+          {
+            "node": "微博路由",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twitter路由",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "小红书路由",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "微信路由",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "微博路由": {
+      "main": [
+        [
+          {
+            "node": "发布到微博",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twitter路由": {
+      "main": [
+        [
+          {
+            "node": "发布到Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "小红书路由": {
+      "main": [
+        [
+          {
+            "node": "发布到小红书",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "微信路由": {
+      "main": [
+        [
+          {
+            "node": "发布到微信公众号",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发布到微博": {
+      "main": [
+        [
+          {
+            "node": "更新发布状态",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发布到Twitter": {
+      "main": [
+        [
+          {
+            "node": "更新发布状态",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发布到小红书": {
+      "main": [
+        [
+          {
+            "node": "更新发布状态",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发布到微信公众号": {
+      "main": [
+        [
+          {
+            "node": "更新发布状态",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "更新发布状态": {
+      "main": [
+        [
+          {
+            "node": "汇总发布结果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-20T00:00:00.000Z",
+  "versionId": "1"
+}

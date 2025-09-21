@@ -1,0 +1,326 @@
+{
+  "name": "自动内容生成和发布工作流",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "定时触发器",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:1337/api/n8n/articles/category/psychology",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "fetch-articles",
+      "name": "获取心理健康文章",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "API认证"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "你是一个专业的中年人生活指导专家。基于提供的文章内容，生成一篇新的、原创的中年人心理健康指导文章。要求：1) 结合中年人的实际生活场景 2) 提供实用的解决方案 3) 语言亲切易懂 4) 字数800-1200字"
+            },
+            {
+              "role": "user", 
+              "content": "基于这些现有文章：{{ $json.articles }}"
+            }
+          ]
+        }
+      },
+      "id": "ai-content-generation",
+      "name": "AI内容生成",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.unsplash.com/search/photos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "middle age wellness mental health"
+            },
+            {
+              "name": "client_id",
+              "value": "YOUR_UNSPLASH_ACCESS_KEY"
+            },
+            {
+              "name": "per_page",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "id": "fetch-image",
+      "name": "获取配图",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:1337/api/n8n/articles/ai-generated",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"{{ $node['AI内容生成'].json.choices[0].message.content.split('\\n')[0] }}\",\n  \"content\": \"{{ $node['AI内容生成'].json.choices[0].message.content }}\",\n  \"category\": \"psychology\",\n  \"tags\": [\"中年心理\", \"心理健康\", \"生活指导\"],\n  \"imageUrl\": \"{{ $node['获取配图'].json.results[0].urls.regular }}\",\n  \"source\": \"AI Generated + Unsplash\"\n}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "create-article",
+      "name": "创建新文章",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1120,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "API认证"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": {
+            "value1": "={{ DateTime.now().hour }}",
+            "operation": "between",
+            "value2": 9,
+            "value3": 21
+          }
+        }
+      },
+      "id": "check-publish-time",
+      "name": "检查发布时间",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.weibo.com/2/statuses/update.json",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "={{ $node['创建新文章'].json.article.title }}\\n\\n{{ $node['创建新文章'].json.article.content.substring(0, 100) }}...\\n\\n阅读全文：https://bambumoon.cn/psychology"
+            },
+            {
+              "name": "access_token",
+              "value": "YOUR_WEIBO_ACCESS_TOKEN"
+            }
+          ]
+        }
+      },
+      "id": "publish-weibo",
+      "name": "发布到微博",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twitter.com/2/tweets",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_TWITTER_BEARER_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"{{ $node['创建新文章'].json.article.title }}\\n\\n{{ $node['创建新文章'].json.article.content.substring(0, 200) }}...\\n\\n#中年自救 #心理健康\\n\\nhttps://bambumoon.cn/psychology\"\n}"
+      },
+      "id": "publish-twitter",
+      "name": "发布到Twitter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1560,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:1337/api/n8n/articles/{{ $node['创建新文章'].json.article.id }}/publish-status",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"publishStatus\": \"published\",\n  \"platform\": \"weibo,twitter\",\n  \"publishedAt\": \"{{ DateTime.now().toISO() }}\"\n}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "update-status",
+      "name": "更新发布状态",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1780,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "API认证"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "定时触发器": {
+      "main": [
+        [
+          {
+            "node": "获取心理健康文章",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取心理健康文章": {
+      "main": [
+        [
+          {
+            "node": "AI内容生成",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI内容生成": {
+      "main": [
+        [
+          {
+            "node": "获取配图",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取配图": {
+      "main": [
+        [
+          {
+            "node": "创建新文章",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "创建新文章": {
+      "main": [
+        [
+          {
+            "node": "检查发布时间",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "检查发布时间": {
+      "main": [
+        [
+          {
+            "node": "发布到微博",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "发布到Twitter", 
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发布到微博": {
+      "main": [
+        [
+          {
+            "node": "更新发布状态",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发布到Twitter": {
+      "main": [
+        [
+          {
+            "node": "更新发布状态",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-09-20T00:00:00.000Z",
+  "versionId": "1"
+}
