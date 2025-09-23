@@ -45,24 +45,28 @@
     },
     {
       "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "messageValues": [
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "role": "system",
-              "content": "你是一个专业的中年人生活指导专家。基于提供的文章内容，生成一篇新的、原创的中年人心理健康指导文章。要求：1) 结合中年人的实际生活场景 2) 提供实用的解决方案 3) 语言亲切易懂 4) 字数800-1200字"
+              "name": "Authorization",
+              "value": "Bearer YOUR_DEEPSEEK_API_KEY"
             },
             {
-              "role": "user", 
-              "content": "基于这些现有文章：{{ $json.articles }}"
+              "name": "Content-Type",
+              "value": "application/json"
             }
           ]
-        }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"你是一个专业的中年人生活指导专家。基于提供的文章内容，生成一篇新的、原创的中年人心理健康指导文章。要求：1) 结合中年人的实际生活场景 2) 提供实用的解决方案 3) 语言亲切易懂 4) 字数800-1200字\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"基于这些现有文章：{{ $json.articles }}\"\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 2000\n}"
       },
       "id": "ai-content-generation",
       "name": "AI内容生成",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
       "position": [
         680,
         300
@@ -103,7 +107,7 @@
         "url": "http://localhost:1337/api/n8n/articles/ai-generated",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"title\": \"{{ $node['AI内容生成'].json.choices[0].message.content.split('\\n')[0] }}\",\n  \"content\": \"{{ $node['AI内容生成'].json.choices[0].message.content }}\",\n  \"category\": \"psychology\",\n  \"tags\": [\"中年心理\", \"心理健康\", \"生活指导\"],\n  \"imageUrl\": \"{{ $node['获取配图'].json.results[0].urls.regular }}\",\n  \"source\": \"AI Generated + Unsplash\"\n}",
+        "jsonBody": "={\n  \"title\": \"{{ $node['AI内容生成'].json.choices[0].message.content.split('\\n')[0] }}\",\n  \"content\": \"{{ $node['AI内容生成'].json.choices[0].message.content }}\",\n  \"category\": \"psychology\",\n  \"tags\": [\"中年心理\", \"心理健康\", \"生活指导\"],\n  \"imageUrl\": \"{{ $node['获取配图'].json.results[0].urls.regular }}\",\n  \"source\": \"DeepSeek AI Generated + Unsplash\"\n}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "options": {}
