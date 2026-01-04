@@ -31,18 +31,7 @@ import {
 
 const RichTextEditor = ({ value, onChange, placeholder = "开始编写你的文章..." }) => {
   const editorRef = useRef(null)
-  const [linkDialogOpen, setLinkDialogOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(0) // 0: 编辑, 1: 预览
-
-  // 执行格式化命令
-  const execCommand = (command, value = null) => {
-    document.execCommand(command, false, value)
-    if (editorRef.current) {
-      const content = editorRef.current.innerHTML
-      onChange(content)
-    }
-    editorRef.current?.focus()
-  }
 
   // 插入Markdown语法
   const insertMarkdown = (syntax) => {
@@ -132,7 +121,7 @@ const RichTextEditor = ({ value, onChange, placeholder = "开始编写你的文�
       // 引用
       .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
       // 列表
-      .replace(/^\- (.*$)/gim, '<li>$1</li>')
+      .replace(/^- (.*$)/gim, '<li>$1</li>')
       .replace(/^[0-9]+\. (.*$)/gim, '<li>$1</li>')
       // 链接
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')

@@ -37,11 +37,13 @@ import {
   CloudUpload,
   Image,
   Visibility,
-  VisibilityOff
+  VisibilityOff,
+  Category
 } from '@mui/icons-material'
 import { format } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
 import ArticleManager from '../components/ArticleManager'
+import CategoryManager from '../components/CategoryManager'
 
 const Admin = () => {
   const [currentTab, setCurrentTab] = useState(0)
@@ -168,6 +170,7 @@ const Admin = () => {
           <Tab icon={<Dashboard />} label="概览" />
           <Tab icon={<Image />} label="图片管理" />
           <Tab icon={<Article />} label="文章管理" />
+          <Tab icon={<Category />} label="分类管理" />
         </Tabs>
       </Box>
 
@@ -341,6 +344,11 @@ const Admin = () => {
       {/* 文章管理面板 */}
       <TabPanel value={currentTab} index={2}>
         <ArticleManager />
+      </TabPanel>
+
+      {/* 分类管理面板 */}
+      <TabPanel value={currentTab} index={3}>
+        <CategoryManager />
       </TabPanel>
 
       {/* 图片上传对话框 */}

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useArticles } from '../contexts/ArticleContext'
+import { useCategories } from '../contexts/CategoryContext'
 import RichTextEditor from './RichTextEditor'
 import {
   Box,
@@ -33,15 +34,6 @@ import {
   Cancel
 } from '@mui/icons-material'
 
-const categories = [
-  "职场发展",
-  "心理健康", 
-  "家庭关系",
-  "兴趣爱好",
-  "好物推荐",
-  "财务管理"
-]
-
 const statusOptions = [
   { value: "draft", label: "草稿", color: "default" },
   { value: "published", label: "已发布", color: "success" },
@@ -50,32 +42,43 @@ const statusOptions = [
 
 const ArticleManager = () => {
   const { getAllArticles, addArticle, updateArticle, deleteArticle } = useArticles()
+  const { categories, loading: categoriesLoading } = useCategories()
   const [open, setOpen] = useState(false)
   const [editingArticle, setEditingArticle] = useState(null)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
 
   // 从 Context 获取文章列表
   const articles = getAllArticles()
+  const categoryOptions = categories.map(category => category.name)
 
-  // 初始化空文章表单
-  const emptyArticle = {
+  const createEmptyArticle = (defaultCategory = '') => ({
     id: '',
     title: '',
     excerpt: '',
     author: '',
-    category: '',
-    status: 'draft',
+    category: defaultCategory,
+    status: 'published',
     readTime: '',
     tags: [],
     content: ''
-  }
+  })
 
-  const [formData, setFormData] = useState(emptyArticle)
+  const [formData, setFormData] = useState(createEmptyArticle(categoryOptions[0]))
+
+  useEffect(() => {
+    if (!editingArticle && !formData.category && categoryOptions.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        category: categoryOptions[0]
+      }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingArticle, categoryOptions.join('|')])
 
   // 打开添加文章对话框
   const handleAddArticle = () => {
     setEditingArticle(null)
-    setFormData(emptyArticle)
+    setFormData(createEmptyArticle(categoryOptions[0] || ''))
     setOpen(true)
   }
 
@@ -101,6 +104,14 @@ const ArticleManager = () => {
   const handleSaveArticle = () => {
     if (!formData.title || !formData.content) {
       showSnackbar('请填写文章标题和内容！', 'error')
+      return
+    }
+    if (!formData.category) {
+      showSnackbar('请选择文章分类！', 'error')
+      return
+    }
+    if (categoryOptions.length === 0) {
+      showSnackbar('暂无可用分类，请先创建分类后再发布文章。', 'error')
       return
     }
 
@@ -253,8 +264,10 @@ const ArticleManager = () => {
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
                 sx={{ flex: 1 }}
+                disabled={categoriesLoading || categoryOptions.length === 0}
+                helperText={categoryOptions.length === 0 ? '请先在“分类管理”中创建分类' : ''}
               >
-                {categories.map((category) => (
+                {categoryOptions.map((category) => (
                   <MenuItem key={category} value={category}>
                     {category}
                   </MenuItem>

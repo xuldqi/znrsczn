@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { CssBaseline, Container } from '@mui/material'
 import { AuthProvider } from './contexts/AuthContext'
 import { ArticleProvider } from './contexts/ArticleContext'
+import { CategoryProvider } from './contexts/CategoryContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
@@ -23,6 +24,8 @@ import SearchResults from './pages/SearchResults'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
 import ArticleDetail from './pages/ArticleDetail'
+import PensionPlanner from './pages/PensionPlanner'
+import Membership from './pages/Membership'
 
 import './App.css'
 
@@ -199,38 +202,42 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <ArticleProvider>
-          <Router>
-            <div className="App">
-              <Navbar />
-              <main>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/search" element={<SearchResults />} />
-                  <Route path="/articles" element={<Articles />} />
-                  <Route path="/article/:slug" element={<ArticleDetail />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/psychology" element={<Psychology />} />
-                  <Route path="/career" element={<Career />} />
-                  <Route path="/family" element={<Family />} />
-                  <Route path="/interests" element={<Interests />} />
-                  <Route path="/finance" element={<Finance />} />
-                  <Route path="/life-skills" element={<LifeSkills />} />
-                  <Route path="/side-business" element={<SideBusiness />} />
-                  <Route path="/midlife-crisis" element={<MidlifeCrisis />} />
-                  <Route path="/transformation" element={<Transformation />} />
-                  <Route path="/complaints" element={<Complaints />} />
-                  <Route path="/admin" element={
-                    <ProtectedRoute requireAdmin={true}>
-                      <Admin />
-                    </ProtectedRoute>
-                  } />
-                </Routes>
-              </main>
-            </div>
-          </Router>
-        </ArticleProvider>
+        <CategoryProvider>
+          <ArticleProvider>
+            <Router>
+              <div className="App">
+                <Navbar />
+                <main>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/search" element={<SearchResults />} />
+                    <Route path="/articles" element={<Articles />} />
+                    <Route path="/article/:slug" element={<ArticleDetail />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/psychology" element={<Psychology />} />
+                    <Route path="/career" element={<Career />} />
+                    <Route path="/family" element={<Family />} />
+                    <Route path="/interests" element={<Interests />} />
+                    <Route path="/finance" element={<Finance />} />
+                    <Route path="/pension-planner" element={<PensionPlanner />} />
+                    <Route path="/life-skills" element={<LifeSkills />} />
+                    <Route path="/side-business" element={<SideBusiness />} />
+                    <Route path="/midlife-crisis" element={<MidlifeCrisis />} />
+                    <Route path="/transformation" element={<Transformation />} />
+                    <Route path="/complaints" element={<Complaints />} />
+                    <Route path="/membership" element={<Membership />} />
+                    <Route path="/admin" element={
+                      <ProtectedRoute requireAdmin={true}>
+                        <Admin />
+                      </ProtectedRoute>
+                    } />
+                  </Routes>
+                </main>
+              </div>
+            </Router>
+          </ArticleProvider>
+        </CategoryProvider>
       </AuthProvider>
     </ThemeProvider>
   )

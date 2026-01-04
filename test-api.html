@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .article { border: 1px solid #ccc; margin: 10px 0; padding: 10px; }
+        .loading { color: #666; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>文章API测试页面</h1>
+    <div id="status">正在加载...</div>
+    <div id="articles"></div>
+
+    <script>
+        async function testAPI() {
+            const statusDiv = document.getElementById('status');
+            const articlesDiv = document.getElementById('articles');
+            
+            try {
+                statusDiv.innerHTML = '<span class="loading">正在连接API...</span>';
+                
+                // 测试API连接
+                const response = await fetch('/api/articles');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const articles = await response.json();
+                
+                statusDiv.innerHTML = `<span class="success">✅ API连接成功！找到 ${articles.length} 篇文章</span>`;
+                
+                // 显示文章
+                if (articles.length === 0) {
+                    articlesDiv.innerHTML = '<p>没有找到文章</p>';
+                } else {
+                    articlesDiv.innerHTML = articles.map(article => `
+                        <div class="article">
+                            <h3>${article.title}</h3>
+                            <p><strong>作者:</strong> ${article.author}</p>
+                            <p><strong>日期:</strong> ${article.date}</p>
+                            <p><strong>摘要:</strong> ${article.excerpt}</p>
+                            <p><strong>分类:</strong> ${article.category}</p>
+                        </div>
+                    `).join('');
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<span class="error">❌ API连接失败: ${error.message}</span>`;
+                console.error('API Error:', error);
+            }
+        }
+        
+        // 页面加载时测试API
+        testAPI();
+        
+        // 添加刷新按钮
+        const refreshBtn = document.createElement('button');
+        refreshBtn.textContent = '刷新测试';
+        refreshBtn.onclick = testAPI;
+        refreshBtn.style.margin = '10px 0';
+        document.body.insertBefore(refreshBtn, document.getElementById('articles'));
+    </script>
+</body>
+</html>

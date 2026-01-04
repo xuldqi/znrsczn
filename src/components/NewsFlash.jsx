@@ -40,8 +40,11 @@ export default function NewsFlash({ sources = DEFAULT_NEWS_SOURCES, keywords = D
           .sort((a, b) => b.ts - a.ts)
           .slice(0, limit)
         if (!cancelled) setItems(merged)
-      } catch (e) {
-        if (!cancelled) setItems([])
+      } catch (error) {
+        if (!cancelled) {
+          console.error('新闻加载失败:', error)
+          setItems([])
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -84,3 +87,4 @@ export default function NewsFlash({ sources = DEFAULT_NEWS_SOURCES, keywords = D
     </Stack>
   )
 }
+

@@ -1,80 +1,25 @@
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { 
   Container, Typography, Box, Grid, Card, CardContent, Button, 
   Chip, Paper, Stack, Divider, TextField, Avatar, IconButton,
-  Dialog, DialogTitle, DialogContent, DialogActions
+  Dialog, DialogTitle, DialogContent, DialogActions, Alert, Switch, FormControlLabel
 } from '@mui/material'
 import { 
-  Mood, MoodBad, Work, Favorite, ThumbUp, Comment, 
-  AccessTime, CalendarToday, Add, Send 
+  Mood, MoodBad, ThumbUp, Comment, 
+  CalendarToday, Add, Send 
 } from '@mui/icons-material'
 
 const Complaints = () => {
   const [openDialog, setOpenDialog] = useState(false)
-  const [newComplaint, setNewComplaint] = useState({ title: '', content: '', mood: 'frustrated' })
-
-  const complaints = [
-    {
-      id: 1,
-      title: '又被老板画饼了',
-      content: '今天老板又说什么"这个需求很重要，关系到公司未来发展"，然后排期就两天。我真的服了，每次都是这样，紧急需求永远比合理规划多。',
-      mood: 'frustrated',
-      author: '匿名用户A',
-      date: '2024-01-20',
-      time: '14:30',
-      likes: 28,
-      comments: 12,
-      tags: ['工作压力', '需求管理', '时间紧迫']
-    },
-    {
-      id: 2,
-      title: '开发说技术难度太大',
-      content: '好不容易想出一个创新功能，开发直接说"这个技术实现太复杂了，要不换个简单的？"，感觉自己的创新理念总是被技术限制住。',
-      mood: 'helpless',
-      author: '匿名用户B',
-      date: '2024-01-19',
-      time: '16:45',
-      likes: 15,
-      comments: 8,
-      tags: ['技术沟通', '项目创新', '团队协作']
-    },
-    {
-      id: 3,
-      title: '用户反馈看不懂',
-      content: '用户说"这个功能不好用"，但是问具体哪里不好用，就说不出来了。感觉在做哑谜游戏，到底要怎么样才能真正了解用户需求？',
-      mood: 'confused',
-      author: '匿名用户C',
-      date: '2024-01-18',
-      time: '10:20',
-      likes: 22,
-      comments: 15,
-      tags: ['用户研究', '需求分析', '反馈收集']
-    },
-    {
-      id: 4,
-      title: '数据又下降了',
-      content: '明明觉得新功能做得很好，结果上线后数据反而下降了。老板问原因，我也不知道该怎么解释，感觉自己的判断力有问题。',
-      mood: 'disappointed',
-      author: '匿名用户D',
-      date: '2024-01-17',
-      time: '09:15',
-      likes: 31,
-      comments: 18,
-      tags: ['数据分析', '功能优化', '自我怀疑']
-    },
-    {
-      id: 5,
-      title: '设计师总是不理解我',
-      content: '跟设计师解释了半天交互逻辑，结果出来的设计完全不是我想要的效果。感觉沟通成本太高了，有时候真想自己上手做设计。',
-      mood: 'tired',
-      author: '匿名用户E',
-      date: '2024-01-16',
-      time: '11:30',
-      likes: 19,
-      comments: 9,
-      tags: ['设计沟通', '交互设计', '团队协作']
-    }
-  ]
+  const [newComplaint, setNewComplaint] = useState({ content: '', mood: 'frustrated' })
+  const [validationError, setValidationError] = useState(null)
+  const [requireApproval, setRequireApproval] = useState(true)
+  const [loadingComplaints, setLoadingComplaints] = useState(true)
+  const [complaints, setComplaints] = useState([])
+  const [fetchError, setFetchError] = useState(null)
+  const [submitError, setSubmitError] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [clientId, setClientId] = useState('')
 
   const moodIcons = {
     frustrated: <MoodBad sx={{ color: '#f44336' }} />,
@@ -100,12 +45,136 @@ const Complaints = () => {
     tired: '#607d8b'
   }
 
-  const handleSubmitComplaint = () => {
-    // TODO: 实现提交想法的逻辑
-    console.log('新想法:', newComplaint)
-    setOpenDialog(false)
-    setNewComplaint({ title: '', content: '', mood: 'frustrated' })
+  const forbiddenPatterns = useMemo(() => ([
+    { regex: /(赌博|博彩|彩票代购|赌球|黑彩)/i, message: '包含赌博相关敏感词，无法发布。' },
+    { regex: /(色情|约炮|招嫖|裸聊|黄片)/i, message: '包含违规内容，请重新编辑。' },
+    { regex: /(发票|代开发票|开票|免税发票)/i, message: '抱歉，禁止发布票务广告。' },
+    { regex: /(贷款|信用卡代办|小额贷|高利贷|网贷)/i, message: '检测到金融广告，无法发布。' },
+    { regex: /(推广|代理|招商|加盟|返利)/i, message: '包含推广营销类内容，请调整后再发。' },
+    { regex: /(加\s*(我|vx|微信|V信)|VX[:：]|v信)/i, message: '请勿发布联系方式或广告。' },
+    { regex: /(QQ|企鹅号)[^\d]*(\d{6,})/i, message: '请勿留下 QQ 号等联系方式。' },
+    { regex: /((https?:\/\/|www\.)[^\s]+)/i, message: '请勿发布外部链接。' },
+    { regex: /\d{3,}[-\s]?\d{3,}[-\s]?\d{4,}/, message: '检测到疑似手机号，请勿留下联系方式。' },
+    { regex: /(代购|海淘|包邮|低价出售)/i, message: '禁止发布商品推广或售卖信息。' }
+  ]), [])
+
+  const validateComplaint = ({ title = '', content = '' }) => {
+    const trimmedContent = (content || '').trim()
+    if (!trimmedContent) return '内容不能为空。'
+    const combined = [title, trimmedContent].filter(Boolean).join(' ')
+    for (const { regex, message } of forbiddenPatterns) {
+      if (regex.test(combined)) {
+        return message
+      }
+    }
+    return null
   }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const STORAGE_KEY = 'complaintsClientId'
+    try {
+      let stored = window.localStorage.getItem(STORAGE_KEY)
+      if (!stored) {
+        stored = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+        window.localStorage.setItem(STORAGE_KEY, stored)
+      }
+      setClientId(stored)
+    } catch (error) {
+      console.error('获取客户端标识失败:', error)
+      setClientId(`${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!clientId) return
+    let cancelled = false
+    const fetchComplaints = async () => {
+      setLoadingComplaints(true)
+      try {
+        const response = await fetch(`/api/complaints?clientId=${encodeURIComponent(clientId)}`)
+        if (!response.ok) {
+          throw new Error('加载留言失败')
+        }
+        const data = await response.json()
+        if (!cancelled) {
+          setComplaints(Array.isArray(data) ? data : [])
+          setFetchError(null)
+        }
+      } catch (error) {
+        console.error('加载留言失败:', error)
+        if (!cancelled) {
+          setFetchError(error.message || '加载留言失败')
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingComplaints(false)
+        }
+      }
+    }
+    fetchComplaints()
+    return () => {
+      cancelled = true
+    }
+  }, [clientId])
+
+  const handleSubmitComplaint = async () => {
+    const trimmedComplaint = {
+      ...newComplaint,
+      content: (newComplaint.content || '').trim()
+    }
+    const errorMessage = validateComplaint(trimmedComplaint)
+    if (errorMessage) {
+      setValidationError(errorMessage)
+      return
+    }
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      const response = await fetch('/api/complaints', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: trimmedComplaint.content,
+          mood: trimmedComplaint.mood,
+          requireApproval,
+          clientId
+        })
+      })
+      const result = await response.json()
+      if (!response.ok) {
+        const errorMessage = result?.error || '提交失败，请稍后重试'
+        setSubmitError(errorMessage)
+        return
+      }
+      setComplaints((prev) => {
+        if (prev.some(item => item.id === result.id)) {
+          return prev
+        }
+        return [result, ...prev]
+      })
+      setValidationError(null)
+      setOpenDialog(false)
+      setNewComplaint({ content: '', mood: 'frustrated' })
+    } catch (error) {
+      console.error('提交留言失败:', error)
+      setSubmitError('提交失败，请稍后重试')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const approvedComplaints = useMemo(
+    () => complaints.filter(item => item.status === 'approved'),
+    [complaints]
+  )
+
+  const pendingComplaints = useMemo(
+    () => complaints.filter(item => item.status === 'pending'),
+    [complaints]
+  )
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -121,7 +190,10 @@ const Complaints = () => {
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => setOpenDialog(true)}
+            onClick={() => {
+              setValidationError(null)
+              setOpenDialog(true)
+            }}
             sx={{ px: 4, py: 1.5, borderRadius: 3 }}
           >
             发表想法
@@ -135,8 +207,69 @@ const Complaints = () => {
         </Paper>
       </Box>
 
+      {pendingComplaints.length > 0 && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 3, border: '1px solid #e0e7ff', backgroundColor: '#f8fafc' }}>
+          <Stack spacing={2}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, color: 'primary.main' }}>
+                我的待审核留言
+              </Typography>
+              <Chip label="仅自己可见" size="small" color="primary" variant="outlined" />
+            </Box>
+            <Typography variant="body2" color="text.secondary">
+              内容已保存，后台审核通过后会自动公开。在此之前仅你本人可见。
+            </Typography>
+            <Stack spacing={2}>
+              {pendingComplaints.map((item) => (
+                <Paper
+                  key={item.id}
+                  variant="outlined"
+                  sx={{ p: 2.5, borderRadius: 2, borderColor: 'rgba(37, 99, 235, 0.2)' }}
+                >
+                  <Stack spacing={1.5}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                        {item.title?.trim() || '匿名分享'}
+                      </Typography>
+                      <Chip label="待审核" size="small" color="warning" />
+                    </Stack>
+                    <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
+                      {item.content}
+                    </Typography>
+                    <Stack direction="row" spacing={2} alignItems="center" color="text.secondary">
+                      <Typography variant="caption">
+                        {item.date} {item.time}
+                      </Typography>
+                      <Chip label={moodLabels[item.mood]} size="small" />
+                    </Stack>
+                  </Stack>
+                </Paper>
+              ))}
+            </Stack>
+          </Stack>
+        </Paper>
+      )}
+      {fetchError && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {fetchError}
+        </Alert>
+      )}
+
       <Stack spacing={3}>
-        {complaints.map((complaint) => (
+        {loadingComplaints ? (
+          <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              正在加载留言...
+            </Typography>
+          </Paper>
+        ) : approvedComplaints.length === 0 ? (
+          <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+              还没有公开的留言，来分享你的故事吧。
+            </Typography>
+          </Paper>
+        ) : (
+        approvedComplaints.map((complaint) => (
           <Paper 
             key={complaint.id}
             elevation={0} 
@@ -176,7 +309,7 @@ const Complaints = () => {
                 
                 <Box sx={{ flexGrow: 1 }}>
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: 'text.primary' }}>
-                    {complaint.title}
+                    {complaint.title?.trim() || '匿名分享'}
                   </Typography>
                   
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
@@ -285,13 +418,16 @@ const Complaints = () => {
               </Box>
             </Box>
           </Paper>
-        ))}
+        )))}
       </Stack>
 
       {/* 发表牢骚对话框 */}
       <Dialog 
         open={openDialog} 
-        onClose={() => setOpenDialog(false)}
+        onClose={() => {
+          setOpenDialog(false)
+          setValidationError(null)
+        }}
         maxWidth="md"
         fullWidth
       >
@@ -299,17 +435,18 @@ const Complaints = () => {
           分享你的想法
         </DialogTitle>
         <DialogContent>
+          {validationError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {validationError}
+            </Alert>
+          )}
+          {submitError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {submitError}
+            </Alert>
+          )}
           <TextField
             autoFocus
-            margin="dense"
-            label="标题"
-            fullWidth
-            variant="outlined"
-            value={newComplaint.title}
-            onChange={(e) => setNewComplaint({ ...newComplaint, title: e.target.value })}
-            sx={{ mb: 2 }}
-          />
-          <TextField
             margin="dense"
             label="说说你的想法..."
             fullWidth
@@ -340,18 +477,34 @@ const Complaints = () => {
               ))}
             </Stack>
           </Box>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={requireApproval}
+                onChange={(event) => setRequireApproval(event.target.checked)}
+              />
+            }
+            label="提交后需要后台审核"
+            sx={{ mb: 1 }}
+          />
+          <Typography variant="caption" color="text.secondary">
+            开启后留言仅自己可见，后台审核通过后才会公开；关闭后将立即发布为公开内容。
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>
+          <Button onClick={() => {
+            setOpenDialog(false)
+            setValidationError(null)
+          }}>
             取消
           </Button>
           <Button 
             onClick={handleSubmitComplaint}
             variant="contained"
             startIcon={<Send />}
-            disabled={!newComplaint.title || !newComplaint.content}
+            disabled={!(newComplaint.content || '').trim() || submitting}
           >
-            发表
+            {submitting ? '提交中...' : '发表'}
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微步运动MT - HarmonyOS健康运动应用 | 微小目标</title>
+    <meta name="description" content="微步运动MT是专为华为鸿蒙系统打造的专业健康运动应用，帮助您记录每一步，管理健康生活。">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .product-hero {
+            background: linear-gradient(135deg, #00C853 0%, #00BFA5 50%, #2196F3 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .product-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .product-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .product-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .features-section {
+            padding: 60px 0;
+            background: #f8f9fa;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .info-section {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #333;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            background: white;
+            text-decoration: none;
+            color: #00C853;
+        }
+
+        .info-table {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .info-table tr td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-table tr td:first-child {
+            font-weight: 600;
+            color: #333;
+            width: 120px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html#workhin" class="back-link">← 返回首页</a>
+
+    <!-- Hero Section -->
+    <section class="product-hero">
+        <div class="container">
+            <img src="assets/img/work/weibu-harmony.png" alt="微步运动MT" class="product-logo">
+            <h1>微步运动MT</h1>
+            <p>专为华为鸿蒙系统打造的专业健康运动应用</p>
+            <p style="margin-top: 8px; opacity: 0.8; font-size: 1rem;">记录每一步，管理健康生活</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px; font-weight: 600; font-size: 1.5rem;">核心功能</h2>
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">👟</div>
+                        <h3>智能计步</h3>
+                        <p>精准记录每一步，实时统计步数、距离和消耗卡路里</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>运动记录</h3>
+                        <p>支持多种运动类型，自动生成运动报告和数据分析</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">❤️</div>
+                        <h3>健康数据</h3>
+                        <p>与华为健康整合，同步健康数据了解身体状况</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>目标设定</h3>
+                        <p>自定义每日运动目标，激励坚持运动习惯</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3>数据统计</h3>
+                        <p>查看日、周、月运动趋势，见证成长</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔔</div>
+                        <h3>久坐提醒</h3>
+                        <p>智能检测久坐，提醒起身活动保护健康</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Info Section -->
+    <section class="info-section">
+        <div class="container">
+            <h2 style="margin-bottom: 30px; font-weight: 600; font-size: 1.5rem;">应用信息</h2>
+            <table class="info-table">
+                <tr>
+                    <td>应用名称</td>
+                    <td>微步运动MT</td>
+                </tr>
+                <tr>
+                    <td>支持系统</td>
+                    <td>HarmonyOS 3.0+</td>
+                </tr>
+                <tr>
+                    <td>开发者</td>
+                    <td>微小目标</td>
+                </tr>
+            </table>
+            <p style="margin-top: 40px; color: #888; font-size: 0.9rem;">即将上线，敬请期待</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #333; color: white; padding: 30px 0; text-align: center;">
+        <div class="container">
+            <p style="margin: 0; font-size: 0.9rem;">© 2024 微小目标 | 专注健康生活应用开发</p>
+            <p style="margin-top: 8px;">
+                <a href="index.html" style="color: #aaa; font-size: 0.85rem;">返回首页</a>
+            </p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

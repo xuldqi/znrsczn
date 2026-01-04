@@ -5,6 +5,8 @@
 SERVER_IP="118.178.189.214"
 SERVER_USER="root"
 
+SERVER_PASS="1q2ws3edcQ123"
+
 echo "🔑 配置 SSH 免密登录到 $SERVER_IP..."
 
 # 检查本地是否有 SSH 密钥
@@ -14,11 +16,17 @@ if [ ! -f ~/.ssh/id_rsa ]; then
     echo "✅ SSH 密钥已生成"
 fi
 
-# 复制公钥到服务器（需要输入密码）
+# 复制公钥到服务器（自动）
 echo "📤 复制公钥到服务器..."
-echo "请输入服务器密码: 1q2ws3edcQ123"
 
-ssh-copy-id -i ~/.ssh/id_rsa.pub $SERVER_USER@$SERVER_IP
+if command -v sshpass &> /dev/null; then
+    echo "Using sshpass for automated setup..."
+    sshpass -p "$SERVER_PASS" ssh-copy-id -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa.pub $SERVER_USER@$SERVER_IP
+else
+    echo "⚠️ sshpass not found. Falling back to manual input."
+    echo "请输入服务器密码: $SERVER_PASS"
+    ssh-copy-id -i ~/.ssh/id_rsa.pub $SERVER_USER@$SERVER_IP
+fi
 
 # 测试连接
 echo "🔍 测试免密登录..."

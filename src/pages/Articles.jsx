@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { 
   Container, 
   Typography, 
@@ -42,58 +42,25 @@ import {
 } from '@mui/icons-material'
 import { format } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
+import { useArticles } from '../contexts/ArticleContext'
+import { useCategories } from '../contexts/CategoryContext'
 
 const Articles = () => {
-  const [articles, setArticles] = useState([
-    {
-      id: 1,
-      title: '中年职场人如何做好需求管理',
-      summary: '需求管理是职场人的核心技能之一，本文分享一些实用的需求管理方法和工具。',
-      content: '详细的文章内容...',
-      category: '方法论',
-      tags: ['需求管理', '项目规划', '工具'],
-      author: '中年小白',
-      date: new Date(),
-      views: 128,
-      likes: 15,
-      difficulty: '入门',
-      images: ['/api/placeholder/400/300', '/api/placeholder/300/200']
-    },
-    {
-      id: 2,
-      title: '从0到1搭建项目数据体系',
-      summary: '数据驱动决策已成为项目管理的重要趋势，如何搭建完整的项目数据体系？',
-      content: '详细的文章内容...',
-      category: '数据分析',
-      tags: ['数据分析', '指标体系', '用户行为'],
-      author: '中年小白',
-      date: new Date(Date.now() - 172800000),
-      views: 256,
-      likes: 32,
-      difficulty: '进阶',
-      images: ['/api/placeholder/350/250']
-    },
-    {
-      id: 3,
-      title: 'B端项目设计的思考与实践',
-      summary: 'B端项目与C端项目在设计理念上有很大差异，本文总结B端项目设计的关键要点。',
-      content: '详细的文章内容...',
-      category: '项目设计',
-      tags: ['B端项目', '用户体验', '业务流程'],
-      author: '中年小白',
-      date: new Date(Date.now() - 345600000),
-      views: 189,
-      likes: 24,
-      difficulty: '进阶',
-      images: []
-    }
-  ])
-  
+  const {
+    getAllArticles,
+    addArticle,
+    updateArticle,
+    deleteArticle,
+    refreshArticles,
+    loading,
+    error
+  } = useArticles()
+  const { categories: categoryList } = useCategories()
+
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('全部')
   const [open, setOpen] = useState(false)
   const [editingArticle, setEditingArticle] = useState(null)
-  const [selectedImages, setSelectedImages] = useState([])
   const [formData, setFormData] = useState({
     title: '',
     summary: '',
@@ -101,10 +68,14 @@ const Articles = () => {
     category: '方法论',
     tags: '',
     difficulty: '入门',
-    images: []
+    status: 'published',
+    readTime: ''
   })
 
-  const categories = ['全部', '方法论', '数据分析', '项目设计', '行业洞察', '工具推荐']
+  const categories = useMemo(
+    () => ['全部', ...categoryList.map(category => category.name)],
+    [categoryList]
+  )
   const difficulties = ['入门', '进阶', '高级']
   const difficultyColors = {
     '入门': 'success',
@@ -112,30 +83,44 @@ const Articles = () => {
     '高级': 'error'
   }
 
-  const filteredArticles = articles.filter(article => {
+  const allArticles = getAllArticles()
+  const publishedArticles = useMemo(
+    () => allArticles.filter(article => article.status === 'published'),
+    [allArticles]
+  )
+
+  const filteredArticles = publishedArticles.filter(article => {
+    const tags = Array.isArray(article.tags) ? article.tags : []
+    const summaryText = (article.summary || article.excerpt || '').toLowerCase()
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                         summaryText.includes(searchTerm.toLowerCase()) ||
+                         tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesCategory = selectedCategory === '全部' || article.category === selectedCategory
     return matchesSearch && matchesCategory
   })
+
+  useEffect(() => {
+    if (!categories.includes(selectedCategory)) {
+      setSelectedCategory('全部')
+    }
+  }, [categories, selectedCategory])
 
   const handleOpen = (article = null) => {
     if (article) {
       setEditingArticle(article)
       setFormData({
         title: article.title,
-        summary: article.summary,
+        summary: article.summary || article.excerpt || '',
         content: article.content,
         category: article.category,
         tags: article.tags.join(', '),
-        difficulty: article.difficulty
+        difficulty: article.difficulty || '入门',
+        status: article.status || 'published',
+        readTime: article.readTime || ''
       })
-      setSelectedImages(article.images || [])
     } else {
       setEditingArticle(null)
-      setFormData({ title: '', summary: '', content: '', category: '方法论', tags: '', difficulty: '入门' })
-      setSelectedImages([])
+      setFormData({ title: '', summary: '', content: '', category: '方法论', tags: '', difficulty: '入门', status: 'published', readTime: '' })
     }
     setOpen(true)
   }
@@ -145,54 +130,48 @@ const Articles = () => {
     setEditingArticle(null)
   }
 
-  const handleSave = () => {
-    const newArticle = {
-      id: editingArticle ? editingArticle.id : Date.now(),
-      title: formData.title,
-      summary: formData.summary,
-      content: formData.content,
-      category: formData.category,
-      tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-      difficulty: formData.difficulty,
-      author: '中年小白',
-      date: editingArticle ? editingArticle.date : new Date(),
-      views: editingArticle ? editingArticle.views : 0,
-      likes: editingArticle ? editingArticle.likes : 0,
-      images: selectedImages
+  const handleSave = async () => {
+    if (!formData.title.trim() || !formData.summary.trim() || !formData.content.trim()) {
+      return
     }
 
-    if (editingArticle) {
-      setArticles(articles.map(article => article.id === editingArticle.id ? newArticle : article))
-    } else {
-      setArticles([newArticle, ...articles])
+    const payload = {
+      title: formData.title,
+      excerpt: formData.summary,
+      content: formData.content,
+      category: formData.category,
+      tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+      difficulty: formData.difficulty,
+      author: editingArticle?.author || '中年小白',
+      status: formData.status || 'published',
+      readTime: formData.readTime || ''
     }
-    
-    handleClose()
+
+    try {
+      if (editingArticle) {
+        await updateArticle(editingArticle.id, payload)
+      } else {
+        await addArticle(payload)
+      }
+      refreshArticles()
+      handleClose()
+    } catch (err) {
+      console.error('保存文章失败', err)
+    }
   }
 
   const handleDelete = (id) => {
-    setArticles(articles.filter(article => article.id !== id))
+    if (window.confirm('确认删除这篇文章吗？')) {
+      deleteArticle(id)
+      refreshArticles()
+    }
   }
 
   const handleLike = (id) => {
-    setArticles(articles.map(article => 
-      article.id === id ? { ...article, likes: article.likes + 1 } : article
-    ))
-  }
-
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files)
-    files.forEach(file => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setSelectedImages(prev => [...prev, e.target.result])
-      }
-      reader.readAsDataURL(file)
-    })
-  }
-
-  const handleRemoveImage = (index) => {
-    setSelectedImages(prev => prev.filter((_, i) => i !== index))
+    const article = publishedArticles.find(item => item.id === id)
+    if (article) {
+      updateArticle(id, { likes: (article.likes || 0) + 1 })
+    }
   }
 
   return (
@@ -208,9 +187,70 @@ const Articles = () => {
           </Typography>
         </Box>
 
+        <Box sx={{ mb: 5 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="搜索文章标题、摘要或标签"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search fontSize="small" color="action" />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Stack
+                direction="row"
+                spacing={1}
+                flexWrap="wrap"
+                useFlexGap
+                justifyContent={{ xs: 'flex-start', md: 'flex-end' }}
+              >
+                {categories.map((category) => (
+                  <Chip
+                    key={category}
+                    label={category}
+                    onClick={() => setSelectedCategory(category)}
+                    color={selectedCategory === category ? 'primary' : 'default'}
+                    variant={selectedCategory === category ? 'filled' : 'outlined'}
+                    sx={{ textTransform: 'none' }}
+                  />
+                ))}
+              </Stack>
+            </Grid>
+          </Grid>
+        </Box>
+
         {/* 文章列表 */}
         <Grid container spacing={4}>
-          {filteredArticles.map((article) => (
+          {loading && (
+            <Grid item xs={12}>
+              <Typography variant="body1" color="text.secondary">
+                正在加载文章...
+              </Typography>
+            </Grid>
+          )}
+          {error && !loading && (
+            <Grid item xs={12}>
+              <Typography variant="body1" color="error">
+                加载文章失败：{error}
+              </Typography>
+            </Grid>
+          )}
+          {!loading && !error && filteredArticles.length === 0 && (
+            <Grid item xs={12}>
+              <Typography variant="body1" color="text.secondary">
+                暂无符合条件的文章
+              </Typography>
+            </Grid>
+          )}
+          {!loading && !error && filteredArticles.map((article) => (
             <Grid item xs={12} md={6} lg={4} key={article.id}>
               <Card 
                 sx={{ 
@@ -280,20 +320,20 @@ const Articles = () => {
                     {article.title}
                   </Typography>
                   
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
-                    sx={{
-                      mb: 3,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      lineHeight: 1.6
-                    }}
-                  >
-                    {article.summary}
-                  </Typography>
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary" 
+                      sx={{
+                        mb: 3,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        lineHeight: 1.6
+                      }}
+                    >
+                      {article.summary || article.excerpt}
+                    </Typography>
                 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                     <Avatar 
@@ -311,13 +351,13 @@ const Articles = () => {
                         {article.author}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {format(article.date, 'MM月dd日', { locale: zhCN })}
+                        {article.date ? format(new Date(article.date), 'MM月dd日', { locale: zhCN }) : '日期待确认'}
                       </Typography>
                     </Box>
                   </Box>
                 
                   <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 3 }}>
-                    {article.tags.slice(0, 3).map((tag, index) => (
+                    {(article.tags || []).slice(0, 3).map((tag, index) => (
                       <Chip 
                         key={index} 
                         label={tag} 
@@ -330,9 +370,9 @@ const Articles = () => {
                         }}
                       />
                     ))}
-                    {article.tags.length > 3 && (
+                    {(article.tags || []).length > 3 && (
                       <Chip 
-                        label={`+${article.tags.length - 3}`}
+                        label={`+${(article.tags || []).length - 3}`}
                         variant="outlined" 
                         size="small"
                         sx={{ borderColor: 'grey.300', color: 'text.secondary' }}
@@ -344,12 +384,12 @@ const Articles = () => {
                 <CardActions sx={{ justifyContent: 'space-between', px: 4, pb: 4, pt: 0 }}>
                   <Stack direction="row" spacing={3}>
                     <Stack direction="row" alignItems="center" spacing={1}>
-                      <Visibility fontSize="small" sx={{ color: 'text.secondary' }} />
-                      <Typography variant="caption" color="text.secondary">{article.views}</Typography>
+                     <Visibility fontSize="small" sx={{ color: 'text.secondary' }} />
+                      <Typography variant="caption" color="text.secondary">{article.views || 0}</Typography>
                     </Stack>
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <ThumbUp fontSize="small" sx={{ color: 'text.secondary' }} />
-                      <Typography variant="caption" color="text.secondary">{article.likes}</Typography>
+                      <Typography variant="caption" color="text.secondary">{article.likes || 0}</Typography>
                     </Stack>
                   </Stack>
                   <Stack direction="row" spacing={1}>

@@ -1,4 +1,34 @@
-# 双网站部署指南
+# 部署指南（含 tsto 子域）
+
+## tsto.bambumoon.cn 快速部署（保留隐私政策文件）
+
+适用于将当前项目构建后的 dist/ 同步到服务器 `/var/www/tsto.bambumoon.cn`，并保留服务器上的 `privacy-policy.html` 等额外文件（不会删除）。
+
+1) 构建
+```bash
+npm run build
+```
+
+2) 部署（使用密码）
+```bash
+# 临时导出密码（或直接在命令前写 TSTO_PASS=...）
+export TSTO_PASS='你的服务器root密码'
+
+bash deployment/deploy-tsto.sh
+```
+
+3) 部署（使用 SSH 密钥，推荐）
+```bash
+# 先配置 SSH 免密到服务器（将本机公钥加入 /root/.ssh/authorized_keys）
+# 然后直接执行
+bash deployment/deploy-tsto.sh
+```
+
+脚本特点：
+- 不使用 `--delete`，不会删除服务器已有但本地没有的文件（如 privacy-policy.html）。
+- 同步完成后做基本连通性检查（首页、隐私政策、兼容跳转）。
+
+---
 
 ## 🚀 服务器部署（118.178.189.214）
 
@@ -101,6 +131,10 @@ systemctl restart nginx
 ```bash
 certbot --nginx -d bambumoon.cn -d www.bambumoon.cn -d company.bambumoon.cn
 ```
+
+> 提示：部署配置已将 company.bambumoon.cn 的 443 使用
+> /etc/letsencrypt/live/bambumoon.cn 下的证书路径。只要上面的
+> 证书申请成功，company 子域名会自动启用 HTTPS。
 
 ## 🔧 DNS 配置
 
