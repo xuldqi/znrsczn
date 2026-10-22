@@ -193,7 +193,6 @@ const Navbar = () => {
             <Button
               component={Link}
               to="/dashboard"
-              startIcon={<DashboardIcon sx={{ fontSize: 18 }} />}
               sx={{
                 color: location.pathname === '/dashboard' ? '#c2410c' : '#1c1917',
                 px: 2,
@@ -289,14 +288,13 @@ const Navbar = () => {
             <Button
               component={Link}
               to="/layoff-calculator"
-              startIcon={<GavelIcon sx={{ fontSize: 16, color: '#c2410c' }} />}
               sx={{
                 color: location.pathname === '/layoff-calculator' ? '#c2410c' : '#57534e',
                 px: 1.5,
                 py: 0.8,
                 borderRadius: 2,
                 fontWeight: location.pathname === '/layoff-calculator' ? 700 : 500,
-                fontSize: '0.9rem',
+                fontSize: '0.92rem',
                 whiteSpace: 'nowrap',
                 backgroundColor: location.pathname === '/layoff-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
                 '&:hover': {
@@ -312,14 +310,13 @@ const Navbar = () => {
             <Button
               component={Link}
               to="/retirement-calculator"
-              startIcon={<CalculateIcon sx={{ fontSize: 16, color: '#d97706' }} />}
               sx={{
                 color: location.pathname === '/retirement-calculator' ? '#c2410c' : '#57534e',
                 px: 1.5,
                 py: 0.8,
                 borderRadius: 2,
                 fontWeight: location.pathname === '/retirement-calculator' ? 700 : 500,
-                fontSize: '0.9rem',
+                fontSize: '0.92rem',
                 whiteSpace: 'nowrap',
                 backgroundColor: location.pathname === '/retirement-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
                 '&:hover': {
@@ -335,14 +332,13 @@ const Navbar = () => {
             <Button
               component={Link}
               to="/savings-planner"
-              startIcon={<SavingsIcon sx={{ fontSize: 16, color: '#047857' }} />}
               sx={{
                 color: location.pathname === '/savings-planner' ? '#c2410c' : '#57534e',
                 px: 1.5,
                 py: 0.8,
                 borderRadius: 2,
                 fontWeight: location.pathname === '/savings-planner' ? 700 : 500,
-                fontSize: '0.9rem',
+                fontSize: '0.92rem',
                 whiteSpace: 'nowrap',
                 backgroundColor: location.pathname === '/savings-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
                 '&:hover': {
