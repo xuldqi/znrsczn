@@ -123,12 +123,12 @@ const Home = () => {
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <Chip
-                label="新功能"
+                label="工具"
                 size="small"
                 sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
               />
               <Typography variant="body2" sx={{ color: '#4b5563', fontSize: '0.85rem' }}>
-                精选全网真实自救实录上线（直通知乎 / 少数派 / V2EX / 雪球高赞原帖） · 配套 72h 应急防御工作台
+                自救工作台：内置现金流跑道测算器与突发变故 72 小时应急防御看板
               </Typography>
             </Box>
 
@@ -282,32 +282,33 @@ const Home = () => {
                 </Typography>
               </Box>
 
-              {heroArticle.sourceUrl ? (
-                <Button
-                  size="small"
-                  component="a"
-                  href={heroArticle.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
-                  sx={{
-                    color: '#c2410c',
-                    fontWeight: 700,
-                    fontSize: '0.82rem',
-                    p: 0,
-                    minWidth: 'auto',
-                    whiteSpace: 'nowrap',
-                    '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
-                  }}
-                >
-                  直达{heroArticle.source}原帖 ↗
-                </Button>
-              ) : (
-                <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                {heroArticle.sourceUrl && (
+                  <Typography
+                    component="a"
+                    href={heroArticle.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    variant="caption"
+                    sx={{
+                      color: '#6b7280',
+                      fontWeight: 600,
+                      fontSize: '0.8rem',
+                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.3,
+                      '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                    }}
+                  >
+                    原帖 ↗
+                  </Typography>
+                )}
+                <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5, whiteSpace: 'nowrap' }}>
                   阅读全文 →
                 </Typography>
-              )}
+              </Box>
             </Box>
           </Paper>
 
@@ -679,32 +680,33 @@ const Home = () => {
                         </Typography>
                       </Box>
 
-                      {article.sourceUrl ? (
-                        <Button
-                          size="small"
-                          component="a"
-                          href={article.sourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
-                          sx={{
-                            color: '#c2410c',
-                            fontWeight: 700,
-                            fontSize: '0.78rem',
-                            p: 0,
-                            minWidth: 'auto',
-                            whiteSpace: 'nowrap',
-                            '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
-                          }}
-                        >
-                          跳转{article.source}原帖
-                        </Button>
-                      ) : (
-                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        {article.sourceUrl && (
+                          <Typography
+                            component="a"
+                            href={article.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            variant="caption"
+                            sx={{
+                              color: '#6b7280',
+                              fontWeight: 600,
+                              fontSize: '0.75rem',
+                              whiteSpace: 'nowrap',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.3,
+                              '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                            }}
+                          >
+                            原帖 ↗
+                          </Typography>
+                        )}
+                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, whiteSpace: 'nowrap' }}>
                           阅读全文 →
                         </Typography>
-                      )}
+                      </Box>
                     </Box>
                   </Paper>
                 )

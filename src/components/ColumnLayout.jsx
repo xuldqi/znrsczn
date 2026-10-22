@@ -403,32 +403,33 @@ const ColumnLayout = ({
                           </Typography>
                         </Box>
 
-                        {article.sourceUrl ? (
-                          <Button
-                            size="small"
-                            component="a"
-                            href={article.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
-                            sx={{
-                              color: '#c2410c',
-                              fontWeight: 700,
-                              fontSize: '0.78rem',
-                              p: 0,
-                              minWidth: 'auto',
-                              whiteSpace: 'nowrap',
-                              '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
-                            }}
-                          >
-                            访问{article.source}原帖
-                          </Button>
-                        ) : (
-                          <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                          {article.sourceUrl && (
+                            <Typography
+                              component="a"
+                              href={article.sourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              variant="caption"
+                              sx={{
+                                color: '#6b7280',
+                                fontWeight: 600,
+                                fontSize: '0.75rem',
+                                whiteSpace: 'nowrap',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.3,
+                                '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                              }}
+                            >
+                              原帖 ↗
+                            </Typography>
+                          )}
+                          <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, whiteSpace: 'nowrap' }}>
                             阅读全文 →
                           </Typography>
-                        )}
+                        </Box>
                       </Box>
                     </Paper>
                   )
