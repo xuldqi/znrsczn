@@ -33,6 +33,7 @@ const categoryStyles = {
 }
 
 const sourceStyles = {
+  '小宇宙': { bg: '#fff7ed', color: '#ea580c', border: '#fed7aa' },
   'LINUX DO': { bg: '#fff7ed', color: '#c2410c', border: '#ffedd5' },
   '天涯论坛': { bg: '#f0fdf4', color: '#166534', border: '#bbf7d0' },
   '知乎': { bg: '#e0f2fe', color: '#0369a1', border: '#bae6fd' },
