@@ -33,6 +33,7 @@ const categoryStyles = {
 }
 
 const sourceStyles = {
+  '天涯论坛': { bg: '#f0fdf4', color: '#166534', border: '#bbf7d0' },
   '知乎': { bg: '#e0f2fe', color: '#0369a1', border: '#bae6fd' },
   '少数派': { bg: '#fee2e2', color: '#b91c1c', border: '#fecaca' },
   'V2EX': { bg: '#f3f4f6', color: '#1f2937', border: '#e5e7eb' },
