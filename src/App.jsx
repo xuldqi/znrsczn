@@ -13,6 +13,7 @@ import LoadingFallback from './components/LoadingFallback'
 import Home from './pages/Home'
 
 // 路由代码分割（懒加载）
+const Dashboard = lazy(() => import('./pages/Dashboard'))
 const TestPage = lazy(() => import('./pages/TestPage'))
 const Articles = lazy(() => import('./pages/Articles'))
 const Products = lazy(() => import('./pages/Products'))
@@ -39,81 +40,80 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#2563eb', // 现代蓝色
-      light: '#60a5fa',
-      dark: '#1d4ed8',
+      main: '#c2410c', // 陶土暖棕（温暖、克制、书卷感）
+      light: '#ea580c',
+      dark: '#9a3412',
     },
     secondary: {
-      main: '#7c3aed', // 紫色
-      light: '#a78bfa',
-      dark: '#5b21b6',
+      main: '#44403c', // 石墨炭黑
+      light: '#78716c',
+      dark: '#1c1917',
     },
     background: {
-      default: '#f8fafc', // 更柔和的灰白色背景
+      default: '#faf9f6', // 温暖柔和的护眼米纸底色
       paper: '#ffffff',
     },
     text: {
-      primary: '#1e293b', // 深灰色文字
-      secondary: '#64748b', // 中灰色文字
+      primary: '#1c1917', // 深石墨黑
+      secondary: '#78716c', // 中灰色
     },
     grey: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
+      50: '#fafaf9',
+      100: '#f5f5f4',
+      200: '#e7e5e4',
+      300: '#d6d3d1',
+      400: '#a8a29e',
+      500: '#78716c',
+      600: '#57534e',
+      700: '#44403c',
+      800: '#292524',
+      900: '#1c1917',
     },
     success: {
-      main: '#10b981',
+      main: '#059669',
       light: '#34d399',
-      dark: '#059669',
+      dark: '#047857',
     },
     warning: {
-      main: '#f59e0b',
+      main: '#d97706',
       light: '#fbbf24',
-      dark: '#d97706',
+      dark: '#b45309',
     },
     error: {
-      main: '#ef4444',
+      main: '#dc2626',
       light: '#f87171',
-      dark: '#dc2626',
+      dark: '#b91c1c',
     },
     info: {
-      main: '#06b6d4',
-      light: '#22d3ee',
-      dark: '#0891b2',
+      main: '#0284c7',
+      light: '#38bdf8',
+      dark: '#0369a1',
     },
   },
   typography: {
-    fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif',
     h1: {
-      fontWeight: 700,
+      fontWeight: 800,
       fontSize: '2.5rem',
-      lineHeight: 1.2,
+      lineHeight: 1.25,
       letterSpacing: '-0.025em',
     },
     h2: {
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: '2rem',
       lineHeight: 1.3,
-      letterSpacing: '-0.025em',
+      letterSpacing: '-0.02em',
     },
     h3: {
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: '1.5rem',
       lineHeight: 1.4,
-      letterSpacing: '-0.025em',
+      letterSpacing: '-0.015em',
     },
     h4: {
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: '1.25rem',
       lineHeight: 1.4,
-      letterSpacing: '-0.025em',
     },
     h5: {
       fontWeight: 600,
@@ -127,7 +127,7 @@ const theme = createTheme({
     },
     body1: {
       fontSize: '1rem',
-      lineHeight: 1.6,
+      lineHeight: 1.65,
     },
     body2: {
       fontSize: '0.875rem',
@@ -135,25 +135,35 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 12,
+    borderRadius: 8,
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'none',
-          fontWeight: 500,
+          fontWeight: 600,
           borderRadius: 8,
           boxShadow: 'none',
+          whiteSpace: 'nowrap',
           '&:hover': {
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            boxShadow: 'none',
           },
         },
         contained: {
-          background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+          backgroundColor: '#c2410c',
+          color: '#ffffff',
           '&:hover': {
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)',
-            boxShadow: '0 8px 25px rgba(37, 99, 235, 0.25)',
+            backgroundColor: '#9a3412',
+            boxShadow: 'none',
+          },
+        },
+        outlined: {
+          borderColor: '#d6d3d1',
+          color: '#44403c',
+          '&:hover': {
+            borderColor: '#a8a29e',
+            backgroundColor: '#fafaf9',
           },
         },
       },
@@ -161,13 +171,13 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
-          border: '1px solid #e2e8f0',
-          borderRadius: 12,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          border: '1px solid #e7e5e4',
+          borderRadius: 10,
           transition: 'all 0.2s ease-in-out',
           '&:hover': {
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05)',
-            transform: 'translateY(-2px)',
+            boxShadow: '0 6px 16px rgba(0,0,0,0.06)',
+            borderColor: '#d6d3d1',
           },
         },
       },
@@ -175,27 +185,26 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
-          borderRadius: 12,
-          border: '1px solid #e2e8f0',
-          transition: 'all 0.2s ease-in-out',
+          boxShadow: 'none',
+          borderRadius: 10,
+          border: '1px solid #e7e5e4',
         },
       },
     },
     MuiChip: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
-          fontWeight: 500,
+          borderRadius: 6,
+          fontWeight: 600,
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid #e2e8f0',
+          backgroundColor: 'rgba(250, 249, 246, 0.95)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid #e7e5e4',
         },
       },
     },
@@ -217,6 +226,7 @@ function App() {
                   <Suspense fallback={<LoadingFallback />}>
                     <Routes>
                       <Route path="/" element={<Home />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/search" element={<SearchResults />} />
                       <Route path="/articles" element={<Articles />} />

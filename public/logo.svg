@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- 品牌主背景渐变：暖赭石到深赤褐 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="60%" stop-color="#c2410c"/>
+      <stop offset="100%" stop-color="#9a3412"/>
+    </linearGradient>
+    
+    <!-- 罗盘金色高光 -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+
+    <!-- 救生环内阴影滤镜 -->
+    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#7c2d12" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- 舒适的圆角底板 (Squircle) -->
+  <rect width="128" height="128" rx="28" fill="url(#bgGrad)"/>
+  
+  <!-- 细微质感高光内边框 -->
+  <rect width="126" height="126" x="1" y="1" rx="27" fill="none" stroke="#ffedd5" stroke-width="1.5" stroke-opacity="0.35"/>
+
+  <!-- 救生圈外环 (象征自救与安全兜底) -->
+  <g filter="url(#subtleShadow)">
+    <!-- 救生环主体：纯净暖白 -->
+    <circle cx="64" cy="64" r="42" fill="none" stroke="#faf9f6" stroke-width="10"/>
+
+    <!-- 救生环四个方向的安全绑带卡扣 (红色警示与固定) -->
+    <path d="M 64 17 L 64 27" stroke="#9a3412" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 64 101 L 64 111" stroke="#9a3412" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 17 64 L 27 64" stroke="#9a3412" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 101 64 L 111 64" stroke="#9a3412" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- 内部指引核心：四角罗盘星 (象征“指南”与确定性方向) -->
+    <!-- 垂直与水平针尖 -->
+    <path d="M 64 34 L 70 58 L 64 64 L 58 58 Z" fill="url(#goldGrad)"/>
+    <path d="M 64 94 L 58 70 L 64 64 L 70 70 Z" fill="#faf9f6"/>
+    <path d="M 34 64 L 58 58 L 64 64 L 58 70 Z" fill="#faf9f6"/>
+    <path d="M 94 64 L 70 70 L 64 64 L 70 58 Z" fill="url(#goldGrad)"/>
+
+    <!-- 罗盘中心锚点宝石 -->
+    <circle cx="64" cy="64" r="5" fill="#c2410c" stroke="#faf9f6" stroke-width="2"/>
+  </g>
+</svg>

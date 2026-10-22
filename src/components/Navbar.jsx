@@ -36,7 +36,8 @@ import {
   KeyboardArrowDown as ArrowDownIcon,
   MonetizationOn as MonetizationOnIcon,
   RateReview as FeedbackIcon,
-  AutoStories as BookIcon
+  AutoStories as BookIcon,
+  SpaceDashboard as DashboardIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -141,7 +142,17 @@ const Navbar = () => {
                 gap: 1
               }}
             >
-              <BookIcon sx={{ color: '#c2410c', fontSize: 24 }} />
+              <Box
+                component="img"
+                src="/logo.svg"
+                alt="中年自救指南"
+                sx={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: '7px',
+                  boxShadow: '0 2px 6px rgba(194, 65, 12, 0.25)'
+                }}
+              />
               中年自救指南
             </Typography>
           </Box>
@@ -175,7 +186,33 @@ const Navbar = () => {
               首页
             </Button>
 
-            {/* 2. 实战指南 (下拉聚合) */}
+            {/* 2. 自救工作台 */}
+            <Button
+              component={Link}
+              to="/dashboard"
+              startIcon={<DashboardIcon sx={{ fontSize: 18 }} />}
+              sx={{
+                color: location.pathname === '/dashboard' ? '#c2410c' : '#1c1917',
+                px: 2,
+                py: 0.8,
+                borderRadius: 2,
+                fontWeight: location.pathname === '/dashboard' ? 700 : 600,
+                fontSize: '0.92rem',
+                whiteSpace: 'nowrap',
+                backgroundColor: location.pathname === '/dashboard' ? 'rgba(194, 65, 12, 0.1)' : 'rgba(0, 0, 0, 0.03)',
+                border: '1px solid',
+                borderColor: location.pathname === '/dashboard' ? '#c2410c' : '#e7e5e4',
+                '&:hover': {
+                  backgroundColor: 'rgba(194, 65, 12, 0.08)',
+                  borderColor: '#c2410c',
+                  color: '#c2410c'
+                }
+              }}
+            >
+              自救工作台
+            </Button>
+
+            {/* 3. 实战指南 (下拉聚合) */}
             <Button
               onClick={handleGuideMenuOpen}
               endIcon={<ArrowDownIcon sx={{ fontSize: 18 }} />}
@@ -393,9 +430,22 @@ const Navbar = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#1c1917', fontSize: '1.15rem' }}>
-            中年自救指南
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box
+              component="img"
+              src="/logo.svg"
+              alt="中年自救指南"
+              sx={{
+                width: 26,
+                height: 26,
+                borderRadius: '6px',
+                boxShadow: '0 2px 4px rgba(194, 65, 12, 0.2)'
+              }}
+            />
+            <Typography variant="h6" sx={{ fontWeight: 800, color: '#1c1917', fontSize: '1.15rem' }}>
+              中年自救指南
+            </Typography>
+          </Box>
           <IconButton onClick={handleDrawerToggle} size="small" sx={{ color: '#78716c' }}>
             <CloseIcon />
           </IconButton>
@@ -423,6 +473,19 @@ const Navbar = () => {
                 <Home />
               </ListItemIcon>
               <ListItemText primary="首页" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding sx={{ mb: 0.6 }}>
+            <ListItemButton
+              onClick={() => handleNavClick('/dashboard')}
+              selected={location.pathname === '/dashboard'}
+              sx={{ borderRadius: 2, color: location.pathname === '/dashboard' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/dashboard' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
+            >
+              <ListItemIcon sx={{ color: location.pathname === '/dashboard' ? '#c2410c' : '#78716c', minWidth: 38 }}>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="自救工作台" primaryTypographyProps={{ fontWeight: 700, fontSize: '0.92rem' }} />
             </ListItemButton>
           </ListItem>
 
