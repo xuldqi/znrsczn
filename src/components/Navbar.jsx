@@ -25,7 +25,6 @@ import {
   FamilyRestroom,
   Work,
   Psychology,
-  SportsEsports,
   Store,
   AccountBalance,
   Person,
@@ -34,7 +33,8 @@ import {
   Menu as MenuIcon,
   Close as CloseIcon,
   Calculate as CalculateIcon,
-  RateReview as FeedbackIcon
+  RateReview as FeedbackIcon,
+  MonetizationOn as MonetizationOnIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -77,17 +77,17 @@ const Navbar = () => {
 
   const publicNavItems = [
     { path: '/', label: '首页', icon: <Home /> },
-    { path: '/career', label: '职场转型', icon: <Work /> },
-    { path: '/side-business', label: '副业指南', icon: <Work /> },
-    { path: '/finance', label: '财务管理', icon: <AccountBalance /> },
-    { path: '/family', label: '家庭关系', icon: <FamilyRestroom /> },
+    { path: '/career', label: '职场突破', icon: <Work /> },
+    { path: '/side-business', label: '副业轻创', icon: <MonetizationOnIcon /> },
+    { path: '/finance', label: '财务养老', icon: <AccountBalance /> },
+    { path: '/family', label: '家庭生活', icon: <FamilyRestroom /> },
     { path: '/psychology', label: '心理破局', icon: <Psychology /> },
-    { path: '/products', label: '好物推荐', icon: <Store /> },
+    { path: '/products', label: '精选好物', icon: <Store /> },
   ]
 
   const toolNavItems = [
-    { path: '/pension-planner', label: '养老金测算', icon: <CalculateIcon /> },
-    { path: '/complaints', label: '建议与反馈', icon: <FeedbackIcon /> },
+    { path: '/pension-planner', label: '养老金深度测算', icon: <CalculateIcon /> },
+    { path: '/complaints', label: '自救建议与反馈', icon: <FeedbackIcon /> },
   ]
 
   return (
@@ -95,16 +95,15 @@ const Navbar = () => {
       position="sticky"
       elevation={0}
       sx={{
-        backgroundColor: 'rgba(255, 255, 255, 0.85)',
+        backgroundColor: 'rgba(9, 13, 22, 0.88)',
         backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         top: 0,
         zIndex: 1100
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ height: 64, justifyContent: 'space-between' }}>
+        <Toolbar disableGutters sx={{ height: 68, justifyContent: 'space-between' }}>
           {/* Mobile Menu Button + Logo */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton
@@ -112,7 +111,7 @@ const Navbar = () => {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 1, display: { md: 'none' }, color: 'text.primary' }}
+              sx={{ mr: 1, display: { md: 'none' }, color: '#f1f5f9' }}
             >
               <MenuIcon />
             </IconButton>
@@ -122,12 +121,15 @@ const Navbar = () => {
               component={Link}
               to="/"
               sx={{
-                fontWeight: 800,
-                color: 'primary.main',
+                fontWeight: 900,
+                color: '#38bdf8',
                 textDecoration: 'none',
-                fontSize: { xs: '1.05rem', sm: '1.2rem' },
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
                 letterSpacing: '-0.02em',
-                mr: { xs: 1, md: 4 }
+                mr: { xs: 1, md: 4 },
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
               }}
             >
               中年自救指南
@@ -141,40 +143,71 @@ const Navbar = () => {
             gap: 0.5,
             flex: 1
           }}>
-            {publicNavItems.map((item) => (
-              <Button
-                key={item.path}
-                component={Link}
-                to={item.path}
-                sx={{
-                  color: location.pathname === item.path ? 'primary.main' : 'text.secondary',
-                  px: 1.8,
-                  py: 1,
-                  borderRadius: 2,
-                  fontWeight: location.pathname === item.path ? 700 : 500,
-                  fontSize: '0.9rem',
-                  '&:hover': {
-                    backgroundColor: 'grey.100',
-                    color: 'primary.main'
-                  }
-                }}
-              >
-                {item.label}
-              </Button>
-            ))}
+            {publicNavItems.map((item) => {
+              const isActive = location.pathname === item.path
+              return (
+                <Button
+                  key={item.path}
+                  component={Link}
+                  to={item.path}
+                  sx={{
+                    color: isActive ? '#38bdf8' : '#94a3b8',
+                    px: 1.8,
+                    py: 1,
+                    borderRadius: 2,
+                    fontWeight: isActive ? 700 : 500,
+                    fontSize: '0.9rem',
+                    transition: 'all 0.2s',
+                    backgroundColor: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      color: '#ffffff'
+                    }
+                  }}
+                >
+                  {item.label}
+                </Button>
+              )
+            })}
           </Box>
 
-          {/* Right Side: Search + Auth */}
+          {/* Right Side: Search + Action Button */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
-            <Box sx={{ display: { xs: 'none', md: 'block' }, width: { md: 180, lg: 220 } }}>
+            <Box sx={{ display: { xs: 'none', lg: 'block' }, width: 200 }}>
               <SearchBar />
             </Box>
+
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => navigate('/pension-planner')}
+              startIcon={<CalculateIcon sx={{ fontSize: 16 }} />}
+              sx={{
+                display: { xs: 'none', sm: 'inline-flex' },
+                borderRadius: '50px',
+                px: 2,
+                py: 0.7,
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                bgcolor: 'rgba(59, 130, 246, 0.2)',
+                color: '#60a5fa',
+                border: '1px solid rgba(59, 130, 246, 0.4)',
+                boxShadow: 'none',
+                textTransform: 'none',
+                '&:hover': {
+                  bgcolor: '#2563eb',
+                  color: 'white'
+                }
+              }}
+            >
+              养老缺口测算
+            </Button>
 
             {user ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <IconButton
                   onClick={() => navigate('/membership')}
-                  sx={{ color: 'secondary.main' }}
+                  sx={{ color: '#fbbf24' }}
                   title="会员中心"
                 >
                   <Diamond />
@@ -184,12 +217,11 @@ const Navbar = () => {
                     onClick={handleMenu}
                     size="small"
                     sx={{
-                      border: '2px solid',
-                      borderColor: 'grey.200',
+                      border: '2px solid rgba(255,255,255,0.2)',
                       p: 0.5
                     }}
                   >
-                    <Avatar sx={{ width: 28, height: 28, bgcolor: 'primary.main', fontSize: '0.8rem' }}>
+                    <Avatar sx={{ width: 28, height: 28, bgcolor: '#2563eb', fontSize: '0.8rem', color: 'white' }}>
                       {user.name ? user.name[0] : <Person />}
                     </Avatar>
                   </IconButton>
@@ -202,25 +234,23 @@ const Navbar = () => {
                   transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                   PaperProps={{
-                    elevation: 3,
+                    elevation: 4,
                     sx: {
                       mt: 1.5,
                       borderRadius: 2,
                       minWidth: 180,
-                      '& .MuiMenuItem-root': {
-                        px: 2,
-                        py: 1.2,
-                        fontSize: '0.9rem'
-                      }
+                      bgcolor: '#0f172a',
+                      color: '#f8fafc',
+                      border: '1px solid rgba(255,255,255,0.1)'
                     }
                   }}
                 >
                   <MenuItem onClick={() => navigate('/membership')}>
-                    <Diamond fontSize="small" sx={{ mr: 1.5, color: 'secondary.main' }} />
+                    <Diamond fontSize="small" sx={{ mr: 1.5, color: '#fbbf24' }} />
                     会员中心
                   </MenuItem>
-                  <Divider sx={{ my: 1 }} />
-                  <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+                  <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
+                  <MenuItem onClick={handleLogout} sx={{ color: '#f87171' }}>
                     <ExitToApp fontSize="small" sx={{ mr: 1.5 }} />
                     退出登录
                   </MenuItem>
@@ -236,7 +266,10 @@ const Navbar = () => {
                   px: { xs: 2, sm: 2.8 },
                   py: { xs: 0.6, sm: 0.8 },
                   fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                  boxShadow: '0 4px 10px rgba(37, 99, 235, 0.2)'
+                  bgcolor: '#2563eb',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)',
+                  '&:hover': { bgcolor: '#1d4ed8' }
                 }}
               >
                 登录
@@ -246,7 +279,7 @@ const Navbar = () => {
         </Toolbar>
       </Container>
 
-      {/* Mobile Drawer */}
+      {/* 移动端侧边抽屉 */}
       <Drawer
         variant="temporary"
         open={mobileOpen}
@@ -254,43 +287,50 @@ const Navbar = () => {
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: 'block', md: 'none' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 280, p: 2 }
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box', 
+            width: 290, 
+            p: 2.5,
+            bgcolor: '#0d131f',
+            color: '#f1f5f9',
+            borderRight: '1px solid rgba(255,255,255,0.08)'
+          }
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.1rem' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2.5 }}>
+          <Typography variant="h6" sx={{ fontWeight: 900, color: '#38bdf8', fontSize: '1.15rem' }}>
             中年自救指南
           </Typography>
-          <IconButton onClick={handleDrawerToggle} size="small">
+          <IconButton onClick={handleDrawerToggle} size="small" sx={{ color: '#94a3b8' }}>
             <CloseIcon />
           </IconButton>
         </Box>
 
-        {/* Mobile Search */}
-        <Box sx={{ mb: 2 }}>
+        {/* 移动端搜索 */}
+        <Box sx={{ mb: 2.5 }}>
           <SearchBar />
         </Box>
 
-        <Divider sx={{ mb: 1.5 }} />
+        <Divider sx={{ mb: 2, borderColor: 'rgba(255,255,255,0.08)' }} />
 
         <List disablePadding>
           {publicNavItems.map((item) => {
             const isActive = location.pathname === item.path
             return (
-              <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+              <ListItem key={item.path} disablePadding sx={{ mb: 0.8 }}>
                 <ListItemButton
                   onClick={() => handleNavClick(item.path)}
                   selected={isActive}
                   sx={{
                     borderRadius: 2,
-                    color: isActive ? 'primary.main' : 'text.primary',
+                    color: isActive ? '#38bdf8' : '#cbd5e1',
                     '&.Mui-selected': {
-                      bgcolor: 'primary.50',
-                      '&:hover': { bgcolor: 'primary.100' }
+                      bgcolor: 'rgba(56, 189, 248, 0.15)',
+                      '&:hover': { bgcolor: 'rgba(56, 189, 248, 0.2)' }
                     }
                   }}
                 >
-                  <ListItemIcon sx={{ color: isActive ? 'primary.main' : 'text.secondary', minWidth: 40 }}>
+                  <ListItemIcon sx={{ color: isActive ? '#38bdf8' : '#94a3b8', minWidth: 40 }}>
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText
@@ -303,26 +343,26 @@ const Navbar = () => {
           })}
         </List>
 
-        <Divider sx={{ my: 1.5 }} />
+        <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.08)' }} />
 
-        <Typography variant="caption" color="text.secondary" sx={{ px: 1.5, mb: 1, display: 'block', fontWeight: 600 }}>
-          实用工具
+        <Typography variant="caption" sx={{ px: 1.5, mb: 1, display: 'block', fontWeight: 700, color: '#64748b' }}>
+          实用自救工具
         </Typography>
 
         <List disablePadding>
           {toolNavItems.map((item) => {
             const isActive = location.pathname === item.path
             return (
-              <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+              <ListItem key={item.path} disablePadding sx={{ mb: 0.8 }}>
                 <ListItemButton
                   onClick={() => handleNavClick(item.path)}
                   selected={isActive}
                   sx={{
                     borderRadius: 2,
-                    color: isActive ? 'primary.main' : 'text.primary',
+                    color: isActive ? '#38bdf8' : '#cbd5e1',
                   }}
                 >
-                  <ListItemIcon sx={{ color: isActive ? 'primary.main' : 'text.secondary', minWidth: 40 }}>
+                  <ListItemIcon sx={{ color: isActive ? '#38bdf8' : '#94a3b8', minWidth: 40 }}>
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText
@@ -335,17 +375,24 @@ const Navbar = () => {
           })}
         </List>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 2.5, borderColor: 'rgba(255,255,255,0.08)' }} />
 
         <Box sx={{ mt: 'auto', pt: 1 }}>
           <Button
             fullWidth
-            variant="outlined"
-            onClick={() => handleNavClick('/membership')}
-            startIcon={<Diamond sx={{ color: 'secondary.main' }} />}
-            sx={{ borderRadius: 2, mb: 1.5, textTransform: 'none' }}
+            variant="contained"
+            onClick={() => handleNavClick('/pension-planner')}
+            startIcon={<CalculateIcon />}
+            sx={{
+              borderRadius: 2,
+              mb: 1.5,
+              textTransform: 'none',
+              bgcolor: '#2563eb',
+              fontWeight: 700,
+              py: 1
+            }}
           >
-            会员专区
+            打开养老金缺口测算
           </Button>
 
           {user ? (
@@ -362,11 +409,11 @@ const Navbar = () => {
           ) : (
             <Button
               fullWidth
-              variant="contained"
+              variant="outlined"
               onClick={handleLogin}
-              sx={{ borderRadius: 2, textTransform: 'none' }}
+              sx={{ borderRadius: 2, textTransform: 'none', borderColor: 'rgba(255,255,255,0.2)', color: 'white' }}
             >
-              立即登录
+              登录账号
             </Button>
           )}
         </Box>
