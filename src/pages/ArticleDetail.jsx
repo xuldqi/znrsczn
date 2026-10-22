@@ -21,7 +21,8 @@ import {
   Share as ShareIcon,
   BookmarkBorder as BookmarkIcon,
   Check as CheckIcon,
-  FormatListBulleted as TocIcon
+  FormatListBulleted as TocIcon,
+  OpenInNew as OpenInNewIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
@@ -298,7 +299,7 @@ const ArticleDetail = () => {
           >
             {/* 文章头部元信息 */}
             <Box sx={{ mb: 3.5 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, mb: 2, flexWrap: 'wrap' }}>
                 <Chip
                   label={article.category}
                   size="small"
@@ -312,6 +313,21 @@ const ArticleDetail = () => {
                     borderRadius: 0.8
                   }}
                 />
+                {article.source && (
+                  <Chip
+                    label={`来源 · ${article.source}`}
+                    size="small"
+                    sx={{
+                      bgcolor: '#fee2e2',
+                      color: '#b91c1c',
+                      border: '1px solid #fecaca',
+                      fontWeight: 700,
+                      fontSize: '0.72rem',
+                      height: 22,
+                      borderRadius: 0.8
+                    }}
+                  />
+                )}
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
                   {article.readTime || '5分钟精读'}
                 </Typography>
@@ -319,6 +335,50 @@ const ArticleDetail = () => {
                   · 发布于 {article.date || '近期实战'}
                 </Typography>
               </Box>
+
+              {/* 如果是全网精选来源帖子，展示显眼的原帖来源横幅 */}
+              {article.source && article.sourceUrl && (
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 2,
+                    mb: 2.5,
+                    borderRadius: 2,
+                    bgcolor: '#f0f9ff',
+                    border: '1px solid #bae6fd',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 1.5
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
+                    <Typography variant="body2" sx={{ color: '#0369a1', fontSize: '0.88rem' }}>
+                      本文精选自 <strong>{article.source}</strong> 社区高赞实录，原作者：<strong>{article.author}</strong>
+                    </Typography>
+                  </Box>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    component="a"
+                    href={article.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
+                    sx={{
+                      bgcolor: '#0284c7',
+                      color: '#ffffff',
+                      fontWeight: 700,
+                      fontSize: '0.78rem',
+                      whiteSpace: 'nowrap',
+                      '&:hover': { bgcolor: '#0369a1' }
+                    }}
+                  >
+                    跳转{article.source}原始讨论 ↗
+                  </Button>
+                </Paper>
+              )}
 
               <Typography
                 variant="h4"
