@@ -19,7 +19,8 @@ import {
   Slider,
   LinearProgress,
   Divider,
-  Tooltip
+  Checkbox,
+  FormControlLabel
 } from '@mui/material'
 import {
   Work as WorkIcon,
@@ -28,49 +29,27 @@ import {
   Psychology as PsychologyIcon,
   Calculate as CalculateIcon,
   ArrowForward as ArrowForwardIcon,
-  Star as StarIcon,
-  LocalFireDepartment as FireIcon,
-  AutoAwesome as SparkleIcon,
-  Shield as ShieldIcon,
-  Warning as WarningIcon,
   CheckCircle as CheckCircleIcon,
-  Bolt as BoltIcon,
   MonetizationOn as MonetizationOnIcon,
-  MenuBook as BookIcon,
-  RateReview as RateReviewIcon
+  AutoStories as BookIcon,
+  Shield as ShieldIcon,
+  WarningAmber as WarningIcon,
+  TrendingUp as TrendingUpIcon,
+  AssignmentTurnedIn as ChecklistIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
-// 分类渐变配色
-const categoryGradients = {
-  '职场发展': 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-  '转型升级': 'linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%)',
-  '副业指南': 'linear-gradient(135deg, #065f46 0%, #10b981 100%)',
-  '财务管理': 'linear-gradient(135deg, #92400e 0%, #f59e0b 100%)',
-  '中年危机': 'linear-gradient(135deg, #991b1b 0%, #ef4444 100%)',
-  '心理健康': 'linear-gradient(135deg, #0369a1 0%, #06b6d4 100%)',
-  '家庭关系': 'linear-gradient(135deg, #9d174d 0%, #ec4899 100%)',
-  '生活技能': 'linear-gradient(135deg, #115e59 0%, #14b8a6 100%)',
-  '兴趣爱好': 'linear-gradient(135deg, #581c87 0%, #a855f7 100%)',
-}
-
-const getCategoryIcon = (category) => {
-  switch (category) {
-    case '职场发展':
-    case '转型升级':
-    case '副业指南':
-      return <WorkIcon sx={{ fontSize: 28, color: 'white' }} />
-    case '财务管理':
-      return <AccountBalanceIcon sx={{ fontSize: 28, color: 'white' }} />
-    case '家庭关系':
-    case '生活技能':
-      return <FamilyIcon sx={{ fontSize: 28, color: 'white' }} />
-    case '中年危机':
-    case '心理健康':
-    case '兴趣爱好':
-    default:
-      return <PsychologyIcon sx={{ fontSize: 28, color: 'white' }} />
-  }
+// 柔和优雅的杂志色系
+const categoryColors = {
+  '职场发展': { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' },
+  '转型升级': { bg: '#f5f3ff', color: '#6d28d9', border: '#ddd6fe' },
+  '副业指南': { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0' },
+  '财务管理': { bg: '#fffbeb', color: '#b45309', border: '#fde68a' },
+  '中年危机': { bg: '#fef2f2', color: '#b91c1c', border: '#fecaca' },
+  '心理健康': { bg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' },
+  '家庭关系': { bg: '#fdf2f8', color: '#be185d', border: '#fbcfe8' },
+  '生活技能': { bg: '#f8fafc', color: '#334155', border: '#cbd5e1' },
+  '兴趣爱好': { bg: '#faf5ff', color: '#7e22ce', border: '#e9d5ff' },
 }
 
 // 稳定一致的点赞和讨论数
@@ -80,8 +59,8 @@ const getDeterministicStats = (str = '') => {
     hash = (hash << 5) - hash + str.charCodeAt(i)
     hash |= 0
   }
-  const likes = Math.abs(hash % 50) + 24
-  const comments = Math.abs((hash >> 3) % 18) + 5
+  const likes = Math.abs(hash % 40) + 16
+  const comments = Math.abs((hash >> 3) % 15) + 3
   return { likes, comments }
 }
 
@@ -89,70 +68,26 @@ const Home = () => {
   const navigate = useNavigate()
   const { getAllArticles, loading } = useArticles()
 
-  // 1. 养老金即时速算器状态
-  const [currentAge, setCurrentAge] = useState(38)
-  const [retireAge, setRetireAge] = useState(60)
-  const [monthlyExpense, setMonthlyExpense] = useState(10000)
-  const [currentSavings, setCurrentSavings] = useState(25) // 万元
+  // 1. 家庭现金流生命线 & 养老金速算交互
+  const [savingsWan, setSavingsWan] = useState(30) // 家庭可用应急金（万元）
+  const [monthlyCost, setMonthlyCost] = useState(12000) // 每月刚性支出
 
-  // 2. 中年危机 4 维压力自测状态
-  const [careerStress, setCareerStress] = useState(65)
-  const [financeStress, setFinanceStress] = useState(70)
-  const [familyStress, setFamilyStress] = useState(60)
-  const [healthStress, setHealthStress] = useState(75)
-
-  // 3. 文章信息流状态
+  // 2. 文章信息流分类与翻页
   const [activeTab, setActiveTab] = useState(0)
   const [displayCount, setDisplayCount] = useState(8)
 
-  // 养老金速算计算逻辑
-  const pensionCalc = useMemo(() => {
-    const yearsToRetire = Math.max(1, retireAge - currentAge)
-    const retirementYears = 25 // 预期退休后生活25年
-    // 假设基础社保覆盖约 40%，个人缺口需补 60%
-    const totalRetirementNeed = monthlyExpense * 12 * retirementYears
-    const coveredByBasicPension = totalRetirementNeed * 0.4
-    const futureSavingsGrowth = currentSavings * 10000 * Math.pow(1.04, yearsToRetire) // 假设4%年化积累
-    const totalGap = Math.max(0, Math.round(totalRetirementNeed - coveredByBasicPension - futureSavingsGrowth))
-    const monthlyGapToSave = Math.round(totalGap / (yearsToRetire * 12))
+  // 计算家庭安全跑道（Runway）与养老缺口
+  const runwayMonths = useMemo(() => {
+    if (!monthlyCost) return 0
+    return ((savingsWan * 10000) / monthlyCost).toFixed(1)
+  }, [savingsWan, monthlyCost])
 
-    let level = 'warning'
-    let levelText = '🟡 需高度重视'
-    let levelColor = '#f59e0b'
-    if (totalGap > 1500000) {
-      level = 'danger'
-      levelText = '🔴 缺口巨大（严重承压）'
-      levelColor = '#ef4444'
-    } else if (totalGap < 500000) {
-      level = 'safe'
-      levelText = '🟢 稳健可控（防守良好）'
-      levelColor = '#10b981'
-    }
-
-    return {
-      yearsToRetire,
-      totalGapWan: (totalGap / 10000).toFixed(1),
-      monthlyGapToSave,
-      level,
-      levelText,
-      levelColor
-    }
-  }, [currentAge, retireAge, monthlyExpense, currentSavings])
-
-  // 中年危机指数综合评分
-  const crisisIndex = useMemo(() => {
-    const avg = Math.round((careerStress + financeStress + familyStress + healthStress) / 4)
-    let diag = '当前处于平稳期，建议早做技能与资产防守。'
-    let badgeColor = '#10b981'
-    if (avg >= 70) {
-      diag = '多重高压重叠！首要任务是“家庭现金流止血”与“心理防线建设”，切忌盲目大额投资。'
-      badgeColor = '#ef4444'
-    } else if (avg >= 55) {
-      diag = '显性中年焦虑期，主要痛点在职场天花板与资产储备，建议重点探索轻资产副业。'
-      badgeColor = '#f59e0b'
-    }
-    return { score: avg, diag, badgeColor }
-  }, [careerStress, financeStress, familyStress, healthStress])
+  const pensionGap = useMemo(() => {
+    // 假设退休后每月生活费按当前支出的70%，生活25年，社保预计能发40%，缺口60%
+    const needTotal = monthlyCost * 0.7 * 12 * 25
+    const gapTotal = needTotal * 0.6
+    return (gapTotal / 10000).toFixed(0)
+  }, [monthlyCost])
 
   // 文章数据与四大支柱
   const publishedArticles = useMemo(() => {
@@ -166,31 +101,37 @@ const Home = () => {
   const pillarTabs = useMemo(() => [
     {
       id: 'all',
-      name: '🔥 全部精选',
+      name: '全部实战指南',
       badge: sortedArticles.length,
       filter: () => true
     },
     {
       id: 'career',
-      name: '💼 职场·转型·副业',
-      badge: sortedArticles.filter(a => ['职场发展', '转型升级', '副业指南'].includes(a.category)).length,
-      filter: (a) => ['职场发展', '转型升级', '副业指南'].includes(a.category)
+      name: '💼 职场突围·转型',
+      badge: sortedArticles.filter(a => ['职场发展', '转型升级'].includes(a.category)).length,
+      filter: (a) => ['职场发展', '转型升级'].includes(a.category)
+    },
+    {
+      id: 'side',
+      name: '⚡ 副业搞钱·轻创',
+      badge: sortedArticles.filter(a => ['副业指南'].includes(a.category)).length,
+      filter: (a) => ['副业指南'].includes(a.category)
     },
     {
       id: 'finance',
-      name: '💰 财务·养老资产',
+      name: '💰 财务账本·养老',
       badge: sortedArticles.filter(a => ['财务管理'].includes(a.category)).length,
       filter: (a) => ['财务管理'].includes(a.category)
     },
     {
       id: 'family',
-      name: '🏡 家庭·生活效能',
+      name: '🏡 家庭关系·沟通',
       badge: sortedArticles.filter(a => ['家庭关系', '生活技能'].includes(a.category)).length,
       filter: (a) => ['家庭关系', '生活技能'].includes(a.category)
     },
     {
       id: 'mind',
-      name: '🌱 心理·危机破局',
+      name: '🌱 心理内耗·危机',
       badge: sortedArticles.filter(a => ['中年危机', '心理健康', '兴趣爱好'].includes(a.category)).length,
       filter: (a) => ['中年危机', '心理健康', '兴趣爱好'].includes(a.category)
     }
@@ -205,60 +146,32 @@ const Home = () => {
   const hasMore = currentFilteredArticles.length > displayCount
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#090d16', color: '#f1f5f9' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#faf8f5', color: '#1c1917' }}>
       
-      {/* 🌟 1. 震撼深空黑曜石 Hero 区域 */}
+      {/* 📖 1. 温暖、沉静、克制的杂志书卷 Hero */}
       <Box
         sx={{
-          position: 'relative',
-          pt: { xs: 6, md: 10 },
-          pb: { xs: 8, md: 12 },
-          background: 'radial-gradient(ellipse 100% 80% at 50% -20%, #1e3a8a 0%, #090d16 80%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          overflow: 'hidden'
+          pt: { xs: 5, md: 8 },
+          pb: { xs: 6, md: 8 },
+          borderBottom: '1px solid #e7e5e4',
+          background: 'linear-gradient(180deg, #f5f2eb 0%, #faf8f5 100%)'
         }}
       >
-        {/* 背景光晕装饰 */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '10%',
-            left: '15%',
-            width: '450px',
-            height: '450px',
-            background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
-            filter: 'blur(50px)',
-            pointerEvents: 'none'
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '20%',
-            right: '10%',
-            width: '500px',
-            height: '500px',
-            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%)',
-            filter: 'blur(60px)',
-            pointerEvents: 'none'
-          }}
-        />
-
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          {/* 顶栏徽章 */}
+        <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
+          {/* 顶栏温润标签 */}
           <Chip
-            icon={<ShieldIcon sx={{ fontSize: 16, color: '#38bdf8 !important' }} />}
-            label="专为 35+ 职场人打造的自救与破局系统"
+            icon={<BookIcon sx={{ fontSize: 16, color: '#c2410c !important' }} />}
+            label="一本写给 35+ 职场人的自救与避险备忘录"
             sx={{
-              mb: 2.5,
+              mb: 3,
               px: 2,
               py: 2,
               borderRadius: '50px',
-              backgroundColor: 'rgba(56, 189, 248, 0.08)',
-              color: '#38bdf8',
+              backgroundColor: '#fffbeb',
+              color: '#92400e',
               fontWeight: 600,
               fontSize: { xs: '0.8rem', sm: '0.88rem' },
-              border: '1px solid rgba(56, 189, 248, 0.2)'
+              border: '1px solid #fde68a'
             }}
           />
 
@@ -266,113 +179,343 @@ const Home = () => {
           <Typography
             variant="h1"
             sx={{
-              fontWeight: 900,
+              fontWeight: 800,
               mb: 2,
-              fontSize: { xs: '2.5rem', sm: '3.6rem', md: '4.2rem' },
-              letterSpacing: '-0.035em',
-              lineHeight: 1.15,
-              background: 'linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              color: '#1c1917',
+              fontSize: { xs: '2.4rem', sm: '3.4rem', md: '3.8rem' },
+              letterSpacing: '-0.025em',
+              lineHeight: 1.18
             }}
           >
             中年自救指南
           </Typography>
 
-          {/* 纯粹极简副标：只有一句，绝不说教 */}
+          {/* 副标题：只有一句话，绝不说教 */}
           <Typography
             variant="h5"
             sx={{
-              color: '#94a3b8',
+              color: '#57534e',
               fontWeight: 400,
               fontSize: { xs: '1.05rem', sm: '1.25rem' },
-              mb: 4.5,
+              mb: 4,
               lineHeight: 1.6,
-              maxWidth: '650px',
+              maxWidth: '680px',
               mx: 'auto'
             }}
           >
-            用量化工具与实战经验，陪你走过人生的关键十年。
+            用真实量化工具与 137 篇一线实操方案，陪你安稳走过人生的关键十年。
           </Typography>
 
-          {/* 极简数据标签 */}
+          {/* 核心价值三大锚点 */}
           <Stack
             direction="row"
-            spacing={{ xs: 1.5, sm: 3 }}
+            spacing={{ xs: 2, sm: 4 }}
             justifyContent="center"
             flexWrap="wrap"
             useFlexGap
-            sx={{ mb: 5 }}
+            sx={{ mb: 4.5 }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 600 }}>
-              <BookIcon sx={{ color: '#38bdf8', fontSize: 18 }} />
-              <span>137 篇实战指南</span>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#44403c', fontSize: '0.92rem', fontWeight: 600 }}>
+              <CheckCircleIcon sx={{ color: '#059669', fontSize: 18 }} />
+              <span>137 篇落地避坑指南</span>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 600 }}>
-              <CalculateIcon sx={{ color: '#34d399', fontSize: 18 }} />
-              <span>养老金智能速算</span>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#44403c', fontSize: '0.92rem', fontWeight: 600 }}>
+              <CalculateIcon sx={{ color: '#d97706', fontSize: 18 }} />
+              <span>家庭生命线 & 养老金速算</span>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 600 }}>
-              <BoltIcon sx={{ color: '#fbbf24', fontSize: 18 }} />
-              <span>35+ 轻创避坑沙盒</span>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#44403c', fontSize: '0.92rem', fontWeight: 600 }}>
+              <ShieldIcon sx={{ color: '#2563eb', fontSize: 18 }} />
+              <span>突遭裁员与失业应急 SOP</span>
             </Box>
           </Stack>
 
-          {/* 快捷跳转按钮 */}
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" sx={{ maxWidth: 460, mx: 'auto' }}>
+          {/* 快捷按钮 */}
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" sx={{ maxWidth: 440, mx: 'auto' }}>
             <Button
               variant="contained"
               size="large"
               onClick={() => {
-                const el = document.getElementById('instant-pension-calculator')
+                const el = document.getElementById('action-checklists-section')
                 if (el) el.scrollIntoView({ behavior: 'smooth' })
               }}
-              startIcon={<CalculateIcon />}
+              startIcon={<ChecklistIcon />}
               sx={{
-                bgcolor: '#2563eb',
-                py: 1.4,
+                bgcolor: '#c2410c',
+                color: '#ffffff',
+                py: 1.3,
                 px: 3.5,
                 borderRadius: '50px',
                 fontSize: '0.95rem',
-                fontWeight: 700,
-                boxShadow: '0 8px 20px rgba(37, 99, 235, 0.35)',
-                '&:hover': { bgcolor: '#1d4ed8' }
+                fontWeight: 600,
+                boxShadow: 'none',
+                '&:hover': { bgcolor: '#9a3412', boxShadow: 'none' }
               }}
             >
-              30秒测算养老金缺口
+              直接看自救行动清单
             </Button>
             <Button
               variant="outlined"
               size="large"
               onClick={() => {
-                const el = document.getElementById('articles-feed-section')
+                const el = document.getElementById('cashflow-calculator')
                 if (el) el.scrollIntoView({ behavior: 'smooth' })
               }}
-              endIcon={<ArrowForwardIcon />}
+              startIcon={<CalculateIcon />}
               sx={{
-                borderColor: 'rgba(255,255,255,0.2)',
-                color: '#e2e8f0',
-                py: 1.4,
+                borderColor: '#d6d3d1',
+                color: '#44403c',
+                py: 1.3,
                 px: 3.5,
                 borderRadius: '50px',
                 fontSize: '0.95rem',
                 fontWeight: 600,
-                '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.06)' }
+                bgcolor: '#ffffff',
+                '&:hover': { borderColor: '#a8a29e', bgcolor: '#fafaf9' }
               }}
             >
-              浏览全部实战文章
+              测算家庭抗风险跑道
             </Button>
           </Stack>
         </Container>
       </Box>
 
-      {/* 🧮 2. 首页核心杀手锏：30秒退休养老金缺口速算器 */}
+      {/* 🚨 2. 真正解决问题的核心：四大落地避坑行动清单（拿来即用） */}
       <Box
-        id="instant-pension-calculator"
+        id="action-checklists-section"
         sx={{
-          py: 8,
-          backgroundColor: '#0d131f',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+          py: 7,
+          backgroundColor: '#faf8f5',
+          borderBottom: '1px solid #e7e5e4'
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="overline" sx={{ color: '#c2410c', fontWeight: 700, letterSpacing: '0.08em', display: 'block', mb: 0.5 }}>
+              ACTION CHECKLISTS
+            </Typography>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#1c1917', fontSize: { xs: '1.5rem', sm: '1.9rem' } }}>
+              📋 拿来即用的自救行动手册
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#78716c', mt: 0.5 }}>
+              不讲空洞大道理。遭遇变故时，按清单逐条核对，保护好家庭的底线。
+            </Typography>
+          </Box>
+
+          <Grid container spacing={3.5}>
+            {/* 清单 1：裁员失业应急 SOP */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3.5,
+                  height: '100%',
+                  borderRadius: 3,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #fed7aa',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                    <WarningIcon sx={{ color: '#ea580c', fontSize: 24 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '1.1rem' }}>
+                      裁员发生时的 72 小时应急
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: '#78716c', mb: 2, fontSize: '0.84rem' }}>
+                    突然被通知“毕业”？别慌乱，按此顺序避开权益大坑：
+                  </Typography>
+
+                  <Stack spacing={1}>
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#fff7ed', border: '1px solid #ffedd5' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#9a3412', fontSize: '0.86rem' }}>
+                        1. 绝不当场签字离职协议
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        要求对方出具正式解约函，把协议带回家复核 N+1 与未休年假折算。
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#fbfbfa', border: '1px solid #f5f5f4' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#292524', fontSize: '0.86rem' }}>
+                        2. 备份在职证据与流水
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        打印考勤记录、过往绩效评价及近 12 个月银行工资流水备用。
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#fbfbfa', border: '1px solid #f5f5f4' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#292524', fontSize: '0.86rem' }}>
+                        3. 社保不断缴，申领失业金
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        非自愿离职可申领失业金（医疗保险国家代缴），按灵活就业接续。
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+
+                <Button
+                  variant="text"
+                  onClick={() => navigate('/career')}
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ color: '#c2410c', fontWeight: 700, p: 0, mt: 2.5, justifyContent: 'flex-start' }}
+                >
+                  查看职场突围完整战术 →
+                </Button>
+              </Paper>
+            </Grid>
+
+            {/* 清单 2：副业搞钱避坑 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3.5,
+                  height: '100%',
+                  borderRadius: 3,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #bbf7d0',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                    <MonetizationOnIcon sx={{ color: '#16a34a', fontSize: 24 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '1.1rem' }}>
+                      35+ 副业探索·避坑指南
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: '#78716c', mb: 2, fontSize: '0.84rem' }}>
+                    中年试错成本极高。轻资产是唯一的生路：
+                  </Typography>
+
+                  <Stack spacing={1}>
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#f0fdf4', border: '1px solid #dcfce7' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#166534', fontSize: '0.86rem' }}>
+                        ✅ 首选：经验咨询与企业培训
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        启动成本为 0。将你踩过坑的行业方案，卖给有需求的中小公司或新人。
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#f0fdf4', border: '1px solid #dcfce7' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#166534', fontSize: '0.86rem' }}>
+                        ✅ 沉淀：专业数字资产与模板
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        开发脚手架、业务流程 SOP、合规模板。一次制作，睡后长期变现。
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#fef2f2', border: '1px solid #fee2e2' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#991b1b', fontSize: '0.86rem' }}>
+                        ❌ 坚决避开：重资产加盟与开店
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        千万不要掏空积蓄去加盟奶茶、快餐或盲目租办公室，极易血本无归。
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+
+                <Button
+                  variant="text"
+                  onClick={() => navigate('/side-business')}
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ color: '#15803d', fontWeight: 700, p: 0, mt: 2.5, justifyContent: 'flex-start' }}
+                >
+                  查看 15 套副业轻创实操 →
+                </Button>
+              </Paper>
+            </Grid>
+
+            {/* 清单 3：家庭四笔钱 */}
+            <Grid item xs={12} md={4}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3.5,
+                  height: '100%',
+                  borderRadius: 3,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #bfdbfe',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                    <ShieldIcon sx={{ color: '#2563eb', fontSize: 24 }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '1.1rem' }}>
+                      家庭底线防守·四笔钱法则
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: '#78716c', mb: 2, fontSize: '0.84rem' }}>
+                    上有老下有小，家庭资产必须划分清楚边界：
+                  </Typography>
+
+                  <Stack spacing={1}>
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#eff6ff', border: '1px solid #dbeafe' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#1e40af', fontSize: '0.86rem' }}>
+                        1. 活钱：6~12 个月刚性生活费
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        存大额存单或高流动货币工具，任何情况下都不能用于股市或风险投资。
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#fbfbfa', border: '1px solid #f5f5f4' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#292524', fontSize: '0.86rem' }}>
+                        2. 保命钱：顶梁柱纯保障底仓
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        经济支柱必须配置百万医疗 + 定期寿险，防止一次大病直接掏空家庭。
+                      </Typography>
+                    </Box>
+
+                    <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: '#fbfbfa', border: '1px solid #f5f5f4' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#292524', fontSize: '0.86rem' }}>
+                        3. 长钱与进取钱严格限额
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', display: 'block', mt: 0.3 }}>
+                        养老金底仓追求确定性；风险投资绝不超过总流动资产的 15%。
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Box>
+
+                <Button
+                  variant="text"
+                  onClick={() => navigate('/finance')}
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ color: '#2563eb', fontWeight: 700, p: 0, mt: 2.5, justifyContent: 'flex-start' }}
+                >
+                  查看家庭资产配置全方案 →
+                </Button>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* 🧮 3. 真正有用的计算器：家庭安全生命线 & 养老缺口真实测算 */}
+      <Box
+        id="cashflow-calculator"
+        sx={{
+          py: 7,
+          backgroundColor: '#f5f2eb',
+          borderBottom: '1px solid #e7e5e4'
         }}
       >
         <Container maxWidth="lg">
@@ -380,28 +523,22 @@ const Home = () => {
             elevation={0}
             sx={{
               p: { xs: 3, md: 5 },
-              borderRadius: 4,
-              backgroundColor: 'rgba(15, 23, 42, 0.85)',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(20px)',
-              position: 'relative',
-              overflow: 'hidden'
+              borderRadius: 3,
+              backgroundColor: '#ffffff',
+              border: '1px solid #e7e5e4',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
             }}
           >
-            {/* 顶栏标题 */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 2, mb: 4 }}>
               <Box>
-                <Chip
-                  label="即开即测 · 真实量化"
-                  size="small"
-                  sx={{ bgcolor: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontWeight: 700, mb: 1.5 }}
-                />
-                <Typography variant="h4" sx={{ fontWeight: 800, color: 'white', fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-                  🧮 中年退休养老资金缺口速算
+                <Typography variant="overline" sx={{ color: '#d97706', fontWeight: 700, letterSpacing: '0.08em', display: 'block', mb: 0.5 }}>
+                  RUNWAY & PENSION CALCULATOR
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#94a3b8', mt: 0.5 }}>
-                  拖动下方滑块，实时预演您的退休生活资金赤字与每月被动现金流补充需求
+                <Typography variant="h4" sx={{ fontWeight: 800, color: '#1c1917', fontSize: { xs: '1.4rem', sm: '1.8rem' } }}>
+                  🧮 家庭安全跑道 & 养老资金缺口速算
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#78716c', mt: 0.5 }}>
+                  算清账本才不心慌。输入真实开销，量化家庭在无收入状态下能支撑多久。
                 </Typography>
               </Box>
 
@@ -410,169 +547,95 @@ const Home = () => {
                 onClick={() => navigate('/pension-planner')}
                 endIcon={<ArrowForwardIcon />}
                 sx={{
-                  borderColor: '#3b82f6',
-                  color: '#60a5fa',
+                  borderColor: '#d6d3d1',
+                  color: '#44403c',
                   borderRadius: 2,
                   textTransform: 'none',
                   fontWeight: 600,
-                  '&:hover': { borderColor: '#60a5fa', bgcolor: 'rgba(59, 130, 246, 0.1)' }
+                  '&:hover': { borderColor: '#a8a29e', bgcolor: '#fafaf9' }
                 }}
               >
-                打开完整版 10 年现金流测算器 →
+                打开完整版养老精算模型 →
               </Button>
             </Box>
 
-            {/* 双栏：左侧滑块交互，右侧实时计算面板 */}
             <Grid container spacing={4} alignItems="center">
-              {/* 左侧控制滑块 */}
+              {/* 滑块调节 */}
               <Grid item xs={12} md={7}>
                 <Stack spacing={3}>
                   <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#cbd5e1', fontWeight: 600 }}>
-                        当前年龄：<Box component="span" sx={{ color: '#38bdf8', fontSize: '1.1rem', fontWeight: 700 }}>{currentAge}</Box> 岁
+                      <Typography variant="body2" sx={{ color: '#44403c', fontWeight: 600 }}>
+                        家庭现有可用应急活钱储备：<Box component="span" sx={{ color: '#c2410c', fontWeight: 800, fontSize: '1.1rem' }}>{savingsWan}</Box> 万元
                       </Typography>
-                      <Typography variant="caption" sx={{ color: '#64748b' }}>范围：30 - 55 岁</Typography>
+                      <Typography variant="caption" sx={{ color: '#a8a29e' }}>存款 + 随时可变现理财</Typography>
                     </Box>
                     <Slider
-                      value={currentAge}
-                      min={30}
-                      max={55}
-                      onChange={(e, val) => setCurrentAge(val)}
-                      sx={{ color: '#38bdf8' }}
+                      value={savingsWan}
+                      min={0}
+                      max={150}
+                      step={5}
+                      onChange={(e, v) => setSavingsWan(v)}
+                      sx={{ color: '#c2410c' }}
                     />
                   </Box>
 
                   <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#cbd5e1', fontWeight: 600 }}>
-                        期望退休年龄：<Box component="span" sx={{ color: '#818cf8', fontSize: '1.1rem', fontWeight: 700 }}>{retireAge}</Box> 岁
-                        <Box component="span" sx={{ color: '#94a3b8', ml: 1, fontSize: '0.8rem' }}>（距退休还有 {pensionCalc.yearsToRetire} 年）</Box>
+                      <Typography variant="body2" sx={{ color: '#44403c', fontWeight: 600 }}>
+                        全家每月刚性硬性开支：<Box component="span" sx={{ color: '#c2410c', fontWeight: 800, fontSize: '1.1rem' }}>¥{monthlyCost.toLocaleString()}</Box> / 月
                       </Typography>
-                      <Typography variant="caption" sx={{ color: '#64748b' }}>范围：50 - 65 岁</Typography>
+                      <Typography variant="caption" sx={{ color: '#a8a29e' }}>房贷 + 伙食 + 老人小孩开销</Typography>
                     </Box>
                     <Slider
-                      value={retireAge}
-                      min={50}
-                      max={65}
-                      onChange={(e, val) => setRetireAge(val)}
-                      sx={{ color: '#818cf8' }}
-                    />
-                  </Box>
-
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#cbd5e1', fontWeight: 600 }}>
-                        退休后期望月支出：<Box component="span" sx={{ color: '#fbbf24', fontSize: '1.1rem', fontWeight: 700 }}>¥{monthlyExpense.toLocaleString()}</Box> / 月
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#64748b' }}>维持基础生活至高品质</Typography>
-                    </Box>
-                    <Slider
-                      value={monthlyExpense}
-                      min={4000}
+                      value={monthlyCost}
+                      min={5000}
                       max={30000}
                       step={1000}
-                      onChange={(e, val) => setMonthlyExpense(val)}
-                      sx={{ color: '#fbbf24' }}
-                    />
-                  </Box>
-
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#cbd5e1', fontWeight: 600 }}>
-                        目前家庭养老专项储蓄储备：<Box component="span" sx={{ color: '#34d399', fontSize: '1.1rem', fontWeight: 700 }}>{currentSavings}</Box> 万元
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#64748b' }}>存款 + 稳健理财</Typography>
-                    </Box>
-                    <Slider
-                      value={currentSavings}
-                      min={0}
-                      max={200}
-                      step={5}
-                      onChange={(e, val) => setCurrentSavings(val)}
-                      sx={{ color: '#34d399' }}
+                      onChange={(e, v) => setMonthlyCost(v)}
+                      sx={{ color: '#c2410c' }}
                     />
                   </Box>
                 </Stack>
               </Grid>
 
-              {/* 右侧实时计算结果卡片 */}
+              {/* 量化结果展示 */}
               <Grid item xs={12} md={5}>
                 <Paper
                   elevation={0}
                   sx={{
                     p: 3.5,
                     borderRadius: 3,
-                    background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%)',
-                    border: '1px solid',
-                    borderColor: pensionCalc.levelColor,
-                    boxShadow: `0 10px 30px rgba(0,0,0,0.4), 0 0 20px ${pensionCalc.levelColor}22`
+                    bgcolor: '#faf8f5',
+                    border: '1px solid #e7e5e4'
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="caption" sx={{ color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
-                      测算风险评级
+                  <Typography variant="caption" sx={{ color: '#78716c', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    家庭生命线抗风险评估
+                  </Typography>
+
+                  <Box sx={{ my: 1.5 }}>
+                    <Typography variant="body2" sx={{ color: '#78716c' }}>
+                      若家庭收入突然归零，当前储备可支撑：
                     </Typography>
-                    <Chip
-                      label={pensionCalc.levelText}
-                      size="small"
-                      sx={{
-                        bgcolor: `${pensionCalc.levelColor}22`,
-                        color: pensionCalc.levelColor,
-                        fontWeight: 700,
-                        border: `1px solid ${pensionCalc.levelColor}44`
-                      }}
-                    />
+                    <Typography variant="h3" sx={{ fontWeight: 900, color: runwayMonths >= 12 ? '#15803d' : '#c2410c', my: 0.5 }}>
+                      {runwayMonths} <Typography component="span" variant="h6" sx={{ color: '#57534e' }}>个月</Typography>
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: runwayMonths >= 12 ? '#15803d' : '#ea580c', fontWeight: 700 }}>
+                      {runwayMonths >= 12 ? '🟢 具备健康安全跑道，有充裕时间换道' : '⚠️ 低于12个月警戒线，需立刻缩减开支并开拓副业'}
+                    </Typography>
                   </Box>
 
-                  <Typography variant="body2" sx={{ color: '#94a3b8', mb: 0.5 }}>
-                    预计退休总资金缺口：
-                  </Typography>
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      fontWeight: 900,
-                      color: pensionCalc.levelColor,
-                      fontSize: { xs: '2rem', sm: '2.5rem' },
-                      mb: 2,
-                      letterSpacing: '-0.02em'
-                    }}
-                  >
-                    ¥ {pensionCalc.totalGapWan} <Typography component="span" variant="h5" sx={{ color: '#cbd5e1' }}>万元</Typography>
-                  </Typography>
+                  <Divider sx={{ my: 2 }} />
 
-                  <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.08)' }} />
-
-                  <Stack spacing={1.5} sx={{ mb: 3 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#94a3b8' }}>建议每月需补充积攒：</Typography>
-                      <Typography variant="body2" sx={{ color: '#f1f5f9', fontWeight: 700 }}>
-                        约 ¥{pensionCalc.monthlyGapToSave.toLocaleString()} / 月
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#94a3b8' }}>自救建议路径：</Typography>
-                      <Typography variant="body2" sx={{ color: '#38bdf8', fontWeight: 600 }}>
-                        开拓轻资产副业 + 提高抗风险现金流
-                      </Typography>
-                    </Box>
-                  </Stack>
-
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={() => navigate('/finance')}
-                    sx={{
-                      bgcolor: '#2563eb',
-                      fontWeight: 700,
-                      borderRadius: 2,
-                      py: 1.2,
-                      boxShadow: '0 4px 15px rgba(37,99,235,0.3)',
-                      '&:hover': { bgcolor: '#1d4ed8' }
-                    }}
-                  >
-                    查看家庭财务防守方案
-                  </Button>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" sx={{ color: '#78716c' }}>
+                      预估个人养老金缺口：
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#1c1917' }}>
+                      约 ¥{pensionGap} 万元
+                    </Typography>
+                  </Box>
                 </Paper>
               </Grid>
             </Grid>
@@ -580,437 +643,39 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* 🎯 3. 中年危机 4 维压力自测雷达 */}
-      <Box
-        sx={{
-          py: 8,
-          backgroundColor: '#090d16',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
-            <Chip
-              icon={<FireIcon sx={{ color: '#ef4444 !important' }} />}
-              label="中年承压体检"
-              size="small"
-              sx={{ bgcolor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 700, mb: 1.5 }}
-            />
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'white', mb: 1 }}>
-              🎯 中年危机 4 维压力指数自测
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#94a3b8', maxWidth: 650, mx: 'auto' }}>
-              职场、家庭、财务、情绪多头挤压？滑动评估您当前的负荷分布，获取量身定制的破局处方
-            </Typography>
-          </Box>
-
-          <Grid container spacing={4} alignItems="center">
-            {/* 4 维滑块 */}
-            <Grid item xs={12} md={7}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: { xs: 3, md: 4 },
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(15, 23, 42, 0.6)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)'
-                }}
-              >
-                <Stack spacing={3}>
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.8 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <WorkIcon sx={{ fontSize: 18, color: '#3b82f6' }} /> 职场天花板与裁员焦虑
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#38bdf8', fontWeight: 700 }}>{careerStress} 分</Typography>
-                    </Box>
-                    <Slider value={careerStress} onChange={(e, v) => setCareerStress(v)} sx={{ color: '#3b82f6' }} />
-                  </Box>
-
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.8 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <MonetizationOnIcon sx={{ fontSize: 18, color: '#f59e0b' }} /> 房贷/车贷/现金流紧绷度
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#fbbf24', fontWeight: 700 }}>{financeStress} 分</Typography>
-                    </Box>
-                    <Slider value={financeStress} onChange={(e, v) => setFinanceStress(v)} sx={{ color: '#f59e0b' }} />
-                  </Box>
-
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.8 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <FamilyIcon sx={{ fontSize: 18, color: '#ec4899' }} /> 子女教育与老人医疗精力负荷
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#f472b6', fontWeight: 700 }}>{familyStress} 分</Typography>
-                    </Box>
-                    <Slider value={familyStress} onChange={(e, v) => setFamilyStress(v)} sx={{ color: '#ec4899' }} />
-                  </Box>
-
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.8 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <PsychologyIcon sx={{ fontSize: 18, color: '#8b5cf6' }} /> 精神内耗/失眠/意义感缺失
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#a78bfa', fontWeight: 700 }}>{healthStress} 分</Typography>
-                    </Box>
-                    <Slider value={healthStress} onChange={(e, v) => setHealthStress(v)} sx={{ color: '#8b5cf6' }} />
-                  </Box>
-                </Stack>
-              </Paper>
-            </Grid>
-
-            {/* 诊断报告面板 */}
-            <Grid item xs={12} md={5}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 4,
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  position: 'relative'
-                }}
-              >
-                <Typography variant="caption" sx={{ color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
-                  综合中年危机指数
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5, my: 1.5 }}>
-                  <Typography variant="h2" sx={{ fontWeight: 900, color: crisisIndex.badgeColor }}>
-                    {crisisIndex.score}
-                  </Typography>
-                  <Typography variant="h6" sx={{ color: '#94a3b8' }}>/ 100 分</Typography>
-                </Box>
-
-                <LinearProgress
-                  variant="determinate"
-                  value={crisisIndex.score}
-                  sx={{
-                    height: 8,
-                    borderRadius: 4,
-                    bgcolor: 'rgba(255,255,255,0.1)',
-                    '& .MuiLinearProgress-bar': { bgcolor: crisisIndex.badgeColor }
-                  }}
-                />
-
-                <Box sx={{ mt: 3, p: 2, borderRadius: 2, bgcolor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <Typography variant="caption" sx={{ color: '#cbd5e1', fontWeight: 700, display: 'block', mb: 0.5 }}>
-                    💡 破局诊断建议：
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#94a3b8', lineHeight: 1.6 }}>
-                    {crisisIndex.diag}
-                  </Typography>
-                </Box>
-
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  onClick={() => navigate('/midlife-crisis')}
-                  endIcon={<ArrowForwardIcon />}
-                  sx={{
-                    mt: 3,
-                    borderColor: 'rgba(255,255,255,0.2)',
-                    color: 'white',
-                    py: 1.2,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    '&:hover': { borderColor: '#38bdf8', color: '#38bdf8' }
-                  }}
-                >
-                  查看《中年危机破局全指南》
-                </Button>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-
-      {/* 💼 4. 35+ 职场破局与副业轻创业沙盘 */}
-      <Box
-        sx={{
-          py: 8,
-          backgroundColor: '#0d131f',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 2, mb: 5 }}>
-            <Box>
-              <Chip
-                label="第二曲线 · 技能变现"
-                size="small"
-                sx={{ bgcolor: 'rgba(16, 185, 129, 0.15)', color: '#34d399', fontWeight: 700, mb: 1.5 }}
-              />
-              <Typography variant="h4" sx={{ fontWeight: 800, color: 'white', fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-                💼 35+ 副业与轻资产创业突围沙盒
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#94a3b8', mt: 0.5 }}>
-                中年创业千万不要盲目租店开奶茶店！精选适合职场沉淀的 4 大轻资产变现路径
-              </Typography>
-            </Box>
-
-            <Button
-              variant="text"
-              onClick={() => navigate('/side-business')}
-              endIcon={<ArrowForwardIcon />}
-              sx={{ color: '#34d399', fontWeight: 600 }}
-            >
-              浏览全部 15 套副业模式 →
-            </Button>
-          </Box>
-
-          <Grid container spacing={3}>
-            {[
-              {
-                title: '01 技能咨询与知识陪跑',
-                badge: '极低门槛 · 快速现金流',
-                fit: '技术骨干 / 财务法务 / 管理者 / HR',
-                cost: '启动成本：0 元',
-                income: '预期：5K - 30K/月',
-                desc: '把多年一线踩坑经验转化为企业或新人急需的一对一咨询、求职辅导或诊断报告。',
-                tag: '副业首选',
-                color: '#10b981'
-              },
-              {
-                title: '02 数字资产与专业模板',
-                badge: '睡后收入 · 一次制作多次卖',
-                fit: '产品经理 / 设计师 / 程序员 / 运营',
-                cost: '启动成本：软件工具费',
-                income: '预期：3K - 20K/月（复利）',
-                desc: '制作行业标准化文档模板、低代码脚本、行业研报或Prompt库，在垂直受众中持续变现。',
-                tag: '长效复利',
-                color: '#3b82f6'
-              },
-              {
-                title: '03 垂直领域个人IP孵化',
-                badge: '品牌溢价 · 资源连接器',
-                fit: '有独到业务见解与表达欲的专家',
-                cost: '启动成本：时间与持续输出',
-                income: '预期：广告/私域/高客单服务',
-                desc: '在小红书、微信公众号深耕中年痛点或细分行业，建立“可信任的行家里手”标签。',
-                tag: '个人品牌',
-                color: '#8b5cf6'
-              },
-              {
-                title: '04 轻量级服务出海/跨境',
-                badge: '汇率优势 · 差异化套利',
-                fit: '有国际视野、懂开发或供应链的职场人',
-                cost: '启动成本：5K - 20K',
-                income: '预期：美金收入 · 空间广阔',
-                desc: '海外独立站微型 SaaS、数字服务外包（Upwork/Fiverr）或轻量跨境电商品牌。',
-                tag: '出海突围',
-                color: '#f59e0b'
-              }
-            ].map((box) => (
-              <Grid item xs={12} sm={6} md={3} key={box.title}>
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 3,
-                    height: '100%',
-                    borderRadius: 3,
-                    backgroundColor: 'rgba(15, 23, 42, 0.75)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    '&:hover': {
-                      transform: 'translateY(-6px)',
-                      borderColor: box.color,
-                      boxShadow: `0 15px 30px rgba(0,0,0,0.4), 0 0 20px ${box.color}20`
-                    }
-                  }}
-                >
-                  <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-                      <Chip
-                        label={box.tag}
-                        size="small"
-                        sx={{ bgcolor: `${box.color}22`, color: box.color, fontWeight: 700, fontSize: '0.7rem' }}
-                      />
-                      <Typography variant="caption" sx={{ color: '#64748b' }}>{box.cost}</Typography>
-                    </Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: 'white', mb: 1, fontSize: '1.05rem' }}>
-                      {box.title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: '#94a3b8', fontSize: '0.84rem', mb: 2, lineHeight: 1.6 }}>
-                      {box.desc}
-                    </Typography>
-                  </Box>
-
-                  <Box sx={{ pt: 2, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                    <Typography variant="caption" sx={{ color: '#cbd5e1', display: 'block', mb: 0.5, fontWeight: 600 }}>
-                      适合：{box.fit}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: box.color, fontWeight: 700 }}>
-                      收益：{box.income}
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
-
-      {/* 🛡️ 5. 中年应急突围锦囊箱 (Survival Toolboxes) */}
-      <Box
-        sx={{
-          py: 8,
-          backgroundColor: '#090d16',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
-            <Chip
-              icon={<ShieldIcon sx={{ color: '#38bdf8 !important' }} />}
-              label="应急止血手册"
-              size="small"
-              sx={{ bgcolor: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', fontWeight: 700, mb: 1.5 }}
-            />
-            <Typography variant="h4" sx={{ fontWeight: 800, color: 'white', mb: 1 }}>
-              🛡️ 中年危机避坑急救箱
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#94a3b8' }}>
-              关键时刻不慌乱：三大高频危机场景的行动避坑 SOP
-            </Typography>
-          </Box>
-
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <Paper
-                elevation={0}
-                onClick={() => navigate('/career')}
-                sx={{
-                  p: 3.5,
-                  height: '100%',
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(15, 23, 42, 0.7)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s',
-                  '&:hover': { transform: 'translateY(-4px)', borderColor: '#ef4444' }
-                }}
-              >
-                <WarningIcon sx={{ color: '#ef4444', fontSize: 32, mb: 1.5 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, color: 'white', mb: 1 }}>
-                  《突遭裁员的黄金 72 小时生存 SOP》
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#94a3b8', lineHeight: 1.6, mb: 2 }}>
-                  1. 不要当场签字承诺书；<br />
-                  2. 打印绩效与加班证据留存；<br />
-                  3. 盘点社保公积金接续方案；<br />
-                  4. 第一时间召开家庭财务紧缩会议。
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#ef4444', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  查看裁员防坑应对法则 →
-                </Typography>
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Paper
-                elevation={0}
-                onClick={() => navigate('/finance')}
-                sx={{
-                  p: 3.5,
-                  height: '100%',
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(15, 23, 42, 0.7)',
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s',
-                  '&:hover': { transform: 'translateY(-4px)', borderColor: '#f59e0b' }
-                }}
-              >
-                <AccountBalanceIcon sx={{ color: '#f59e0b', fontSize: 32, mb: 1.5 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, color: 'white', mb: 1 }}>
-                  《家庭抗风险“四笔钱”配置指南》
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#94a3b8', lineHeight: 1.6, mb: 2 }}>
-                  1. 活钱：6-12个月无收入应急金；<br />
-                  2. 杠杆钱：家庭顶梁柱百万医疗与重疾；<br />
-                  3. 稳健钱：年金险与国债锁定养老底仓；<br />
-                  4. 进攻钱：严控比例在20%以内。
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#f59e0b', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  查看家庭资产防守配置法 →
-                </Typography>
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Paper
-                elevation={0}
-                onClick={() => navigate('/family')}
-                sx={{
-                  p: 3.5,
-                  height: '100%',
-                  borderRadius: 3,
-                  backgroundColor: 'rgba(15, 23, 42, 0.7)',
-                  border: '1px solid rgba(139, 92, 246, 0.3)',
-                  cursor: 'pointer',
-                  transition: 'all 0.25s',
-                  '&:hover': { transform: 'translateY(-4px)', borderColor: '#8b5cf6' }
-                }}
-              >
-                <FamilyIcon sx={{ color: '#8b5cf6', fontSize: 32, mb: 1.5 }} />
-                <Typography variant="h6" sx={{ fontWeight: 700, color: 'white', mb: 1 }}>
-                  《青春期逆反“闭嘴倾听”沟通公式》
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#94a3b8', lineHeight: 1.6, mb: 2 }}>
-                  1. 用“你觉得呢”替代“你必须”；<br />
-                  2. 承认孩子的独立心理边界；<br />
-                  3. 不在饭桌和睡前进行教训复盘；<br />
-                  4. 从说教者退回到坚实的后盾伙伴。
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#8b5cf6', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  查看家庭亲子降温手册 →
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-
-      {/* 📚 6. 实战文库精选（四大支柱文章流） */}
+      {/* 📚 4. 137 篇分专题实战文库（温暖优雅的杂志排版） */}
       <Container
         id="articles-feed-section"
         maxWidth="lg"
         sx={{
-          pt: 8,
-          pb: 12,
+          pt: 7,
+          pb: 10,
           px: { xs: 2, sm: 3 }
         }}
       >
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Chip
-            icon={<BookIcon sx={{ color: '#38bdf8 !important' }} />}
-            label="深度知识库"
-            size="small"
-            sx={{ bgcolor: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', fontWeight: 700, mb: 1.5 }}
-          />
-          <Typography variant="h4" sx={{ fontWeight: 800, color: 'white', mb: 1 }}>
-            📚 137 篇自救实战智库精选
+        <Box sx={{ mb: 3.5 }}>
+          <Typography variant="overline" sx={{ color: '#78716c', fontWeight: 700, letterSpacing: '0.08em', display: 'block', mb: 0.5 }}>
+            THE KNOWLEDGE BASE
           </Typography>
-          <Typography variant="body2" sx={{ color: '#94a3b8' }}>
-            覆盖职场、副业、养老金、家庭与心理的全景作战方案
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#1c1917', fontSize: { xs: '1.5rem', sm: '1.9rem' } }}>
+            📚 137 篇自救实战智库
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#78716c', mt: 0.5 }}>
+            按具体生活与职场问题分类，每篇均经过沉淀整理，拒绝无价值的互联网噪音。
           </Typography>
         </Box>
 
         {/* 分类 Tabs 导航 */}
         <Box
           sx={{
-            mb: 4,
+            mb: 3.5,
             position: 'sticky',
-            top: 64,
+            top: 68,
             zIndex: 10,
-            backgroundColor: 'rgba(9, 13, 22, 0.95)',
+            backgroundColor: 'rgba(250, 248, 245, 0.95)',
             backdropFilter: 'blur(16px)',
-            py: 1,
-            borderBottom: '1px solid rgba(255,255,255,0.08)'
+            py: 0.8,
+            borderBottom: '1px solid #e7e5e4'
           }}
         >
           <Tabs
@@ -1025,20 +690,20 @@ const Home = () => {
               '& .MuiTabs-indicator': {
                 height: 3,
                 borderRadius: 2,
-                backgroundColor: '#3b82f6'
+                backgroundColor: '#c2410c'
               },
               '& .MuiTab-root': {
-                fontSize: '0.95rem',
+                fontSize: '0.92rem',
                 fontWeight: 600,
                 textTransform: 'none',
                 minWidth: 'auto',
-                px: { xs: 2, sm: 2.8 },
-                py: 1.5,
+                px: { xs: 1.8, sm: 2.2 },
+                py: 1.2,
                 mr: 1,
                 borderRadius: 2,
-                color: '#94a3b8',
+                color: '#78716c',
                 '&.Mui-selected': {
-                  color: '#38bdf8'
+                  color: '#c2410c'
                 }
               }
             }}
@@ -1052,9 +717,9 @@ const Home = () => {
                     <Typography
                       component="span"
                       sx={{
-                        fontSize: '0.75rem',
-                        bgcolor: activeTab === index ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255,255,255,0.06)',
-                        color: activeTab === index ? '#38bdf8' : '#64748b',
+                        fontSize: '0.72rem',
+                        bgcolor: activeTab === index ? 'rgba(194, 65, 12, 0.1)' : '#f5f5f4',
+                        color: activeTab === index ? '#c2410c' : '#78716c',
                         px: 0.8,
                         py: 0.2,
                         borderRadius: '10px',
@@ -1074,24 +739,24 @@ const Home = () => {
         <Grid container spacing={3}>
           {loading ? (
             [1, 2, 3, 4, 5, 6].map((n) => (
-              <Grid item xs={12} sm={6} md={6} key={n}>
-                <Paper sx={{ p: 3, borderRadius: 3, bgcolor: '#0f172a' }}>
-                  <Skeleton variant="rectangular" height={160} sx={{ borderRadius: 2, mb: 2 }} />
-                  <Skeleton variant="text" width="80%" height={28} />
+              <Grid item xs={12} sm={6} key={n}>
+                <Paper sx={{ p: 3, borderRadius: 3, bgcolor: '#ffffff' }}>
+                  <Skeleton variant="text" width="40%" height={20} sx={{ mb: 1 }} />
+                  <Skeleton variant="text" width="85%" height={28} sx={{ mb: 1 }} />
                   <Skeleton variant="text" width="100%" height={20} />
                 </Paper>
               </Grid>
             ))
           ) : visibleArticles.length === 0 ? (
             <Grid item xs={12}>
-              <Paper sx={{ p: 6, textAlign: 'center', bgcolor: 'rgba(15,23,42,0.6)', border: '1px dashed rgba(255,255,255,0.1)' }}>
+              <Paper sx={{ p: 6, textAlign: 'center', bgcolor: '#ffffff', border: '1px dashed #d6d3d1', borderRadius: 3 }}>
                 <Typography color="text.secondary">该分类下正在整理更多干货，敬请期待！</Typography>
               </Paper>
             </Grid>
           ) : (
             visibleArticles.map((article, idx) => {
               const stats = getDeterministicStats(article.id || article.title)
-              const gradient = categoryGradients[article.category] || 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)'
+              const colorConfig = categoryColors[article.category] || { bg: '#f5f5f4', color: '#44403c', border: '#e7e5e4' }
 
               return (
                 <Grid item xs={12} sm={6} key={article.id || idx}>
@@ -1100,108 +765,93 @@ const Home = () => {
                     elevation={0}
                     sx={{
                       height: '100%',
-                      display: 'flex',
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      backgroundColor: 'rgba(15, 23, 42, 0.75)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e7e5e4',
                       borderRadius: 3,
                       cursor: 'pointer',
-                      overflow: 'hidden',
-                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
                       '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: '0 12px 30px rgba(0,0,0,0.5)',
-                        borderColor: 'rgba(56, 189, 248, 0.4)',
-                        '& .card-title': { color: '#38bdf8' }
+                        transform: 'translateY(-3px)',
+                        boxShadow: '0 8px 25px rgba(0,0,0,0.06)',
+                        borderColor: '#d6d3d1',
+                        '& .card-title': { color: '#c2410c' }
                       }
                     }}
                   >
-                    {/* 左侧封面 */}
-                    <Box
-                      sx={{
-                        width: { xs: '100%', sm: 170 },
-                        minWidth: { sm: 170 },
-                        minHeight: { xs: 130, sm: 170 },
-                        background: article.image ? `url(${article.image})` : gradient,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        p: 2,
-                        color: 'white',
-                        textAlign: 'center'
-                      }}
-                    >
-                      {!article.image && (
-                        <>
-                          <Box sx={{ mb: 0.8 }}>{getCategoryIcon(article.category)}</Box>
-                          <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.75rem' }}>
-                            {article.category}
-                          </Typography>
-                        </>
-                      )}
-                    </Box>
-
-                    {/* 右侧内容 */}
-                    <CardContent sx={{ flex: 1, p: 2.5, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                      <Box>
+                    <CardContent sx={{ p: 3 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                         <Chip
                           label={article.category}
                           size="small"
                           sx={{
-                            mb: 1,
-                            bgcolor: 'rgba(255,255,255,0.06)',
-                            color: '#94a3b8',
-                            fontSize: '0.7rem',
-                            fontWeight: 600
+                            bgcolor: colorConfig.bg,
+                            color: colorConfig.color,
+                            border: `1px solid ${colorConfig.border}`,
+                            fontSize: '0.72rem',
+                            fontWeight: 700
                           }}
                         />
-                        <Typography
-                          className="card-title"
-                          variant="h6"
-                          sx={{
-                            fontWeight: 700,
-                            mb: 1,
-                            fontSize: '1.05rem',
-                            lineHeight: 1.4,
-                            color: '#f8fafc',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            transition: 'color 0.2s'
-                          }}
-                        >
-                          {article.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: '#64748b',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            fontSize: '0.84rem',
-                            lineHeight: 1.5
-                          }}
-                        >
-                          {article.excerpt || article.summary}
+                        <Typography variant="caption" sx={{ color: '#a8a29e' }}>
+                          {article.readTime || '3分钟阅读'}
                         </Typography>
                       </Box>
 
-                      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
-                        <Typography variant="caption" sx={{ color: '#94a3b8' }}>
-                          {article.readTime || '3分钟阅读'} · {article.author}
-                        </Typography>
-                        <Stack direction="row" spacing={1.5} sx={{ color: '#64748b' }}>
+                      <Typography
+                        className="card-title"
+                        variant="h6"
+                        sx={{
+                          fontWeight: 700,
+                          mb: 1.2,
+                          fontSize: '1.08rem',
+                          lineHeight: 1.4,
+                          color: '#1c1917',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          transition: 'color 0.2s'
+                        }}
+                      >
+                        {article.title}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: '#78716c',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          fontSize: '0.86rem',
+                          lineHeight: 1.6
+                        }}
+                      >
+                        {article.excerpt || article.summary}
+                      </Typography>
+                    </CardContent>
+
+                    <Box sx={{ px: 3, pb: 2.5, pt: 0 }}>
+                      <Divider sx={{ mb: 1.5, borderColor: '#f5f5f4' }} />
+                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          <Avatar sx={{ width: 22, height: 22, fontSize: '0.65rem', bgcolor: '#c2410c', color: 'white' }}>
+                            {article.author?.charAt(0) || '指'}
+                          </Avatar>
+                          <Typography variant="caption" sx={{ color: '#57534e', fontWeight: 600 }}>
+                            {article.author || '特约导师'}
+                          </Typography>
+                        </Stack>
+
+                        <Stack direction="row" spacing={1.5} sx={{ color: '#a8a29e' }}>
                           <Typography variant="caption">👍 {article.likes ?? stats.likes}</Typography>
                           <Typography variant="caption">💬 {article.comments ?? stats.comments}</Typography>
                         </Stack>
                       </Stack>
-                    </CardContent>
+                    </Box>
                   </Card>
                 </Grid>
               )
@@ -1209,11 +859,11 @@ const Home = () => {
           )}
         </Grid>
 
-        {/* 加载更多按钮 */}
+        {/* 加载更多 */}
         {visibleArticles.length > 0 && (
-          <Box sx={{ textAlign: 'center', mt: 6 }}>
-            <Typography variant="caption" sx={{ color: '#64748b', display: 'block', mb: 2 }}>
-              已展示 {visibleArticles.length} / {currentFilteredArticles.length} 篇精选指南
+          <Box sx={{ textAlign: 'center', mt: 5 }}>
+            <Typography variant="caption" sx={{ color: '#a8a29e', display: 'block', mb: 2 }}>
+              已展示 {visibleArticles.length} / {currentFilteredArticles.length} 篇实操指南
             </Typography>
             {hasMore && (
               <Button
@@ -1221,15 +871,16 @@ const Home = () => {
                 onClick={() => setDisplayCount(prev => prev + 6)}
                 sx={{
                   borderRadius: 3,
-                  px: 5,
-                  py: 1.4,
-                  fontWeight: 700,
-                  borderColor: 'rgba(56, 189, 248, 0.3)',
-                  color: '#38bdf8',
-                  bgcolor: 'rgba(56, 189, 248, 0.05)',
+                  px: 4,
+                  py: 1.2,
+                  fontWeight: 600,
+                  borderColor: '#d6d3d1',
+                  color: '#44403c',
+                  bgcolor: '#ffffff',
                   '&:hover': {
-                    borderColor: '#38bdf8',
-                    bgcolor: 'rgba(56, 189, 248, 0.15)'
+                    borderColor: '#c2410c',
+                    color: '#c2410c',
+                    bgcolor: '#fff7ed'
                   }
                 }}
               >
