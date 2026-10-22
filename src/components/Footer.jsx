@@ -20,7 +20,8 @@ const Footer = () => {
 
   const toolLinks = [
     { label: '裁员赔偿精确测算 (N+1 / 2N)', path: '/layoff-calculator', icon: <GavelIcon sx={{ fontSize: 16, color: '#c2410c' }} /> },
-    { label: '养老金真实缺口测算', path: '/pension-planner', icon: <CalculateIcon sx={{ fontSize: 16, color: '#d97706' }} /> },
+    { label: '2025法定退休金与延迟退休', path: '/retirement-calculator', icon: <CalculateIcon sx={{ fontSize: 16, color: '#d97706' }} /> },
+    { label: '36个月存钱与消费降级规划', path: '/savings-planner', icon: null },
     { label: '自救行动工作台 (SOP)', path: '/dashboard', icon: null },
     { label: '读者建议与共创', path: '/complaints', icon: <FeedbackIcon sx={{ fontSize: 16 }} /> },
   ]

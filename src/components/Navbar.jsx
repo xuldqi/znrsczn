@@ -38,7 +38,8 @@ import {
   RateReview as FeedbackIcon,
   AutoStories as BookIcon,
   SpaceDashboard as DashboardIcon,
-  Gavel as GavelIcon
+  Gavel as GavelIcon,
+  Savings as SavingsIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -288,14 +289,14 @@ const Navbar = () => {
             <Button
               component={Link}
               to="/layoff-calculator"
-              startIcon={<GavelIcon sx={{ fontSize: 17, color: '#c2410c' }} />}
+              startIcon={<GavelIcon sx={{ fontSize: 16, color: '#c2410c' }} />}
               sx={{
                 color: location.pathname === '/layoff-calculator' ? '#c2410c' : '#57534e',
-                px: 1.8,
+                px: 1.5,
                 py: 0.8,
                 borderRadius: 2,
                 fontWeight: location.pathname === '/layoff-calculator' ? 700 : 500,
-                fontSize: '0.92rem',
+                fontSize: '0.9rem',
                 whiteSpace: 'nowrap',
                 backgroundColor: location.pathname === '/layoff-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
                 '&:hover': {
@@ -307,27 +308,50 @@ const Navbar = () => {
               裁员赔偿
             </Button>
 
-            {/* 4. 养老测算 */}
+            {/* 4. 退休金测算 */}
             <Button
               component={Link}
-              to="/pension-planner"
-              startIcon={<CalculateIcon sx={{ fontSize: 17, color: '#d97706' }} />}
+              to="/retirement-calculator"
+              startIcon={<CalculateIcon sx={{ fontSize: 16, color: '#d97706' }} />}
               sx={{
-                color: location.pathname === '/pension-planner' ? '#c2410c' : '#57534e',
-                px: 1.8,
+                color: location.pathname === '/retirement-calculator' ? '#c2410c' : '#57534e',
+                px: 1.5,
                 py: 0.8,
                 borderRadius: 2,
-                fontWeight: location.pathname === '/pension-planner' ? 700 : 500,
-                fontSize: '0.92rem',
+                fontWeight: location.pathname === '/retirement-calculator' ? 700 : 500,
+                fontSize: '0.9rem',
                 whiteSpace: 'nowrap',
-                backgroundColor: location.pathname === '/pension-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
+                backgroundColor: location.pathname === '/retirement-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
                 '&:hover': {
                   backgroundColor: 'rgba(0, 0, 0, 0.04)',
                   color: '#1c1917'
                 }
               }}
             >
-              养老测算
+              退休金测算
+            </Button>
+
+            {/* 5. 存钱降级 */}
+            <Button
+              component={Link}
+              to="/savings-planner"
+              startIcon={<SavingsIcon sx={{ fontSize: 16, color: '#047857' }} />}
+              sx={{
+                color: location.pathname === '/savings-planner' ? '#c2410c' : '#57534e',
+                px: 1.5,
+                py: 0.8,
+                borderRadius: 2,
+                fontWeight: location.pathname === '/savings-planner' ? 700 : 500,
+                fontSize: '0.9rem',
+                whiteSpace: 'nowrap',
+                backgroundColor: location.pathname === '/savings-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  color: '#1c1917'
+                }
+              }}
+            >
+              存钱降级
             </Button>
 
             {/* 4. 精选好物 */}
@@ -557,12 +581,32 @@ const Navbar = () => {
           </ListItem>
           <ListItem disablePadding sx={{ mb: 0.6 }}>
             <ListItemButton
+              onClick={() => handleNavClick('/retirement-calculator')}
+              selected={location.pathname === '/retirement-calculator'}
+              sx={{ borderRadius: 2, color: location.pathname === '/retirement-calculator' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/retirement-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
+            >
+              <ListItemIcon sx={{ color: '#d97706', minWidth: 38 }}><CalculateIcon /></ListItemIcon>
+              <ListItemText primary="法定退休金与延迟退休" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ mb: 0.6 }}>
+            <ListItemButton
+              onClick={() => handleNavClick('/savings-planner')}
+              selected={location.pathname === '/savings-planner'}
+              sx={{ borderRadius: 2, color: location.pathname === '/savings-planner' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/savings-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
+            >
+              <ListItemIcon sx={{ color: '#047857', minWidth: 38 }}><SavingsIcon /></ListItemIcon>
+              <ListItemText primary="36个月存钱与降级规划" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ mb: 0.6 }}>
+            <ListItemButton
               onClick={() => handleNavClick('/pension-planner')}
               selected={location.pathname === '/pension-planner'}
               sx={{ borderRadius: 2, color: location.pathname === '/pension-planner' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/pension-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
             >
-              <ListItemIcon sx={{ color: '#d97706', minWidth: 38 }}><CalculateIcon /></ListItemIcon>
-              <ListItemText primary="养老金缺口测算" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+              <ListItemIcon sx={{ color: '#78716c', minWidth: 38 }}><CalculateIcon /></ListItemIcon>
+              <ListItemText primary="商业养老金缺口模型" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding sx={{ mb: 0.6 }}>

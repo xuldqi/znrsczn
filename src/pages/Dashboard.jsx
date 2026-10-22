@@ -29,7 +29,8 @@ import {
   RadioButtonUnchecked as UncheckedIcon,
   ArrowBack as ArrowBackIcon,
   RestartAlt as ResetIcon,
-  GavelOutlined as GavelIcon
+  GavelOutlined as GavelIcon,
+  SavingsOutlined as SavingsIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
@@ -465,12 +466,50 @@ const Dashboard = () => {
                 </Box>
               </Box>
 
-              <Box sx={{ pt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+              <Box sx={{ pt: 1.5, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => navigate('/savings-planner')}
+                  startIcon={<SavingsIcon sx={{ fontSize: 15, color: '#047857' }} />}
+                  sx={{
+                    borderColor: '#a7f3d0',
+                    color: '#047857',
+                    bgcolor: '#ecfdf5',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    fontSize: '0.78rem',
+                    borderRadius: 1.5,
+                    '&:hover': { borderColor: '#047857', bgcolor: '#d1fae5' }
+                  }}
+                >
+                  36个月存钱降级规划
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => navigate('/retirement-calculator')}
+                  startIcon={<CalculateIcon sx={{ fontSize: 15, color: '#b45309' }} />}
+                  sx={{
+                    borderColor: '#fde68a',
+                    color: '#b45309',
+                    bgcolor: '#fffbeb',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    fontSize: '0.78rem',
+                    borderRadius: 1.5,
+                    '&:hover': { borderColor: '#b45309', bgcolor: '#fef3c7' }
+                  }}
+                >
+                  法定退休金精算
+                </Button>
                 <Button
                   size="small"
                   variant="outlined"
                   onClick={() => navigate('/layoff-calculator')}
-                  startIcon={<GavelIcon sx={{ fontSize: 16, color: '#c2410c' }} />}
+                  startIcon={<GavelIcon sx={{ fontSize: 15, color: '#c2410c' }} />}
                   sx={{
                     borderColor: '#fed7aa',
                     color: '#c2410c',
@@ -478,26 +517,12 @@ const Dashboard = () => {
                     textTransform: 'none',
                     fontWeight: 700,
                     whiteSpace: 'nowrap',
+                    fontSize: '0.78rem',
+                    borderRadius: 1.5,
                     '&:hover': { borderColor: '#c2410c', bgcolor: '#ffedd5' }
                   }}
                 >
-                  裁员赔偿测算器 (N+1/2N)
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => navigate('/pension-planner')}
-                  endIcon={<ArrowForwardIcon />}
-                  sx={{
-                    borderColor: '#d6d3d1',
-                    color: '#44403c',
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    whiteSpace: 'nowrap',
-                    '&:hover': { borderColor: '#a8a29e', bgcolor: '#fafaf9' }
-                  }}
-                >
-                  养老精算模型
+                  裁员赔偿测算
                 </Button>
               </Box>
             </Paper>
@@ -639,6 +664,61 @@ const Dashboard = () => {
                       }}
                     >
                       立即测算 →
+                    </Button>
+                  </Box>
+                )}
+
+                {/* 家庭防守四笔钱专享直通车 */}
+                {currentSop.id === 'finance' && (
+                  <Box
+                    onClick={() => navigate('/savings-planner')}
+                    sx={{
+                      p: 1.5,
+                      mb: 2,
+                      borderRadius: 2,
+                      bgcolor: '#ecfdf5',
+                      border: '1px solid #a7f3d0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      '&:hover': {
+                        borderColor: '#059669',
+                        bgcolor: '#d1fae5',
+                        boxShadow: '0 2px 8px rgba(4, 120, 87, 0.08)'
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
+                      <SavingsIcon sx={{ color: '#047857', fontSize: 22 }} />
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#065f46', fontSize: '0.88rem' }}>
+                          36 个月极简生存跑道与消费降级规划器
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#047857', fontSize: '0.74rem', display: 'block' }}>
+                          模拟开销挤干三级跳，算出把现有存款多花几年的具体省钱路径
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      sx={{
+                        bgcolor: '#047857',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.76rem',
+                        whiteSpace: 'nowrap',
+                        py: 0.4,
+                        px: 1.2,
+                        borderRadius: 1,
+                        boxShadow: 'none',
+                        '&:hover': { bgcolor: '#064e3b', boxShadow: 'none' }
+                      }}
+                    >
+                      去规划 →
                     </Button>
                   </Box>
                 )}
