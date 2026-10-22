@@ -1,31 +1,37 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { CssBaseline, Container } from '@mui/material'
+import { CssBaseline } from '@mui/material'
 import { AuthProvider } from './contexts/AuthContext'
 import { ArticleProvider } from './contexts/ArticleContext'
 import { CategoryProvider } from './contexts/CategoryContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import ScrollToTop from './components/ScrollToTop'
+import LoadingFallback from './components/LoadingFallback'
+
 import Home from './pages/Home'
-import TestPage from './pages/TestPage'
-import Articles from './pages/Articles'
-import Products from './pages/Products'
-import Psychology from './pages/Psychology'
-import Career from './pages/Career'
-import Family from './pages/Family'
-import Interests from './pages/Interests'
-import Finance from './pages/Finance'
-import LifeSkills from './pages/LifeSkills'
-import SideBusiness from './pages/SideBusiness'
-import MidlifeCrisis from './pages/MidlifeCrisis'
-import Transformation from './pages/Transformation'
-import Complaints from './pages/Complaints'
-import SearchResults from './pages/SearchResults'
-import Admin from './pages/Admin'
-import Login from './pages/Login'
-import ArticleDetail from './pages/ArticleDetail'
-import PensionPlanner from './pages/PensionPlanner'
-import Membership from './pages/Membership'
+
+// 路由代码分割（懒加载）
+const TestPage = lazy(() => import('./pages/TestPage'))
+const Articles = lazy(() => import('./pages/Articles'))
+const Products = lazy(() => import('./pages/Products'))
+const Psychology = lazy(() => import('./pages/Psychology'))
+const Career = lazy(() => import('./pages/Career'))
+const Family = lazy(() => import('./pages/Family'))
+const Interests = lazy(() => import('./pages/Interests'))
+const Finance = lazy(() => import('./pages/Finance'))
+const LifeSkills = lazy(() => import('./pages/LifeSkills'))
+const SideBusiness = lazy(() => import('./pages/SideBusiness'))
+const MidlifeCrisis = lazy(() => import('./pages/MidlifeCrisis'))
+const Transformation = lazy(() => import('./pages/Transformation'))
+const Complaints = lazy(() => import('./pages/Complaints'))
+const SearchResults = lazy(() => import('./pages/SearchResults'))
+const Admin = lazy(() => import('./pages/Admin'))
+const Login = lazy(() => import('./pages/Login'))
+const ArticleDetail = lazy(() => import('./pages/ArticleDetail'))
+const PensionPlanner = lazy(() => import('./pages/PensionPlanner'))
+const Membership = lazy(() => import('./pages/Membership'))
 
 import './App.css'
 
@@ -62,7 +68,6 @@ const theme = createTheme({
       800: '#1e293b',
       900: '#0f172a',
     },
-    // 添加自定义调色板
     success: {
       main: '#10b981',
       light: '#34d399',
@@ -130,7 +135,7 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 12, // 更圆润的圆角
+    borderRadius: 12,
   },
   components: {
     MuiButton: {
@@ -205,34 +210,38 @@ function App() {
         <CategoryProvider>
           <ArticleProvider>
             <Router>
+              <ScrollToTop />
               <div className="App">
                 <Navbar />
                 <main>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/search" element={<SearchResults />} />
-                    <Route path="/articles" element={<Articles />} />
-                    <Route path="/article/:slug" element={<ArticleDetail />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/psychology" element={<Psychology />} />
-                    <Route path="/career" element={<Career />} />
-                    <Route path="/family" element={<Family />} />
-                    <Route path="/interests" element={<Interests />} />
-                    <Route path="/finance" element={<Finance />} />
-                    <Route path="/pension-planner" element={<PensionPlanner />} />
-                    <Route path="/life-skills" element={<LifeSkills />} />
-                    <Route path="/side-business" element={<SideBusiness />} />
-                    <Route path="/midlife-crisis" element={<MidlifeCrisis />} />
-                    <Route path="/transformation" element={<Transformation />} />
-                    <Route path="/complaints" element={<Complaints />} />
-                    <Route path="/membership" element={<Membership />} />
-                    <Route path="/admin" element={
-                      <ProtectedRoute requireAdmin={true}>
-                        <Admin />
-                      </ProtectedRoute>
-                    } />
-                  </Routes>
+                  <Suspense fallback={<LoadingFallback />}>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/search" element={<SearchResults />} />
+                      <Route path="/articles" element={<Articles />} />
+                      <Route path="/article/:slug" element={<ArticleDetail />} />
+                      <Route path="/products" element={<Products />} />
+                      <Route path="/psychology" element={<Psychology />} />
+                      <Route path="/career" element={<Career />} />
+                      <Route path="/family" element={<Family />} />
+                      <Route path="/interests" element={<Interests />} />
+                      <Route path="/finance" element={<Finance />} />
+                      <Route path="/pension-planner" element={<PensionPlanner />} />
+                      <Route path="/life-skills" element={<LifeSkills />} />
+                      <Route path="/side-business" element={<SideBusiness />} />
+                      <Route path="/midlife-crisis" element={<MidlifeCrisis />} />
+                      <Route path="/transformation" element={<Transformation />} />
+                      <Route path="/complaints" element={<Complaints />} />
+                      <Route path="/membership" element={<Membership />} />
+                      <Route path="/admin" element={
+                        <ProtectedRoute requireAdmin={true}>
+                          <Admin />
+                        </ProtectedRoute>
+                      } />
+                      <Route path="/test" element={<TestPage />} />
+                    </Routes>
+                  </Suspense>
                 </main>
               </div>
             </Router>

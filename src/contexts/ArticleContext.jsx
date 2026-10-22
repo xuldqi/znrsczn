@@ -1,5 +1,6 @@
 /* eslint react-refresh/only-export-components: "off" */
 import { createContext, useContext, useState, useEffect } from 'react'
+import defaultArticlesData from '../../articles.json'
 
 // 创建文章上下文
 const ArticleContext = createContext()
@@ -18,13 +19,16 @@ const api = {
       
       // 转换数组格式为对象格式（保持原有接口兼容）
       const articlesObj = {}
-      articles.forEach(article => {
-        articlesObj[article.id] = article
-      })
-      return articlesObj
+      if (Array.isArray(articles) && articles.length > 0) {
+        articles.forEach(article => {
+          articlesObj[article.id] = article
+        })
+        return articlesObj
+      }
+      return defaultArticlesData
     } catch (error) {
-      console.error('获取文章失败:', error)
-      return {}
+      console.warn('API未连接，使用本地预设文章数据:', error.message)
+      return defaultArticlesData
     }
   },
 
@@ -94,10 +98,14 @@ export const ArticleProvider = ({ children }) => {
       setLoading(true)
       setError(null)
       const articlesData = await api.getArticles()
-      setArticles(articlesData)
+      if (articlesData && Object.keys(articlesData).length > 0) {
+        setArticles(articlesData)
+      } else {
+        setArticles(defaultArticlesData)
+      }
     } catch (error) {
       setError(error.message)
-      console.error('加载文章失败:', error)
+      setArticles(defaultArticlesData)
     } finally {
       setLoading(false)
     }

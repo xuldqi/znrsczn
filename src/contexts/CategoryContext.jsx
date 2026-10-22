@@ -1,3 +1,4 @@
+/* eslint react-refresh/only-export-components: "off" */
 import { createContext, useContext, useEffect, useState } from 'react'
 
 const CategoryContext = createContext()
@@ -52,9 +53,21 @@ const api = {
   }
 }
 
+const defaultCategories = [
+  { id: 'career', name: '职场发展', color: '#2563eb', order: 1 },
+  { id: 'transformation', name: '转型升级', color: '#7c3aed', order: 2 },
+  { id: 'side-business', name: '副业指南', color: '#059669', order: 3 },
+  { id: 'finance', name: '财务管理', color: '#d97706', order: 4 },
+  { id: 'midlife-crisis', name: '中年危机', color: '#dc2626', order: 5 },
+  { id: 'psychology', name: '心理健康', color: '#0891b2', order: 6 },
+  { id: 'family', name: '家庭关系', color: '#ec4899', order: 7 },
+  { id: 'life-skills', name: '生活技能', color: '#10b981', order: 8 },
+  { id: 'interests', name: '兴趣爱好', color: '#8b5cf6', order: 9 }
+]
+
 export const CategoryProvider = ({ children }) => {
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [categories, setCategories] = useState(defaultCategories)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const loadCategories = async () => {
@@ -62,9 +75,14 @@ export const CategoryProvider = ({ children }) => {
       setLoading(true)
       setError(null)
       const data = await api.fetchCategories()
-      setCategories(Array.isArray(data) ? data : [])
+      if (Array.isArray(data) && data.length > 0) {
+        setCategories(data)
+      } else {
+        setCategories(defaultCategories)
+      }
     } catch (err) {
       setError(err.message || '获取分类失败')
+      setCategories(defaultCategories)
     } finally {
       setLoading(false)
     }
