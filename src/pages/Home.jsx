@@ -227,19 +227,18 @@ const Home = () => {
             alignItems: 'stretch'
           }}
         >
-          {/* 左侧：少数派焦点大卡 */}
+          {/* 左侧：今日置顶焦点热帖 */}
           <Paper
             elevation={0}
             onClick={() => navigate(`/article/${heroArticle.id}`)}
             sx={{
-              p: { xs: 3, sm: 4 },
+              p: { xs: 2.5, sm: 3.5 },
               width: '100%',
               height: '100%',
               boxSizing: 'border-box',
               borderRadius: 2.5,
               backgroundColor: '#ffffff',
               border: '1px solid #e5e7eb',
-              borderTop: '3px solid #c2410c',
               cursor: 'pointer',
               display: 'flex',
               flexDirection: 'column',
@@ -253,26 +252,14 @@ const Home = () => {
             }}
           >
             <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
                 <Chip
-                  label="今日必读"
+                  label="今日置顶"
                   size="small"
                   sx={{
-                    bgcolor: '#c2410c',
-                    color: '#ffffff',
+                    bgcolor: '#fee2e2',
+                    color: '#b91c1c',
                     fontWeight: 700,
-                    fontSize: '0.72rem',
-                    height: 22,
-                    borderRadius: 1
-                  }}
-                />
-                <Chip
-                  label={heroArticle.category}
-                  size="small"
-                  sx={{
-                    bgcolor: '#f3f4f6',
-                    color: '#374151',
-                    fontWeight: 600,
                     fontSize: '0.72rem',
                     height: 22,
                     borderRadius: 1
@@ -280,7 +267,7 @@ const Home = () => {
                 />
                 {heroArticle.source && (
                   <Chip
-                    label={`来源 · ${heroArticle.source}`}
+                    label={heroArticle.source}
                     size="small"
                     sx={{
                       bgcolor: sourceStyles[heroArticle.source]?.bg || '#f3f4f6',
@@ -293,20 +280,32 @@ const Home = () => {
                     }}
                   />
                 )}
+                <Chip
+                  label={heroArticle.category}
+                  size="small"
+                  sx={{
+                    bgcolor: '#f3f4f6',
+                    color: '#6b7280',
+                    fontWeight: 600,
+                    fontSize: '0.72rem',
+                    height: 22,
+                    borderRadius: 1
+                  }}
+                />
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  {heroArticle.readTime || '8分钟阅读'}
+                  {heroArticle.readTime || '5分钟阅读'}
                 </Typography>
               </Box>
 
               <Typography
                 className="hero-title"
-                variant="h4"
+                variant="h5"
                 sx={{
                   fontWeight: 800,
                   color: '#111827',
-                  fontSize: { xs: '1.35rem', sm: '1.75rem' },
-                  lineHeight: 1.35,
-                  mb: 2,
+                  fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                  lineHeight: 1.4,
+                  mb: 1.5,
                   transition: 'color 0.15s'
                 }}
               >
@@ -314,24 +313,45 @@ const Home = () => {
               </Typography>
 
               <Typography
-                variant="body1"
+                variant="body2"
                 sx={{
                   color: '#4b5563',
-                  fontSize: '0.94rem',
+                  fontSize: '0.92rem',
                   lineHeight: 1.7,
                   display: '-webkit-box',
                   WebkitLineClamp: 3,
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
-                  mb: 3
+                  mb: 2
                 }}
               >
                 {heroArticle.excerpt}
               </Typography>
+
+              {heroArticle.tags && heroArticle.tags.length > 0 && (
+                <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap', mb: 2 }}>
+                  {heroArticle.tags.slice(0, 4).map((t) => (
+                    <Typography
+                      key={t}
+                      variant="caption"
+                      sx={{
+                        color: '#6b7280',
+                        bgcolor: '#f4f5f8',
+                        fontSize: '0.72rem',
+                        px: 0.9,
+                        py: 0.2,
+                        borderRadius: 0.8
+                      }}
+                    >
+                      #{t}
+                    </Typography>
+                  ))}
+                </Box>
+              )}
             </Box>
 
-            <Box sx={{ pt: 2, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
+            <Box sx={{ pt: 1.5, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {heroArticle.source === '小宇宙' ? (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <HeadphonesIcon sx={{ fontSize: 16, color: '#ea580c' }} />
@@ -340,12 +360,12 @@ const Home = () => {
                     </Typography>
                   </Box>
                 ) : (
-                  <Typography variant="caption" sx={{ color: '#374151', fontWeight: 700, fontSize: '0.8rem' }}>
-                    {heroArticle.source ? `${heroArticle.source} 楼主 · @${heroArticle.author || '精选'}` : (heroArticle.author || '精选神贴')}
+                  <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600, fontSize: '0.8rem' }}>
+                    {heroArticle.source ? `${heroArticle.source} · @${heroArticle.author || '精选'}` : (heroArticle.author || '精选热帖')}
                   </Typography>
                 )}
-                <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  · {heroArticle.date || '近期热议'}
+                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.8rem' }}>
+                  · {heroArticle.date || '近期'}
                 </Typography>
               </Box>
 
@@ -372,8 +392,8 @@ const Home = () => {
                     原帖 ↗
                   </Typography>
                 )}
-                <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 0.5, whiteSpace: 'nowrap' }}>
-                  阅读全文 →
+                <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, whiteSpace: 'nowrap', fontSize: '0.82rem' }}>
+                  查看详情 →
                 </Typography>
               </Box>
             </Box>
@@ -495,109 +515,8 @@ const Home = () => {
         </Box>
       </Container>
 
-      {/* 少数派专题专栏通栏 (4个矩阵专栏，无任何 emoji) */}
-      <Box sx={{ backgroundColor: '#ffffff', borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb', py: 3.5 }}>
-        <Container maxWidth="lg">
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(4, 1fr)'
-              },
-              gap: 2,
-              width: '100%'
-            }}
-          >
-            {[
-              {
-                title: '职场与维权',
-                tag: '防裁自保',
-                desc: '争取2N补偿、保留考勤证据、35岁求职真相',
-                count: `${categoryCounts.career} 篇讨论`,
-                path: '/career'
-              },
-              {
-                title: '副业与搞钱',
-                tag: '小而美尝试',
-                desc: 'Chrome插件出海、n8n自动化、自由职业接单',
-                count: `${categoryCounts.side} 篇分享`,
-                path: '/side-business'
-              },
-              {
-                title: '房贷与钱袋子',
-                tag: '防断供保命',
-                desc: '银行协商延期还本、家庭备用金测算、资产配置',
-                count: `${categoryCounts.finance} 篇经验`,
-                path: '/finance'
-              },
-              {
-                title: '生活与心态',
-                tag: '过好日子',
-                desc: '极简省钱备餐、闲鱼二手出清、停止精神内耗',
-                count: `${categoryCounts.family} 篇心得`,
-                path: '/family'
-              }
-            ].map((col) => (
-              <Paper
-                key={col.title}
-                elevation={0}
-                onClick={() => navigate(col.path)}
-                sx={{
-                  p: 2.2,
-                  width: '100%',
-                  height: '100%',
-                  boxSizing: 'border-box',
-                  borderRadius: 2,
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  minHeight: 110,
-                  '&:hover': {
-                    borderColor: '#c2410c',
-                    backgroundColor: '#ffffff',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-                  }
-                }}
-              >
-                <Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.92rem' }}>
-                      {col.title}
-                    </Typography>
-                    <Chip
-                      label={col.tag}
-                      size="small"
-                      sx={{ bgcolor: '#e5e7eb', color: '#4b5563', fontSize: '0.7rem', height: 18, borderRadius: 0.8 }}
-                    />
-                  </Box>
-                  <Typography variant="caption" sx={{ color: '#6b7280', lineHeight: 1.5, display: 'block' }}>
-                    {col.desc}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ pt: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="caption" sx={{ color: '#9ca3af', fontWeight: 600, fontSize: '0.75rem' }}>
-                    {col.count}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, fontSize: '0.75rem' }}>
-                    进入专栏 →
-                  </Typography>
-                </Box>
-              </Paper>
-            ))}
-          </Box>
-        </Container>
-      </Box>
-
-      {/* 少数派经典 7:3 分栏布局：左侧主流信息流 + 右侧实用工具侧边栏 */}
-      <Container maxWidth="lg" sx={{ py: 5 }}>
+      {/* 主流信息流 + 实用工具侧边栏 */}
+      <Container maxWidth="lg" sx={{ pt: 1, pb: 5 }}>
         <Box
           sx={{
             display: 'grid',
