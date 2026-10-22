@@ -90,6 +90,7 @@ const Navbar = () => {
 
   // 指南专栏下拉聚合
   const guideCategories = [
+    { path: '/articles', label: '全部实战文库', desc: '137篇避坑与防御全景检索', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
     { path: '/career', label: '职场突围', desc: '35岁破局 · 经验变现 · 生存法则', icon: <Work sx={{ color: '#2563eb' }} /> },
     { path: '/side-business', label: '副业轻创', desc: '低成本变现 · 技能产品化', icon: <MonetizationOnIcon sx={{ color: '#059669' }} /> },
     { path: '/finance', label: '财务防守', desc: '家庭资产配置 · 抵御黑天鹅', icon: <AccountBalance sx={{ color: '#d97706' }} /> },
@@ -97,7 +98,7 @@ const Navbar = () => {
     { path: '/psychology', label: '心理破局', desc: '中年焦虑脱敏 · 情绪边界感', icon: <Psychology sx={{ color: '#7c3aed' }} /> },
   ]
 
-  const isGuideActive = ['/career', '/side-business', '/finance', '/family', '/psychology'].some(p => location.pathname === p)
+  const isGuideActive = ['/articles', '/career', '/side-business', '/finance', '/family', '/psychology'].some(p => location.pathname === p)
 
   return (
     <AppBar

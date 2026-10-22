@@ -1,346 +1,256 @@
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Paper, 
-  Stack, 
-  Tabs, 
-  Tab,
-  Card,
-  CardContent,
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Stack,
   Chip,
-  Divider
+  Button,
+  Avatar,
+  TextField,
+  InputAdornment
 } from '@mui/material'
-import { Article, Store, Psychology, Work, TrendingUp, CalendarToday, ArrowForward } from '@mui/icons-material'
+import {
+  Search as SearchIcon,
+  Clear as ClearIcon,
+  ArrowForward as ArrowForwardIcon
+} from '@mui/icons-material'
+import { useArticles } from '../contexts/ArticleContext'
+import Footer from '../components/Footer'
+
+const categoryStyles = {
+  '职场发展': { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' },
+  '转型升级': { bg: '#f5f3ff', color: '#6d28d9', border: '#ddd6fe' },
+  '副业指南': { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0' },
+  '财务管理': { bg: '#fffbeb', color: '#b45309', border: '#fde68a' },
+  '中年危机': { bg: '#fef2f2', color: '#b91c1c', border: '#fecaca' },
+  '心理健康': { bg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' },
+  '家庭关系': { bg: '#fdf2f8', color: '#be185d', border: '#fbcfe8' },
+  '生活技能': { bg: '#f8fafc', color: '#334155', border: '#cbd5e1' },
+  '兴趣爱好': { bg: '#faf5ff', color: '#7e22ce', border: '#e9d5ff' },
+}
 
 const SearchResults = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [activeTab, setActiveTab] = useState(0)
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
+  const navigate = useNavigate()
+  const { getAllArticles } = useArticles()
 
-  const searchCategories = [
-    { id: 0, name: '全部', icon: <Article /> },
-    { id: 1, name: '文章', icon: <Article /> },
-    { id: 2, name: '工具', icon: <Store /> },
-    { id: 3, name: '心理', icon: <Psychology /> },
-    { id: 4, name: '职业', icon: <Work /> }
-  ]
-
-  // 模拟搜索结果数据
-  const mockResults = {
-    articles: [
-      {
-        title: "中年职场人如何应对35岁危机",
-        excerpt: "当你发现自己在职场中迷失方向时，这些实用的方法可以帮助你重新找到突破点。包括技能提升、人际关系建设、职业规划等核心要素。",
-        date: "2024-01-20",
-        readTime: "15分钟",
-        author: "职业规划师",
-        category: "职业发展",
-        type: "article"
-      },
-      {
-        title: "提升工作效率的10个实用技巧",
-        excerpt: "从时间管理到工作流程优化，分享在职场中真正有效的效率提升方法。适合中年职场人快速上手的实践指南。",
-        date: "2024-01-18",
-        readTime: "12分钟", 
-        author: "效率专家",
-        category: "技能提升",
-        type: "article"
-      },
-      {
-        title: "中年转行完全指南",
-        excerpt: "详细分析中年转行的机遇与挑战，以及如何在转行过程中保持竞争力。真实案例分享和实操建议。",
-        date: "2024-01-15",
-        readTime: "20分钟",
-        author: "转行成功者",
-        category: "职业转型",
-        type: "article"
-      }
-    ],
-    tools: [
-      {
-        title: "时间管理工具推荐",
-        excerpt: "Todoist、Forest、番茄工作法等提升工作效率的实用应用推荐，帮助中年职场人更好地管理时间。",
-        category: "效率工具",
-        stats: "5+ 应用",
-        type: "tool"
-      },
-      {
-        title: "财务管理工具合集",
-        excerpt: "记账软件、投资理财、预算规划等帮助中年人理财的工具推荐，提升财务管理能力。",
-        category: "理财工具", 
-        stats: "8+ 应用",
-        type: "tool"
-      }
-    ],
-    psychology: [
-      {
-        title: "职场压力管理指南",
-        excerpt: "面对KPI、deadline、老板压力时的实用应对方法和心理调节技巧，帮助中年职场人缓解工作压力。",
-        category: "压力管理",
-        readTime: "10分钟",
-        type: "psychology"
-      }
-    ]
-  }
-
-  const getAllResults = () => {
-    const allResults = [
-      ...mockResults.articles,
-      ...mockResults.tools, 
-      ...mockResults.psychology
-    ]
-    return allResults.filter(item => 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }
-
-  const getFilteredResults = () => {
-    switch (activeTab) {
-      case 0: return getAllResults()
-      case 1: return mockResults.articles.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      case 2: return mockResults.tools.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      case 3: return mockResults.psychology.filter(item => 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      case 4: return getAllResults().filter(item => item.category?.includes('职'))
-      default: return getAllResults()
-    }
-  }
-
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue)
-  }
-
-  const results = getFilteredResults()
-  const totalResults = getAllResults().length
+  const [query, setQuery] = useState(searchParams.get('q') || '')
 
   useEffect(() => {
-    const query = searchParams.get('q')
-    if (query) {
-      setSearchQuery(query)
-    }
+    setQuery(searchParams.get('q') || '')
   }, [searchParams])
 
-  return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {searchQuery && (
-        <>
-          {/* 搜索结果统计 */}
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              搜索结果
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              找到 <strong>{totalResults}</strong> 条关于 "<strong>{searchQuery}</strong>" 的结果
-            </Typography>
-          </Box>
+  const publishedArticles = useMemo(() => {
+    return getAllArticles().filter(a => a.status === 'published')
+  }, [getAllArticles])
 
-          {/* 分类标签 */}
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-            <Tabs 
-              value={activeTab} 
-              onChange={handleTabChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              sx={{
-                '& .MuiTab-root': {
+  const searchResults = useMemo(() => {
+    if (!query.trim()) return []
+    const term = query.toLowerCase()
+    return publishedArticles.filter(art => {
+      const title = (art.title || '').toLowerCase()
+      const summary = (art.excerpt || art.summary || '').toLowerCase()
+      const content = (art.content || '').toLowerCase()
+      const tags = Array.isArray(art.tags) ? art.tags.join(' ').toLowerCase() : ''
+      const category = (art.category || '').toLowerCase()
+      return title.includes(term) || summary.includes(term) || tags.includes(term) || category.includes(term) || content.includes(term)
+    })
+  }, [publishedArticles, query])
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (query.trim()) {
+      setSearchParams({ q: query.trim() })
+    }
+  }
+
+  return (
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f5f8', color: '#1c1917', width: '100%', overflowX: 'hidden' }}>
+      
+      {/* 搜索头部 */}
+      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 4 }}>
+        <Container maxWidth="lg">
+          <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 800, mb: 1, display: 'block', letterSpacing: '0.05em' }}>
+            实战检索中心
+          </Typography>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#111827', mb: 2.5 }}>
+            搜索 "{query || '全站实战指南'}" 的结果
+          </Typography>
+
+          <Box component="form" onSubmit={handleSearchSubmit} sx={{ maxWidth: 600 }}>
+            <TextField
+              fullWidth
+              size="small"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="输入关键词，如：离职、补偿、失业金、四笔钱、副业..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: '#9ca3af', fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+                endAdornment: query ? (
+                  <InputAdornment position="end">
+                    <ClearIcon
+                      sx={{ color: '#9ca3af', fontSize: 18, cursor: 'pointer' }}
+                      onClick={() => {
+                        setQuery('')
+                        setSearchParams({})
+                      }}
+                    />
+                  </InputAdornment>
+                ) : null,
+                sx: {
+                  borderRadius: 2,
+                  bgcolor: '#f9fafb',
                   fontSize: '0.9rem',
-                  fontWeight: 500,
-                  minHeight: 48,
-                  color: 'text.secondary',
-                  '&.Mui-selected': {
-                    color: 'primary.main',
-                    fontWeight: 600
-                  }
-                },
-                '& .MuiTabs-indicator': {
-                  backgroundColor: 'primary.main',
-                  height: 3
+                  '& fieldset': { borderColor: '#e5e7eb' },
+                  '&:hover fieldset': { borderColor: '#c2410c' },
+                  '&.Mui-focused fieldset': { borderColor: '#c2410c' }
                 }
               }}
-            >
-              {searchCategories.map((category) => (
-                <Tab 
-                  key={category.id} 
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      {category.icon}
-                      {category.name}
-                    </Box>
-                  } 
-                />
-              ))}
-            </Tabs>
+            />
           </Box>
+        </Container>
+      </Box>
 
-          {/* 搜索结果 */}
-          {results.length > 0 ? (
-            <Stack spacing={3}>
-              {results.map((result, index) => (
-                <Paper 
-                  key={index}
-                  sx={{ 
-                    transition: 'all 0.2s ease',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      transform: 'translateY(-2px)'
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                      {/* 类型图标 */}
-                      <Box sx={{ mt: 0.5 }}>
-                        {result.type === 'article' && <Article sx={{ color: 'primary.main', fontSize: 24 }} />}
-                        {result.type === 'tool' && <Store sx={{ color: 'secondary.main', fontSize: 24 }} />}
-                        {result.type === 'psychology' && <Psychology sx={{ color: 'warning.main', fontSize: 24 }} />}
-                      </Box>
-                      
-                      {/* 内容 */}
-                      <Box sx={{ flexGrow: 1 }}>
-                        {/* 标题 */}
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            fontWeight: 600,
-                            color: 'text.primary',
-                            lineHeight: 1.3,
-                            mb: 1,
-                            fontSize: '1.1rem',
-                            '&:hover': {
-                              color: 'primary.main'
-                            }
-                          }}
-                        >
-                          {result.title}
-                        </Typography>
-                        
-                        {/* 描述 */}
-                        <Typography 
-                          variant="body2" 
-                          color="text.secondary" 
-                          sx={{ 
-                            mb: 2,
-                            lineHeight: 1.6,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          {result.excerpt}
-                        </Typography>
-                        
-                        {/* 元信息 */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <Stack direction="row" spacing={2} alignItems="center">
-                            <Chip 
-                              label={result.category} 
-                              size="small" 
-                              sx={{ 
-                                backgroundColor: 'grey.100',
-                                color: 'text.secondary',
-                                fontSize: '0.75rem'
-                              }} 
-                            />
-                            {result.date && (
-                              <Stack direction="row" spacing={1} alignItems="center">
-                                <CalendarToday sx={{ color: 'text.secondary', fontSize: 14 }} />
-                                <Typography variant="caption" color="text.secondary">
-                                  {result.date}
-                                </Typography>
-                              </Stack>
-                            )}
-                            {result.readTime && (
-                              <Typography variant="caption" color="text.secondary">
-                                {result.readTime}
-                              </Typography>
-                            )}
-                            {result.stats && (
-                              <Typography variant="caption" color="text.secondary">
-                                {result.stats}
-                              </Typography>
-                            )}
-                          </Stack>
-                          
-                          <Stack direction="row" alignItems="center" spacing={1}>
-                            <Typography 
-                              variant="caption" 
-                              sx={{ 
-                                color: 'primary.main',
-                                fontWeight: 500
-                              }}
-                            >
-                              查看详情
-                            </Typography>
-                            <ArrowForward sx={{ color: 'primary.main', fontSize: 14 }} />
-                          </Stack>
-                        </Box>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Paper>
-              ))}
-            </Stack>
-          ) : (
-            <Paper sx={{ textAlign: 'center', py: 6 }}>
-              <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-                没有找到相关结果
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                请尝试使用其他关键词搜索
-              </Typography>
-            </Paper>
-          )}
-        </>
-      )}
-
-      {!searchQuery && (
-        <Paper sx={{ textAlign: 'center', py: 6 }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            开始搜索中年人自救指南
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            搜索职场技能、心理建设、工具推荐等内容
-          </Typography>
-          
-          {/* 热门搜索建议 */}
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              热门搜索
+      {/* 结果列表 */}
+      <Container maxWidth="lg" sx={{ py: 4.5 }}>
+        <Box sx={{ maxWidth: 840, mx: 'auto' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
+            <Typography variant="body2" sx={{ color: '#6b7280' }}>
+              共检索到 <Typography component="span" sx={{ fontWeight: 700, color: '#111827' }}>{searchResults.length}</Typography> 篇相关实战文章
             </Typography>
-            <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ gap: 1 }}>
-              {['35岁职场危机', '中年转行指南', '副业赚钱', '职场沟通技巧', '时间管理', '压力管理'].map((item) => (
-                <Chip
-                  key={item}
-                  label={item}
-                  clickable
-                  onClick={() => {
-                    setSearchQuery(item)
-                    setSearchParams({ q: item })
-                  }}
-                  sx={{ 
-                    backgroundColor: 'grey.100',
-                    '&:hover': {
-                      backgroundColor: 'primary.main',
-                      color: 'white'
-                    }
-                  }}
-                />
-              ))}
-            </Stack>
+
+            <Button
+              size="small"
+              onClick={() => navigate('/articles')}
+              sx={{ color: '#c2410c', fontWeight: 600, fontSize: '0.82rem' }}
+            >
+              浏览全部文库 →
+            </Button>
           </Box>
-        </Paper>
-      )}
-    </Container>
+
+          {searchResults.length === 0 ? (
+            <Paper sx={{ p: 6, textAlign: 'center', backgroundColor: '#ffffff', borderRadius: 2.5, border: '1px solid #e5e7eb' }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#111827', mb: 1 }}>
+                未找到匹配结果
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#6b7280', mb: 3 }}>
+                抱歉，没有找到与 "{query}" 相关的实战内容。请尝试使用更常见的词汇（如裁员、副业、养老金、社保）。
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => navigate('/articles')}
+                sx={{ color: '#c2410c', borderColor: '#c2410c' }}
+              >
+                查阅全部 137 篇指南
+              </Button>
+            </Paper>
+          ) : (
+            <Stack spacing={2}>
+              {searchResults.map((article, idx) => {
+                const colorConfig = categoryStyles[article.category] || { bg: '#f3f4f6', color: '#374151', border: '#e5e7eb' }
+                return (
+                  <Paper
+                    key={article.id || idx}
+                    elevation={0}
+                    onClick={() => navigate(`/article/${article.id}`)}
+                    sx={{
+                      p: 2.5,
+                      borderRadius: 2,
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      '&:hover': {
+                        borderColor: '#c2410c',
+                        boxShadow: '0 4px 14px rgba(0,0,0,0.05)',
+                        '& .article-title': { color: '#c2410c' }
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Chip
+                        label={article.category}
+                        size="small"
+                        sx={{
+                          bgcolor: colorConfig.bg,
+                          color: colorConfig.color,
+                          border: `1px solid ${colorConfig.border}`,
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          height: 20,
+                          borderRadius: 0.8
+                        }}
+                      />
+                      <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                        {article.readTime || '3分钟阅读'}
+                      </Typography>
+                    </Box>
+
+                    <Typography
+                      className="article-title"
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 700,
+                        color: '#111827',
+                        fontSize: '1.02rem',
+                        lineHeight: 1.45,
+                        mb: 0.8,
+                        transition: 'color 0.15s'
+                      }}
+                    >
+                      {article.title}
+                    </Typography>
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: '#4b5563',
+                        fontSize: '0.86rem',
+                        lineHeight: 1.6,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        mb: 1.5
+                      }}
+                    >
+                      {article.excerpt || article.summary}
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#c2410c' }}>
+                          {article.author ? article.author.charAt(0) : '专'}
+                        </Avatar>
+                        <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
+                          {article.author || '实战导师'}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                          · {article.date || '最近'}
+                        </Typography>
+                      </Box>
+
+                      <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
+                        阅读全文 →
+                      </Typography>
+                    </Box>
+                  </Paper>
+                )
+              })}
+            </Stack>
+          )}
+        </Box>
+      </Container>
+
+      <Footer />
+    </Box>
   )
 }
 

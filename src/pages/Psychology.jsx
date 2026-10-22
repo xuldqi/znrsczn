@@ -1,433 +1,83 @@
-import { Container, Typography, Box, Grid, Card, CardContent, Button, Chip, Paper, Stack, Divider, Avatar } from '@mui/material'
-import { Psychology as PsychologyIcon, TrendingUp, Group, Work, School, Favorite, ArrowForward, CalendarToday, AccessTime } from '@mui/icons-material'
-import { Link, useNavigate } from 'react-router-dom'
+import { useMemo } from 'react'
+import { Typography, Paper, Box, Stack } from '@mui/material'
+import { PsychologyOutlined as PsychologyIcon } from '@mui/icons-material'
 import { useArticles } from '../contexts/ArticleContext'
+import ColumnLayout from '../components/ColumnLayout'
 
 const Psychology = () => {
-  const navigate = useNavigate()
-  const { getArticlesByCategory } = useArticles()
-  
-  // 获取心理健康类文章
-  const psychologyArticles = getArticlesByCategory('心理健康')
-  const psychologyTopics = [
-    {
-      icon: <Work sx={{ fontSize: 32, color: 'primary.main' }} />,
-      title: '压力管理',
-      description: '面对KPI、deadline、老板压力的实用应对方法，学会在高压下保持冷静和效率',
-      category: '工作压力',
-      readTime: '8分钟',
-      date: '2024-01-15',
-      tags: ['压力管理', '工作效率', '情绪调节']
-    },
-    {
-      icon: <TrendingUp sx={{ fontSize: 32, color: 'primary.main' }} />,
-      title: '职业倦怠',
-      description: '当工作失去激情时，如何重新找回动力，重新定义职业目标和意义',
-      category: '职业发展',
-      readTime: '12分钟',
-      date: '2024-01-10',
-      tags: ['职业倦怠', '工作动力', '目标设定']
-    },
-    {
-      icon: <PsychologyIcon sx={{ fontSize: 32, color: 'primary.main' }} />,
-      title: '自我怀疑',
-      description: '当工作失败、被质疑能力时，如何重建自信，从失败中学习和成长',
-      category: '自信心',
-      readTime: '10分钟',
-      date: '2024-01-08',
-      tags: ['自信心', '失败处理', '成长思维']
-    },
-    {
-      icon: <Group sx={{ fontSize: 32, color: 'primary.main' }} />,
-      title: '团队冲突',
-      description: '与开发、设计、运营的沟通技巧，化解冲突，建立高效协作关系',
-      category: '团队协作',
-      readTime: '15分钟',
-      date: '2024-01-05',
-      tags: ['沟通技巧', '团队协作', '冲突解决']
-    },
-    {
-      icon: <School sx={{ fontSize: 32, color: 'primary.main' }} />,
-      title: '职业焦虑',
-      description: '35岁危机、技能焦虑的心理调节，如何在变化中保持职业竞争力',
-      category: '职业焦虑',
-      readTime: '14分钟',
-      date: '2024-01-01',
-      tags: ['职业焦虑', '技能提升', '职业规划']
-    },
-    {
-      icon: <Favorite sx={{ fontSize: 32, color: 'primary.main' }} />,
-      title: '工作生活平衡',
-      description: '如何在高压工作中保持身心健康，建立可持续的工作生活模式',
-      category: '生活平衡',
-      readTime: '11分钟',
-      date: '2023-12-28',
-      tags: ['工作生活平衡', '身心健康', '时间管理']
-    }
+  const { getAllArticles } = useArticles()
+
+  const psychologyArticles = useMemo(() => {
+    return getAllArticles()
+      .filter(a => ['心理健康', '中年危机'].includes(a.category) && a.status === 'published')
+      .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+  }, [getAllArticles])
+
+  const psychologyTags = [
+    '焦虑脱敏',
+    '中年危机',
+    '精力管理',
+    '情绪止损',
+    '睡眠调节',
+    '自我接纳'
   ]
 
+  const psychologySidebarWidget = (
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2.5,
+        borderRadius: 2,
+        backgroundColor: '#ffffff',
+        border: '1px solid #e5e7eb'
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+        <PsychologyIcon sx={{ color: '#0f766e', fontSize: 18 }} />
+        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
+          中年内耗急救准则
+        </Typography>
+      </Box>
+
+      <Stack spacing={1.5}>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
+            1. 区分“可控”与“不可控”
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+            行业周期与大厂裁员不可控，但今日的简历刷新、身体锻炼与现金流记账完全在自我掌控之中。
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
+            2. 给担忧设定固定时间段
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+            每天只允许自己焦虑 15 分钟（如傍晚 5:00-5:15），一旦时间结束，立刻投入具体事务。
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
+            3. 精力管理优先于时间管理
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+            中年身体机能下滑，戒除报复性熬夜，保证 7 小时深度睡眠是最低成本的大脑自救。
+          </Typography>
+        </Box>
+      </Stack>
+    </Paper>
+  )
+
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="lg">
-        {/* Page Header */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography 
-            variant="h1" 
-            component="h1" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 700,
-              color: 'text.primary',
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3rem' }
-            }}
-          >
-            心理建设
-          </Typography>
-          
-          <Typography 
-            variant="h5" 
-            sx={{ 
-              mb: 4, 
-              color: 'text.secondary',
-              fontWeight: 400,
-              lineHeight: 1.4,
-              maxWidth: '800px',
-              mx: 'auto'
-            }}
-          >
-            中年职场人的心理按摩：压力管理、职业倦怠、自我怀疑、团队冲突等心理问题的解决方案
-          </Typography>
-          
-          <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ mb: 4 }}>
-            <Chip label="压力管理" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="职业倦怠" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="团队冲突" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="工作生活平衡" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-          </Stack>
-        </Box>
-
-        {/* Psychology Articles Section - NEW */}
-        <Box sx={{ mb: 8 }}>
-          <Typography 
-            variant="h4" 
-            component="h2" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 600,
-              color: 'text.primary',
-              mb: 4,
-              textAlign: 'center'
-            }}
-          >
-            心理健康文章
-          </Typography>
-          
-          <Stack spacing={2}>
-            {psychologyArticles.map((article, index) => (
-              <Paper
-                key={article.id || index}
-                elevation={0}
-                onClick={() => navigate(`/article/${article.id}`)}
-                sx={{
-                  display: 'flex',
-                  backgroundColor: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                  }
-                }}
-              >
-                {/* 左侧图片 */}
-                <Box
-                  sx={{
-                    width: '33.333%',
-                    height: 200,
-                    flexShrink: 0,
-                    backgroundColor: '#f5f5f5',
-                    backgroundImage: article.image ? `url(${article.image})` : 'none',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {!article.image && (
-                    <Box sx={{ 
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 1,
-                      color: '#ccc'
-                    }}>
-                      <Box sx={{
-                        width: 40,
-                        height: 40,
-                        backgroundColor: '#7c3aed',
-                        borderRadius: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '1.2rem',
-                        fontWeight: 600
-                      }}>
-                        
-                      </Box>
-                      <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
-                        心理健康
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-
-                {/* 右侧内容 */}
-                <Box sx={{ flex: 1, p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  {/* 标题和摘要 */}
-                  <Box>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        fontWeight: 600, 
-                        mb: 1.5,
-                        color: 'text.primary',
-                        fontSize: '1.1rem',
-                        lineHeight: 1.3
-                      }}
-                    >
-                      {article.title}
-                    </Typography>
-                    
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary" 
-                      sx={{ mb: 2, lineHeight: 1.5 }}
-                    >
-                      {article.excerpt}
-                    </Typography>
-                  </Box>
-
-                  {/* 底部元信息 */}
-                  <Stack 
-                    direction="row" 
-                    spacing={2} 
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#9c27b0' }}>
-                        {article.author?.charAt(0) || 'A'}
-                      </Avatar>
-                      <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
-                        {article.author}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-                        {article.readTime}
-                      </Typography>
-                    </Stack>
-
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Chip 
-                        label={article.category}
-                        size="small"
-                        sx={{
-                          backgroundColor: '#7c3aed',
-                          color: 'white',
-                          fontWeight: 500,
-                          fontSize: '0.75rem'
-                        }}
-                      />
-                    </Stack>
-                  </Stack>
-                </Box>
-              </Paper>
-            ))}
-          </Stack>
-        </Box>
-
-        {/* Psychology Topics Grid - EXISTING CONTENT */}
-        <Box sx={{ 
-          display: 'grid', 
-          gridTemplateColumns: { 
-            xs: '1fr', 
-            sm: '1fr 1fr', 
-            lg: '1fr 1fr 1fr'
-          }, 
-          gap: 3 
-        }}>
-          {psychologyTopics.map((topic, index) => (
-            <Card 
-              key={index}
-              sx={{ 
-                display: 'flex', 
-                flexDirection: 'column',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                '&:hover': {
-                  transform: 'translateY(-4px)'
-                }
-              }}
-            >
-              <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
-                <Box 
-                  sx={{ 
-                    backgroundColor: 'grey.50',
-                    borderRadius: '50%', 
-                    width: 70, 
-                    height: 70, 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    mb: 2,
-                    border: '1px solid #f0f0f0'
-                  }}
-                >
-                  {topic.icon}
-                </Box>
-                
-                <Chip 
-                  label={topic.category}
-                  size="small"
-                  sx={{
-                    mb: 2,
-                    backgroundColor: 'primary.main',
-                    color: 'white',
-                    fontWeight: 500,
-                    alignSelf: 'flex-start',
-                    fontSize: '0.75rem'
-                  }}
-                />
-                
-                <Typography 
-                  variant="h5" 
-                  component="h3" 
-                  gutterBottom 
-                  sx={{ 
-                    fontWeight: 600, 
-                    color: 'text.primary',
-                    mb: 2,
-                    fontSize: '1.2rem',
-                    lineHeight: 1.3
-                  }}
-                >
-                  {topic.title}
-                </Typography>
-                
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ 
-                    mb: 3, 
-                    lineHeight: 1.6,
-                    flexGrow: 1,
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  {topic.description}
-                </Typography>
-                
-                <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
-                  {topic.tags.map((tag, tagIndex) => (
-                    <Chip 
-                      key={tagIndex}
-                      label={tag} 
-                      size="small"
-                      sx={{ 
-                        backgroundColor: 'grey.100', 
-                        color: 'text.secondary',
-                        fontSize: '0.7rem',
-                        height: 20
-                      }} 
-                    />
-                  ))}
-                </Stack>
-                
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
-                  <Stack direction="row" spacing={2} alignItems="center">
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <CalendarToday sx={{ color: 'text.secondary', fontSize: 14 }} />
-                      <Typography variant="caption" color="text.secondary">
-                        {topic.date}
-                      </Typography>
-                    </Stack>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <AccessTime sx={{ color: 'text.secondary', fontSize: 14 }} />
-                      <Typography variant="caption" color="text.secondary">
-                        {topic.readTime}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                  
-                  <Stack direction="row" alignItems="center" spacing={1}>
-                    <Typography 
-                      variant="caption" 
-                      sx={{ 
-                        color: 'primary.main',
-                        fontWeight: 500
-                      }}
-                    >
-                      阅读全文
-                    </Typography>
-                    <ArrowForward sx={{ color: 'primary.main', fontSize: 14 }} />
-                  </Stack>
-                </Stack>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-
-        {/* CTA Section */}
-        <Box sx={{ textAlign: 'center', mt: 8, p: 4, backgroundColor: 'white', borderRadius: 2, border: '1px solid #f0f0f0' }}>
-          <Typography 
-            variant="h4" 
-            component="h2" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 600,
-              color: 'text.primary',
-              mb: 2
-            }}
-          >
-            需要更多心理支持？
-          </Typography>
-          
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              mb: 4, 
-              color: 'text.secondary',
-              lineHeight: 1.6,
-              maxWidth: '600px',
-              mx: 'auto'
-            }}
-          >
-            如果你正在经历职业困境，欢迎分享你的故事。我们可以一起找到解决方案，互相支持，共同成长。
-          </Typography>
-          
-          <Button 
-            variant="contained" 
-            size="large"
-            sx={{ 
-              px: 4, 
-              py: 1.5,
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              backgroundColor: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.dark'
-              }
-            }}
-          >
-            分享你的故事
-          </Button>
-        </Box>
-      </Container>
-    </Box>
+    <ColumnLayout
+      columnTitle="心理与内耗"
+      columnTag="心智防御"
+      columnSummary="中年危机的本质是不确定性激增与既有价值感的动摇。学习科学的焦虑脱敏、精力管理、失眠调节与情绪止损技巧，在动荡期守住内心的定力。"
+      columnHighlight="接纳不确定性；停止过度内耗自责；关注微小的当下掌控感；规律运动与高质量睡眠是最高回报的心智投资。"
+      articles={psychologyArticles}
+      tags={psychologyTags}
+      sidebarWidget={psychologySidebarWidget}
+    />
   )
 }
 

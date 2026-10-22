@@ -1,544 +1,478 @@
-import { useEffect, useMemo, useState } from 'react'
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Card, 
-  CardContent, 
-  CardActions,
-  Chip, 
-  Button, 
-  Grid,
-  TextField,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Avatar,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
+import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  Container,
+  Typography,
+  Box,
   Paper,
   Stack,
-  IconButton
+  Chip,
+  Button,
+  Avatar,
+  TextField,
+  InputAdornment,
+  Tabs,
+  Tab
 } from '@mui/material'
-import { 
-  Search, 
-  Add, 
-  Visibility, 
-  ThumbUp, 
-  Share, 
-  Edit, 
-  Delete,
-  Category,
-  TrendingUp,
-  Schedule,
-  LocalOffer
+import {
+  Search as SearchIcon,
+  Clear as ClearIcon,
+  SpaceDashboardOutlined as DashboardIcon,
+  TrendingUp as TrendingUpIcon,
+  ArrowForward as ArrowForwardIcon
 } from '@mui/icons-material'
-import { format } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
 import { useArticles } from '../contexts/ArticleContext'
-import { useCategories } from '../contexts/CategoryContext'
+import Footer from '../components/Footer'
+
+const categoryStyles = {
+  '职场发展': { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' },
+  '转型升级': { bg: '#f5f3ff', color: '#6d28d9', border: '#ddd6fe' },
+  '副业指南': { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0' },
+  '财务管理': { bg: '#fffbeb', color: '#b45309', border: '#fde68a' },
+  '中年危机': { bg: '#fef2f2', color: '#b91c1c', border: '#fecaca' },
+  '心理健康': { bg: '#f0fdfa', color: '#0f766e', border: '#99f6e4' },
+  '家庭关系': { bg: '#fdf2f8', color: '#be185d', border: '#fbcfe8' },
+  '生活技能': { bg: '#f8fafc', color: '#334155', border: '#cbd5e1' },
+  '兴趣爱好': { bg: '#faf5ff', color: '#7e22ce', border: '#e9d5ff' },
+}
+
+const allCategoryTabs = [
+  '全部',
+  '职场发展',
+  '转型升级',
+  '副业指南',
+  '财务管理',
+  '中年危机',
+  '心理健康',
+  '家庭关系'
+]
 
 const Articles = () => {
-  const {
-    getAllArticles,
-    addArticle,
-    updateArticle,
-    deleteArticle,
-    refreshArticles,
-    loading,
-    error
-  } = useArticles()
-  const { categories: categoryList } = useCategories()
+  const navigate = useNavigate()
+  const { getAllArticles } = useArticles()
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('全部')
-  const [open, setOpen] = useState(false)
-  const [editingArticle, setEditingArticle] = useState(null)
-  const [formData, setFormData] = useState({
-    title: '',
-    summary: '',
-    content: '',
-    category: '方法论',
-    tags: '',
-    difficulty: '入门',
-    status: 'published',
-    readTime: ''
-  })
+  const [activeTab, setActiveTab] = useState(0)
+  const [displayCount, setDisplayCount] = useState(12)
 
-  const categories = useMemo(
-    () => ['全部', ...categoryList.map(category => category.name)],
-    [categoryList]
-  )
-  const difficulties = ['入门', '进阶', '高级']
-  const difficultyColors = {
-    '入门': 'success',
-    '进阶': 'warning', 
-    '高级': 'error'
-  }
+  const publishedArticles = useMemo(() => {
+    return getAllArticles().filter(a => a.status === 'published')
+  }, [getAllArticles])
 
-  const allArticles = getAllArticles()
-  const publishedArticles = useMemo(
-    () => allArticles.filter(article => article.status === 'published'),
-    [allArticles]
-  )
+  // 排序：最新的排前
+  const sortedArticles = useMemo(() => {
+    return [...publishedArticles].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+  }, [publishedArticles])
 
-  const filteredArticles = publishedArticles.filter(article => {
-    const tags = Array.isArray(article.tags) ? article.tags : []
-    const summaryText = (article.summary || article.excerpt || '').toLowerCase()
-    const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         summaryText.includes(searchTerm.toLowerCase()) ||
-                         tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    const matchesCategory = selectedCategory === '全部' || article.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+  // 筛选
+  const filteredArticles = useMemo(() => {
+    const selectedCat = allCategoryTabs[activeTab] || '全部'
+    return sortedArticles.filter(article => {
+      const matchCat = selectedCat === '全部' || article.category === selectedCat
+      if (!matchCat) return false
+      if (!searchTerm.trim()) return true
+      const term = searchTerm.toLowerCase()
+      const title = (article.title || '').toLowerCase()
+      const excerpt = (article.excerpt || article.summary || '').toLowerCase()
+      const tags = Array.isArray(article.tags) ? article.tags.join(' ').toLowerCase() : ''
+      return title.includes(term) || excerpt.includes(term) || tags.includes(term)
+    })
+  }, [sortedArticles, activeTab, searchTerm])
 
-  useEffect(() => {
-    if (!categories.includes(selectedCategory)) {
-      setSelectedCategory('全部')
-    }
-  }, [categories, selectedCategory])
+  const visibleArticles = filteredArticles.slice(0, displayCount)
+  const hasMore = filteredArticles.length > displayCount
 
-  const handleOpen = (article = null) => {
-    if (article) {
-      setEditingArticle(article)
-      setFormData({
-        title: article.title,
-        summary: article.summary || article.excerpt || '',
-        content: article.content,
-        category: article.category,
-        tags: article.tags.join(', '),
-        difficulty: article.difficulty || '入门',
-        status: article.status || 'published',
-        readTime: article.readTime || ''
-      })
-    } else {
-      setEditingArticle(null)
-      setFormData({ title: '', summary: '', content: '', category: '方法论', tags: '', difficulty: '入门', status: 'published', readTime: '' })
-    }
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-    setEditingArticle(null)
-  }
-
-  const handleSave = async () => {
-    if (!formData.title.trim() || !formData.summary.trim() || !formData.content.trim()) {
-      return
-    }
-
-    const payload = {
-      title: formData.title,
-      excerpt: formData.summary,
-      content: formData.content,
-      category: formData.category,
-      tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
-      difficulty: formData.difficulty,
-      author: editingArticle?.author || '中年小白',
-      status: formData.status || 'published',
-      readTime: formData.readTime || ''
-    }
-
-    try {
-      if (editingArticle) {
-        await updateArticle(editingArticle.id, payload)
-      } else {
-        await addArticle(payload)
-      }
-      refreshArticles()
-      handleClose()
-    } catch (err) {
-      console.error('保存文章失败', err)
-    }
-  }
-
-  const handleDelete = (id) => {
-    if (window.confirm('确认删除这篇文章吗？')) {
-      deleteArticle(id)
-      refreshArticles()
-    }
-  }
-
-  const handleLike = (id) => {
-    const article = publishedArticles.find(item => item.id === id)
-    if (article) {
-      updateArticle(id, { likes: (article.likes || 0) + 1 })
-    }
-  }
+  // 侧边栏精选热门
+  const trendingArticles = useMemo(() => {
+    return sortedArticles.slice(0, 5)
+  }, [sortedArticles])
 
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        {/* 页面标题 */}
-        <Box sx={{ mb: 6 }}>
-          <Typography variant="h2" component="h1" sx={{ fontWeight: 600, color: 'text.primary', mb: 1 }}>
-            文章分享
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            分享职场方法论、实战经验和行业洞察
-          </Typography>
-        </Box>
-
-        <Box sx={{ mb: 5 }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                placeholder="搜索文章标题、摘要或标签"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search fontSize="small" color="action" />
-                    </InputAdornment>
-                  )
+    <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f5f8', color: '#1c1917', width: '100%', overflowX: 'hidden' }}>
+      
+      {/* 头部标题与检索区 */}
+      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 4 }}>
+        <Container maxWidth="lg">
+          <Box sx={{ maxWidth: 780, mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 800,
+                  color: '#111827',
+                  fontSize: { xs: '1.6rem', sm: '2rem' },
+                  letterSpacing: '-0.02em'
                 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Stack
-                direction="row"
-                spacing={1}
-                flexWrap="wrap"
-                useFlexGap
-                justifyContent={{ xs: 'flex-start', md: 'flex-end' }}
               >
-                {categories.map((category) => (
-                  <Chip
-                    key={category}
-                    label={category}
-                    onClick={() => setSelectedCategory(category)}
-                    color={selectedCategory === category ? 'primary' : 'default'}
-                    variant={selectedCategory === category ? 'filled' : 'outlined'}
-                    sx={{ textTransform: 'none' }}
-                  />
-                ))}
-              </Stack>
-            </Grid>
-          </Grid>
-        </Box>
+                实战指南文库
+              </Typography>
+              <Chip
+                label={`${publishedArticles.length} 篇实录`}
+                size="small"
+                sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.75rem', height: 24, borderRadius: 1 }}
+              />
+            </Box>
 
-        {/* 文章列表 */}
-        <Grid container spacing={4}>
-          {loading && (
-            <Grid item xs={12}>
-              <Typography variant="body1" color="text.secondary">
-                正在加载文章...
-              </Typography>
-            </Grid>
-          )}
-          {error && !loading && (
-            <Grid item xs={12}>
-              <Typography variant="body1" color="error">
-                加载文章失败：{error}
-              </Typography>
-            </Grid>
-          )}
-          {!loading && !error && filteredArticles.length === 0 && (
-            <Grid item xs={12}>
-              <Typography variant="body1" color="text.secondary">
-                暂无符合条件的文章
-              </Typography>
-            </Grid>
-          )}
-          {!loading && !error && filteredArticles.map((article) => (
-            <Grid item xs={12} md={6} lg={4} key={article.id}>
-              <Card 
-                sx={{ 
-                  height: '100%', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  transition: 'all 0.2s ease',
-                  '&:hover': { 
-                    transform: 'translateY(-2px)'
+            <Typography variant="body1" sx={{ color: '#4b5563', fontSize: '0.96rem', lineHeight: 1.7 }}>
+              面向 35-50 岁人群的系统化行动方案：涵盖离职维权、劳动纠纷证据保全、轻资产副业启动、家庭四笔钱资产防线与中年心理调适。
+            </Typography>
+          </Box>
+
+          {/* 搜索框 */}
+          <Box sx={{ maxWidth: 600 }}>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="搜索实战关键词，如：离职维权、副业、失业金、四笔钱、养老..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value)
+                setDisplayCount(12)
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: '#9ca3af', fontSize: 20 }} />
+                  </InputAdornment>
+                ),
+                endAdornment: searchTerm ? (
+                  <InputAdornment position="end">
+                    <ClearIcon
+                      sx={{ color: '#9ca3af', fontSize: 18, cursor: 'pointer' }}
+                      onClick={() => setSearchTerm('')}
+                    />
+                  </InputAdornment>
+                ) : null,
+                sx: {
+                  borderRadius: 2,
+                  bgcolor: '#f9fafb',
+                  fontSize: '0.9rem',
+                  '& fieldset': { borderColor: '#e5e7eb' },
+                  '&:hover fieldset': { borderColor: '#c2410c' },
+                  '&.Mui-focused fieldset': { borderColor: '#c2410c' }
+                }
+              }}
+            />
+          </Box>
+        </Container>
+      </Box>
+
+      {/* 少数派经典 7:3 资讯流与侧边栏 */}
+      <Container maxWidth="lg" sx={{ py: 4.5 }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: '2.3fr 1fr'
+            },
+            gap: 3.5,
+            width: '100%',
+            alignItems: 'flex-start'
+          }}
+        >
+          {/* 左侧：分类 Tab 与文章列表 */}
+          <Box sx={{ width: '100%' }}>
+            {/* 分类 Tabs */}
+            <Box sx={{ borderBottom: '1px solid #e5e7eb', mb: 2.5, backgroundColor: '#ffffff', borderRadius: 2, p: 0.5, border: '1px solid #e5e7eb' }}>
+              <Tabs
+                value={activeTab}
+                onChange={(e, val) => {
+                  setActiveTab(val)
+                  setDisplayCount(12)
+                }}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  minHeight: 40,
+                  '& .MuiTabs-indicator': { backgroundColor: '#c2410c', height: 2 },
+                  '& .MuiTab-root': {
+                    minHeight: 40,
+                    fontWeight: 600,
+                    fontSize: '0.88rem',
+                    color: '#6b7280',
+                    textTransform: 'none',
+                    minWidth: 'auto',
+                    px: 2,
+                    py: 1,
+                    '&.Mui-selected': { color: '#c2410c' }
                   }
                 }}
               >
-                <CardContent sx={{ flexGrow: 1, p: 4 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-                    <Stack direction="row" spacing={1}>
-                      <Chip 
-                        label={article.category} 
-                        color="primary" 
-                        size="small"
-                        sx={{ fontWeight: 500 }}
-                      />
-                      <Chip 
-                        label={article.difficulty} 
-                        color={difficultyColors[article.difficulty]} 
-                        size="small"
-                        sx={{ fontWeight: 500 }}
-                      />
-                    </Stack>
-                    <Stack direction="row" spacing={1}>
-                      <IconButton 
-                        size="small"
-                        onClick={() => handleOpen(article)}
-                        sx={{ 
-                          color: 'text.secondary',
-                          '&:hover': { color: 'primary.main' }
-                        }}
-                      >
-                        <Edit fontSize="small" />
-                      </IconButton>
-                      <IconButton 
-                        size="small"
-                        onClick={() => handleDelete(article.id)}
-                        sx={{ 
-                          color: 'text.secondary',
-                          '&:hover': { color: 'error.main' }
-                        }}
-                      >
-                        <Delete fontSize="small" />
-                      </IconButton>
-                    </Stack>
-                  </Box>
-                
-                  <Typography 
-                    variant="h5" 
-                    component="h2" 
-                    sx={{ 
-                      fontWeight: 600,
-                      color: 'text.primary',
-                      mb: 2,
-                      lineHeight: 1.3,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {article.title}
-                  </Typography>
-                  
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary" 
-                      sx={{
-                        mb: 3,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                        lineHeight: 1.6
-                      }}
-                    >
-                      {article.summary || article.excerpt}
-                    </Typography>
-                
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                    <Avatar 
-                      sx={{ 
-                        width: 32, 
-                        height: 32, 
-                        fontSize: 14,
-                        backgroundColor: 'primary.main'
-                      }}
-                    >
-                      {article.author[0]}
-                    </Avatar>
-                    <Box>
-                      <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500 }}>
-                        {article.author}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {article.date ? format(new Date(article.date), 'MM月dd日', { locale: zhCN }) : '日期待确认'}
-                      </Typography>
-                    </Box>
-                  </Box>
-                
-                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 3 }}>
-                    {(article.tags || []).slice(0, 3).map((tag, index) => (
-                      <Chip 
-                        key={index} 
-                        label={tag} 
-                        variant="outlined" 
-                        size="small"
-                        sx={{
-                          borderColor: 'grey.300',
-                          color: 'text.secondary',
-                          fontWeight: 500
-                        }}
-                      />
-                    ))}
-                    {(article.tags || []).length > 3 && (
-                      <Chip 
-                        label={`+${(article.tags || []).length - 3}`}
-                        variant="outlined" 
-                        size="small"
-                        sx={{ borderColor: 'grey.300', color: 'text.secondary' }}
-                      />
-                    )}
-                  </Stack>
-                </CardContent>
-              
-                <CardActions sx={{ justifyContent: 'space-between', px: 4, pb: 4, pt: 0 }}>
-                  <Stack direction="row" spacing={3}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                     <Visibility fontSize="small" sx={{ color: 'text.secondary' }} />
-                      <Typography variant="caption" color="text.secondary">{article.views || 0}</Typography>
-                    </Stack>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <ThumbUp fontSize="small" sx={{ color: 'text.secondary' }} />
-                      <Typography variant="caption" color="text.secondary">{article.likes || 0}</Typography>
-                    </Stack>
-                  </Stack>
-                  <Stack direction="row" spacing={1}>
-                    <Button 
-                      size="small" 
-                      startIcon={<ThumbUp />} 
-                      onClick={() => handleLike(article.id)}
-                      sx={{ 
-                        color: 'text.secondary',
-                        '&:hover': { color: 'primary.main' }
-                      }}
-                    >
-                      点赞
-                    </Button>
-                    <Button 
-                      size="small" 
-                      startIcon={<Share />}
-                      sx={{ 
-                        color: 'text.secondary',
-                        '&:hover': { color: 'primary.main' }
-                      }}
-                    >
-                      分享
-                    </Button>
-                  </Stack>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                {allCategoryTabs.map((cat) => (
+                  <Tab key={cat} label={cat} />
+                ))}
+              </Tabs>
+            </Box>
 
-        {/* 发布文章对话框 */}
-        <Dialog 
-          open={open} 
-          onClose={handleClose} 
-          maxWidth="md" 
-          fullWidth
-          PaperProps={{
-            sx: {
-              borderRadius: 2
-            }
-          }}
-        >
-          <DialogTitle sx={{ pb: 2 }}>
-            <Typography variant="h5" sx={{ fontWeight: 600 }}>
-              {editingArticle ? '编辑文章' : '发布新文章'}
-            </Typography>
-          </DialogTitle>
-          <Divider />
-          <DialogContent sx={{ pt: 3 }}>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="文章标题"
-              fullWidth
-              variant="outlined"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              sx={{ mb: 3 }}
-            />
-            <Grid container spacing={3} sx={{ mb: 3 }}>
-              <Grid item xs={6}>
-                <TextField
-                  select
-                  margin="dense"
-                  label="分类"
-                  fullWidth
+            {/* 结果计数提示 */}
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="caption" sx={{ color: '#6b7280' }}>
+                共找到 <Typography component="span" variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{filteredArticles.length}</Typography> 篇实战指南
+                {searchTerm && ` (包含关键词 "${searchTerm}")`}
+              </Typography>
+            </Box>
+
+            {/* 文章列表 */}
+            {visibleArticles.length === 0 ? (
+              <Paper sx={{ p: 6, textAlign: 'center', backgroundColor: '#ffffff', borderRadius: 2, border: '1px solid #e5e7eb' }}>
+                <Typography variant="body1" sx={{ color: '#6b7280', mb: 1 }}>
+                  未找到与 "{searchTerm}" 相关的实战内容
+                </Typography>
+                <Typography variant="caption" sx={{ color: '#9ca3af', display: 'block', mb: 2 }}>
+                  建议尝试缩短搜索词，或切换至其他分类专栏查阅
+                </Typography>
+                <Button
+                  size="small"
                   variant="outlined"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  SelectProps={{ native: true }}
+                  onClick={() => {
+                    setSearchTerm('')
+                    setActiveTab(0)
+                  }}
+                  sx={{ color: '#c2410c', borderColor: '#c2410c' }}
                 >
-                  {categories.slice(1).map((category) => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  select
-                  margin="dense"
-                  label="难度"
-                  fullWidth
+                  重置筛选条件
+                </Button>
+              </Paper>
+            ) : (
+              <Stack spacing={2} sx={{ width: '100%' }}>
+                {visibleArticles.map((article, idx) => {
+                  const colorConfig = categoryStyles[article.category] || { bg: '#f3f4f6', color: '#374151', border: '#e5e7eb' }
+                  return (
+                    <Paper
+                      key={article.id || idx}
+                      elevation={0}
+                      onClick={() => navigate(`/article/${article.id}`)}
+                      sx={{
+                        p: 2.5,
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        borderRadius: 2,
+                        backgroundColor: '#ffffff',
+                        border: '1px solid #e5e7eb',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        '&:hover': {
+                          borderColor: '#c2410c',
+                          boxShadow: '0 4px 14px rgba(0,0,0,0.05)',
+                          '& .article-title': { color: '#c2410c' }
+                        }
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <Chip
+                          label={article.category}
+                          size="small"
+                          sx={{
+                            bgcolor: colorConfig.bg,
+                            color: colorConfig.color,
+                            border: `1px solid ${colorConfig.border}`,
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            height: 20,
+                            borderRadius: 0.8
+                          }}
+                        />
+                        <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                          {article.readTime || '3分钟阅读'}
+                        </Typography>
+                      </Box>
+
+                      <Typography
+                        className="article-title"
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700,
+                          color: '#111827',
+                          fontSize: '1.02rem',
+                          lineHeight: 1.45,
+                          mb: 0.8,
+                          transition: 'color 0.15s'
+                        }}
+                      >
+                        {article.title}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: '#4b5563',
+                          fontSize: '0.86rem',
+                          lineHeight: 1.6,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          mb: 1.5
+                        }}
+                      >
+                        {article.excerpt || article.summary}
+                      </Typography>
+
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#c2410c' }}>
+                            {article.author ? article.author.charAt(0) : '专'}
+                          </Avatar>
+                          <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
+                            {article.author || '实战导师'}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: '#9ca3af' }}>
+                            · {article.date || '最近'}
+                          </Typography>
+                        </Box>
+
+                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
+                          阅读全文 →
+                        </Typography>
+                      </Box>
+                    </Paper>
+                  )
+                })}
+              </Stack>
+            )}
+
+            {/* 加载更多 */}
+            {hasMore && (
+              <Box sx={{ textAlign: 'center', mt: 3.5 }}>
+                <Button
                   variant="outlined"
-                  value={formData.difficulty}
-                  onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                  SelectProps={{ native: true }}
+                  onClick={() => setDisplayCount(prev => prev + 12)}
+                  sx={{
+                    borderColor: '#d1d5db',
+                    color: '#374151',
+                    px: 4,
+                    py: 1,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    fontSize: '0.88rem',
+                    bgcolor: '#ffffff',
+                    whiteSpace: 'nowrap',
+                    '&:hover': { borderColor: '#9ca3af', bgcolor: '#f9fafb' }
+                  }}
                 >
-                  {difficulties.map((difficulty) => (
-                    <option key={difficulty} value={difficulty}>{difficulty}</option>
+                  加载更多文章 ({filteredArticles.length - visibleArticles.length} 篇待展开)
+                </Button>
+              </Box>
+            )}
+          </Box>
+
+          {/* 右侧：少数派挂件 */}
+          <Box sx={{ width: '100%', position: 'sticky', top: 76 }}>
+            <Stack spacing={2.5}>
+              {/* 热门实战精选榜 */}
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2.5,
+                  borderRadius: 2,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb'
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                  <TrendingUpIcon sx={{ color: '#c2410c', fontSize: 18 }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
+                    全库精选热榜
+                  </Typography>
+                </Box>
+
+                <Stack spacing={1.8}>
+                  {trendingArticles.map((art, idx) => (
+                    <Box
+                      key={art.id || idx}
+                      onClick={() => navigate(`/article/${art.id}`)}
+                      sx={{
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 1.2,
+                        '&:hover .rank-title': { color: '#c2410c' }
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 900,
+                          fontSize: '0.95rem',
+                          color: idx === 0 ? '#c2410c' : '#9ca3af',
+                          minWidth: 20,
+                          lineHeight: 1.3
+                        }}
+                      >
+                        0{idx + 1}
+                      </Typography>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography
+                          className="rank-title"
+                          variant="caption"
+                          sx={{
+                            fontWeight: 700,
+                            color: '#1f2937',
+                            lineHeight: 1.4,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            transition: 'color 0.15s'
+                          }}
+                        >
+                          {art.title}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem' }}>
+                          {art.category} · {art.readTime || '3分钟'}
+                        </Typography>
+                      </Box>
+                    </Box>
                   ))}
-                </TextField>
-              </Grid>
-            </Grid>
-            <TextField
-              margin="dense"
-              label="文章摘要"
-              fullWidth
-              multiline
-              rows={2}
-              variant="outlined"
-              value={formData.summary}
-              onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-              sx={{ mb: 3 }}
-            />
-            <TextField
-              margin="dense"
-              label="文章内容"
-              fullWidth
-              multiline
-              rows={8}
-              variant="outlined"
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              sx={{ mb: 3 }}
-            />
-            <TextField
-              margin="dense"
-              label="标签 (用逗号分隔)"
-              fullWidth
-              variant="outlined"
-              value={formData.tags}
-              onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-              placeholder="项目管理, 用户体验, 数据分析"
-            />
-          </DialogContent>
-          <Divider />
-          <DialogActions sx={{ p: 3 }}>
-            <Button 
-              onClick={handleClose}
-              sx={{ color: 'text.secondary' }}
-            >
-              取消
-            </Button>
-            <Button 
-              onClick={handleSave} 
-              variant="contained"
-              sx={{
-                backgroundColor: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.dark'
-                }
-              }}
-            >
-              发布
-            </Button>
-          </DialogActions>
-        </Dialog>
+                </Stack>
+              </Paper>
+
+              {/* 直通工作台 */}
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2.5,
+                  borderRadius: 2,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e5e7eb'
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <DashboardIcon sx={{ color: '#c2410c', fontSize: 18 }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
+                    自救工作台
+                  </Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 2, lineHeight: 1.5 }}>
+                  包含离职交涉、轻资产副业与现金流跑道三大防御 SOP，支持实时勾选留存进度。
+                </Typography>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="small"
+                  onClick={() => navigate('/dashboard')}
+                  endIcon={<ArrowForwardIcon sx={{ fontSize: 14 }} />}
+                  sx={{
+                    bgcolor: '#111827',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    py: 1,
+                    borderRadius: 1.5,
+                    whiteSpace: 'nowrap',
+                    '&:hover': { bgcolor: '#c2410c' }
+                  }}
+                >
+                  打开自救工作台
+                </Button>
+              </Paper>
+            </Stack>
+          </Box>
+        </Box>
       </Container>
+
+      <Footer />
     </Box>
   )
 }

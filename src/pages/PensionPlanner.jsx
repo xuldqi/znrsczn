@@ -210,7 +210,8 @@ const PensionPlanner = () => {
             px: { xs: 4, md: 6 },
             py: { xs: 5, md: 7 },
             color: 'common.white',
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #7c3aed 50%, #9333ea 100%)',
+            background: 'linear-gradient(135deg, #1c1917 0%, #292524 60%, #44403c 100%)',
+            border: '1px solid #44403c',
           }}
         >
           <Box sx={{ position: 'absolute', inset: 0, opacity: 0.2, background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%)' }} />
@@ -233,12 +234,14 @@ const PensionPlanner = () => {
                 size="large"
                 onClick={scrollToTool}
                 sx={{
-                  backgroundColor: 'rgba(255,255,255,0.15)',
-                  backdropFilter: 'blur(6px)',
+                  backgroundColor: '#c2410c',
+                  color: '#ffffff',
                   px: 4,
                   py: 1.5,
+                  whiteSpace: 'nowrap',
+                  fontWeight: 700,
                   '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.25)',
+                    backgroundColor: '#9a3412',
                   },
                 }}
               >

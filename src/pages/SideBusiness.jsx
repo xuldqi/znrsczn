@@ -1,246 +1,83 @@
-import { Container, Typography, Box, Grid, Card, CardContent, Button, Chip, Paper, Stack, Avatar } from '@mui/material'
-import { BusinessCenter, MonetizationOn, TrendingUp, School, Computer, Build } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { useMemo } from 'react'
+import { Typography, Paper, Box, Stack } from '@mui/material'
+import { MonetizationOnOutlined as MonetizationIcon } from '@mui/icons-material'
 import { useArticles } from '../contexts/ArticleContext'
+import ColumnLayout from '../components/ColumnLayout'
 
 const SideBusiness = () => {
-  const navigate = useNavigate()
-  const { getArticlesByCategory } = useArticles()
-  
-  // 获取副业指南类文章
-  const sideBusinessArticles = getArticlesByCategory('副业指南')
+  const { getAllArticles } = useArticles()
+
+  const sideArticles = useMemo(() => {
+    return getAllArticles()
+      .filter(a => a.category === '副业指南' && a.status === 'published')
+      .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+  }, [getAllArticles])
+
+  const sideTags = [
+    '技能变现',
+    '咨询陪跑',
+    '被动收入',
+    '数字资产',
+    '低成本试错',
+    '知识付费'
+  ]
+
+  const sideSidebarWidget = (
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2.5,
+        borderRadius: 2,
+        backgroundColor: '#ffffff',
+        border: '1px solid #e5e7eb'
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+        <MonetizationIcon sx={{ color: '#059669', fontSize: 18 }} />
+        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
+          中年轻创四不投原则
+        </Typography>
+      </Box>
+
+      <Stack spacing={1.5}>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
+            1. 坚决不投重资产加盟
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+            严禁用家庭养老金加盟餐饮、奶茶或租办公场地，重资产往往在半年内吞噬所有积蓄。
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
+            2. 必须技能复用与咨询化
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+            将 10+ 年主业踩过的坑、合规模板沉淀为咨询案或 SOP，卖给小企业与新手。
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
+            3. 陌生人付费验证闭环
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+            在没有真实陌生用户付费前，不做任何高额营销买量，保持极低的单人试错成本。
+          </Typography>
+        </Box>
+      </Stack>
+    </Paper>
+  )
 
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="lg">
-        {/* Page Header */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography 
-            variant="h1" 
-            component="h1" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 700,
-              color: 'text.primary',
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3rem' }
-            }}
-          >
-            副业指南
-          </Typography>
-          
-          <Typography 
-            variant="h5" 
-            sx={{ 
-              mb: 4, 
-              color: 'text.secondary',
-              fontWeight: 400,
-              lineHeight: 1.4,
-              maxWidth: '800px',
-              mx: 'auto'
-            }}
-          >
-            开启你的副业之路：将技能变现，创造被动收入，实现财务自由的多元化策略
-          </Typography>
-          
-          <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap" sx={{ mb: 4 }}>
-            <Chip label="技能变现" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="在线教育" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="内容创作" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-            <Chip label="被动收入" sx={{ backgroundColor: 'grey.100', color: 'text.primary' }} />
-          </Stack>
-        </Box>
-
-        {/* Side Business Articles Section */}
-        <Box sx={{ mb: 8 }}>
-          <Typography 
-            variant="h4" 
-            component="h2" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 600,
-              color: 'text.primary',
-              mb: 4,
-              textAlign: 'center'
-            }}
-          >
-            副业指南文章
-          </Typography>
-          
-          <Stack spacing={2}>
-            {sideBusinessArticles.map((article, index) => (
-              <Paper
-                key={article.id || index}
-                elevation={0}
-                onClick={() => navigate(`/article/${article.id}`)}
-                sx={{
-                  display: 'flex',
-                  backgroundColor: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                  }
-                }}
-              >
-                {/* 左侧图片 */}
-                <Box
-                  sx={{
-                    width: '33.333%',
-                    height: 200,
-                    flexShrink: 0,
-                    backgroundColor: '#f5f5f5',
-                    backgroundImage: article.image ? `url(${article.image})` : 'none',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {!article.image && (
-                    <Box sx={{ 
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 1,
-                      color: '#ccc'
-                    }}>
-                      <Box sx={{
-                        width: 40,
-                        height: 40,
-                        backgroundColor: '#06b6d4',
-                        borderRadius: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '1.2rem',
-                        fontWeight: 600
-                      }}>
-                        
-                      </Box>
-                      <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
-                        副业指南
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-
-                {/* 右侧内容 */}
-                <Box sx={{ flex: 1, p: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  {/* 标题和摘要 */}
-                  <Box>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ 
-                        fontWeight: 600, 
-                        mb: 1.5,
-                        color: 'text.primary',
-                        fontSize: '1.1rem',
-                        lineHeight: 1.3
-                      }}
-                    >
-                      {article.title}
-                    </Typography>
-                    
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary" 
-                      sx={{ mb: 2, lineHeight: 1.5 }}
-                    >
-                      {article.excerpt}
-                    </Typography>
-                  </Box>
-
-                  {/* 底部元信息 */}
-                  <Stack 
-                    direction="row" 
-                    spacing={2} 
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar sx={{ width: 24, height: 24, fontSize: '0.75rem', backgroundColor: '#0288d1' }}>
-                        {article.author?.charAt(0) || 'A'}
-                      </Avatar>
-                      <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.85rem' }}>
-                        {article.author}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-                        {article.readTime}
-                      </Typography>
-                    </Stack>
-
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Chip 
-                        label={article.category}
-                        size="small"
-                        sx={{
-                          backgroundColor: '#06b6d4',
-                          color: 'white',
-                          fontWeight: 500,
-                          fontSize: '0.75rem'
-                        }}
-                      />
-                    </Stack>
-                  </Stack>
-                </Box>
-              </Paper>
-            ))}
-          </Stack>
-        </Box>
-
-        {/* CTA Section */}
-        <Box sx={{ textAlign: 'center', mt: 6, p: 4, backgroundColor: 'white', borderRadius: 2, border: '1px solid #f0f0f0' }}>
-          <Typography 
-            variant="h4" 
-            component="h2" 
-            gutterBottom 
-            sx={{ 
-              fontWeight: 600,
-              color: 'text.primary',
-              mb: 2
-            }}
-          >
-            开始你的副业之路
-          </Typography>
-          
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              mb: 4, 
-              color: 'text.secondary',
-              lineHeight: 1.6,
-              maxWidth: '600px',
-              mx: 'auto'
-            }}
-          >
-            选择适合自己的副业方向，利用现有技能创造额外收入，让你的专业知识成为财富来源。
-          </Typography>
-          
-          <Button 
-            variant="contained" 
-            size="large"
-            sx={{ 
-              px: 4, 
-              py: 1.5,
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              backgroundColor: '#06b6d4',
-              '&:hover': {
-                backgroundColor: '#0891b2'
-              }
-            }}
-          >
-            探索副业机会
-          </Button>
-        </Box>
-      </Container>
-    </Box>
+    <ColumnLayout
+      columnTitle="副业与轻创"
+      columnTag="开源创收"
+      columnSummary="中年试错成本极高。严禁动用家庭防守资金盲目加盟开店；专注于零边际成本的咨询陪跑、行业模板化、数字资产与专业经验变现。"
+      columnHighlight="四大避坑红线：坚决不碰重资产加盟、坚决不囤实体货品、必须复用过往主业技能、未获陌生人付费前绝不大额投入。"
+      articles={sideArticles}
+      tags={sideTags}
+      sidebarWidget={sideSidebarWidget}
+    />
   )
 }
 

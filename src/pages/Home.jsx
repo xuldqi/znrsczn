@@ -167,6 +167,7 @@ const Home = () => {
               borderRadius: 2.5,
               backgroundColor: '#ffffff',
               border: '1px solid #e5e7eb',
+              borderTop: '3px solid #c2410c',
               cursor: 'pointer',
               display: 'flex',
               flexDirection: 'column',
