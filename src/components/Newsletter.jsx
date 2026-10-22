@@ -116,7 +116,7 @@ const Newsletter = () => {
         </Stack>
         
         <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-          🔒 我们重视您的隐私，不会分享您的邮箱地址
+           我们重视您的隐私，不会分享您的邮箱地址
         </Typography>
       </Paper>
 

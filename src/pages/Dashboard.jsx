@@ -237,7 +237,7 @@ const Dashboard = () => {
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#faf9f6', color: '#1c1917' }}>
       
-      {/* 🧭 控制台顶部 Header */}
+      {/*  控制台顶部 Header */}
       <Box
         sx={{
           pt: 3.5,
@@ -326,7 +326,7 @@ const Dashboard = () => {
         </Container>
       </Box>
 
-      {/* 📊 控制台主面板 */}
+      {/*  控制台主面板 */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box
           sx={{
@@ -459,7 +459,7 @@ const Dashboard = () => {
                   </Grid>
 
                   <Typography variant="caption" sx={{ color: '#57534e', display: 'block', mt: 1.5, lineHeight: 1.5 }}>
-                    💡 诊断建议：{runwayStatus.advice}
+                    诊断建议：{runwayStatus.advice}
                   </Typography>
                 </Box>
               </Box>
@@ -655,7 +655,7 @@ const Dashboard = () => {
             </Paper>
         </Box>
 
-        {/* 🧭 四大自救战区入口 */}
+        {/*  四大自救战区入口 */}
         <Box sx={{ mt: 4, mb: 1 }}>
           <Typography variant="subtitle2" sx={{ color: '#78716c', fontWeight: 700, letterSpacing: '0.05em', mb: 2 }}>
             四大自救战区专栏

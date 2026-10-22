@@ -202,7 +202,7 @@ const Complaints = () => {
 
         <Paper elevation={0} sx={{ p: 3, backgroundColor: 'grey.50', borderRadius: 2 }}>
           <Typography variant="body1" color="text.secondary">
-            💡 这里是分享交流的温馨空间，说出你的故事和感悟，让我们互相陪伴共同成长。
+             这里是分享交流的温馨空间，说出你的故事和感悟，让我们互相陪伴共同成长。
           </Typography>
         </Paper>
       </Box>

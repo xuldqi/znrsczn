@@ -121,7 +121,7 @@ const Interests = () => {
                         fontSize: '1.2rem',
                         fontWeight: 600
                       }}>
-                        🎨
+                        
                       </Box>
                       <Typography variant="caption" color="#999" sx={{ fontSize: '0.75rem' }}>
                         兴趣爱好
