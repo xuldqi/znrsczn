@@ -6,7 +6,6 @@ import {
   Paper,
   Typography,
   Stack,
-  Divider,
   Chip,
   Button,
   Slider,
@@ -28,10 +27,7 @@ import {
   OpenInNew as OpenInNewIcon,
   ArrowForward as ArrowForwardIcon,
   LightbulbOutlined as LightbulbIcon,
-  TrendingUp as TrendingUpIcon,
-  AccountBalanceWalletOutlined as WalletIcon,
-  ShieldOutlined as ShieldIcon,
-  CompareArrows as CompareIcon
+  SettingsOutlined as SettingsIcon
 } from '@mui/icons-material'
 import { useArticles } from '../contexts/ArticleContext'
 import Footer from '../components/Footer'
@@ -52,8 +48,8 @@ const defaultForm = {
 // 常见典型人群预设方案
 const presetProfiles = [
   {
-    name: '典型工薪家庭 (35岁起步)',
-    desc: '平稳积累，社保+个人储蓄双轨',
+    name: '工薪家庭 (35岁起步)',
+    desc: '平稳积累，社保+储蓄双轨',
     values: {
       currentAge: 35,
       retirementAge: 60,
@@ -69,7 +65,7 @@ const presetProfiles = [
   },
   {
     name: '大厂提前退休 (42岁FIRE)',
-    desc: '高存量资产，提早结束职场打工',
+    desc: '高存量资产，提早告别打工',
     values: {
       currentAge: 42,
       retirementAge: 48,
@@ -84,7 +80,7 @@ const presetProfiles = [
     }
   },
   {
-    name: '稳健保本冲刺 (50岁备老)',
+    name: '稳健备老 (50岁冲刺)',
     desc: '缩减开支，守好养老现金底盘',
     values: {
       currentAge: 50,
@@ -260,6 +256,7 @@ const simulatePlan = (state) => {
 const PensionPlanner = () => {
   const [form, setForm] = useState(defaultForm)
   const [activePreset, setActivePreset] = useState(null)
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const navigate = useNavigate()
   const { getAllArticles } = useArticles()
@@ -296,7 +293,7 @@ const PensionPlanner = () => {
     setActivePreset(preset.name)
   }
 
-  // 针对缺口的动态建议测算
+  // 针对缺口的动态自救破局建议
   const advice = useMemo(() => {
     if (result.success) return null
     const gapYears = result.gapYears
@@ -316,11 +313,29 @@ const PensionPlanner = () => {
     return Math.min(100, Math.round((result.yearsCovered / result.retirementYears) * 100))
   }, [result])
 
+  // 生命周期进度条比例计算
+  const timelineProgress = useMemo(() => {
+    const totalSpan = Math.max(1, form.lifeExpectancy - form.currentAge)
+    const accumYears = Math.max(0, form.retirementAge - form.currentAge)
+    const coveredYears = result.yearsCovered
+    const gapYears = result.gapYears
+
+    const accumPercent = (accumYears / totalSpan) * 100
+    const coveredPercent = (coveredYears / totalSpan) * 100
+    const gapPercent = (gapYears / totalSpan) * 100
+
+    return {
+      accumPercent,
+      coveredPercent,
+      gapPercent
+    }
+  }, [form, result])
+
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f5f8', color: '#1c1917', width: '100%', overflowX: 'hidden' }}>
       
-      {/* 顶部面包屑与工具定位 */}
-      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 1.2 }}>
+      {/* 顶部极简状态栏 */}
+      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 1.1 }}>
         <Container maxWidth="lg">
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -357,317 +372,357 @@ const PensionPlanner = () => {
         </Container>
       </Box>
 
-      {/* 页面主标题区 */}
-      <Container maxWidth="lg" sx={{ pt: 3.5, pb: 2 }}>
+      {/* 核心主容器 */}
+      <Container maxWidth="lg" sx={{ pt: 3, pb: 6 }}>
+        
+        {/* 头部标题与场景切换 */}
         <Box sx={{ mb: 2.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Chip
-              icon={<CalculateIcon sx={{ fontSize: '15px !important', color: '#c2410c !important' }} />}
-              label="精算测算工具"
-              size="small"
-              sx={{ bgcolor: '#ffedd5', color: '#c2410c', fontWeight: 700, fontSize: '0.75rem', height: 24, borderRadius: 1 }}
-            />
-            <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-              复利模型 · 通胀对冲 · 社保养老金统筹抵扣
-            </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1.5, mb: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Chip
+                icon={<CalculateIcon sx={{ fontSize: '15px !important', color: '#c2410c !important' }} />}
+                label="精算测算工具"
+                size="small"
+                sx={{ bgcolor: '#ffedd5', color: '#c2410c', fontWeight: 700, fontSize: '0.72rem', height: 22, borderRadius: 1 }}
+              />
+              <Typography variant="h5" sx={{ fontWeight: 800, color: '#111827', fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+                养老金与退休安全边界精算看板
+              </Typography>
+            </Box>
+
+            {/* 典型预设单行胶囊 */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, flexWrap: 'wrap' }}>
+              {presetProfiles.map((p) => {
+                const isSelected = activePreset === p.name
+                return (
+                  <Chip
+                    key={p.name}
+                    label={p.name}
+                    size="small"
+                    onClick={() => applyPreset(p)}
+                    sx={{
+                      cursor: 'pointer',
+                      fontWeight: isSelected ? 700 : 500,
+                      fontSize: '0.75rem',
+                      height: 26,
+                      borderRadius: 1.2,
+                      bgcolor: isSelected ? '#1f2937' : '#ffffff',
+                      color: isSelected ? '#ffffff' : '#4b5563',
+                      border: isSelected ? '1px solid #1f2937' : '1px solid #e5e7eb',
+                      transition: 'all 0.15s',
+                      '&:hover': {
+                        bgcolor: isSelected ? '#111827' : '#f9fafb'
+                      }
+                    }}
+                  />
+                )
+              })}
+              <Button
+                size="small"
+                onClick={() => {
+                  setForm(defaultForm)
+                  setActivePreset(null)
+                }}
+                sx={{ color: '#9ca3af', fontSize: '0.72rem', p: 0, minWidth: 'auto', '&:hover': { color: '#c2410c', bgcolor: 'transparent' } }}
+              >
+                重置
+              </Button>
+            </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#111827', fontSize: { xs: '1.45rem', sm: '1.8rem' }, mb: 0.8 }}>
-            个人与家庭养老金缺口精算看板
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#4b5563', fontSize: '0.9rem', maxWidth: 840, lineHeight: 1.6 }}>
-            输入当前年龄、积蓄储备与每月储蓄能力，系统将基于通货膨胀模型与社保基本养老金对冲，实时测算退休时的资产规模峰值与资金可持续生存年限。
+          <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.86rem', maxWidth: 840, lineHeight: 1.5 }}>
+            综合测算社保统筹基本养老金、个人资产复利积累与长期通胀对冲，量化您的退休安全边界与现金流断档风险。
           </Typography>
         </Box>
 
-        {/* 典型场景一键预设 */}
-        <Paper elevation={0} sx={{ p: 1.8, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, flexWrap: 'wrap' }}>
-            <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
-              典型人群预设:
-            </Typography>
-            {presetProfiles.map((p) => {
-              const isSelected = activePreset === p.name
-              return (
-                <Chip
-                  key={p.name}
-                  label={`${p.name} · ${p.desc}`}
-                  size="small"
-                  onClick={() => applyPreset(p)}
-                  sx={{
-                    cursor: 'pointer',
-                    fontWeight: isSelected ? 700 : 500,
-                    fontSize: '0.75rem',
-                    height: 26,
-                    borderRadius: 1.5,
-                    bgcolor: isSelected ? '#1f2937' : '#f9fafb',
-                    color: isSelected ? '#ffffff' : '#374151',
-                    border: isSelected ? '1px solid #1f2937' : '1px solid #e5e7eb',
-                    transition: 'all 0.15s',
-                    '&:hover': {
-                      bgcolor: isSelected ? '#111827' : '#f3f4f6',
-                      borderColor: isSelected ? '#111827' : '#cbd5e1'
-                    }
-                  }}
-                />
-              )
-            })}
-            <Button
-              size="small"
-              onClick={() => {
-                setForm(defaultForm)
-                setActivePreset(null)
-              }}
-              sx={{ color: '#9ca3af', fontSize: '0.74rem', p: 0, minWidth: 'auto', ml: 'auto', '&:hover': { color: '#c2410c', bgcolor: 'transparent' } }}
-            >
-              恢复默认参数
-            </Button>
-          </Box>
-        </Paper>
-
-        {/* 核心双栏看板：左侧控制台 + 右侧精算结论 (高度对齐平衡) */}
+        {/* 核心双栏看板：左侧紧凑控制台 + 右侧可视化大屏 (自然等高无空隙) */}
         <Box
           sx={{
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
-              md: '1fr 1.25fr'
+              md: '1.05fr 1.15fr'
             },
-            gap: 2.8,
-            alignItems: 'stretch',
+            gap: 2.5,
+            alignItems: 'start',
             mb: 3
           }}
         >
-          {/* 左侧：输入控制台 (Sliders + Number inputs) */}
-          <Paper elevation={0} sx={{ p: 2.2, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <TuneIcon sx={{ color: '#c2410c', fontSize: 19 }} />
-                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
-                    精算参数设定
-                  </Typography>
+          {/* 左侧：精选交互式控制面板 */}
+          <Paper elevation={0} sx={{ p: 2.2, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, pb: 1, borderBottom: '1px solid #f3f4f6' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                <TuneIcon sx={{ color: '#c2410c', fontSize: 18 }} />
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
+                  参数设定
+                </Typography>
+              </Box>
+              <Chip
+                label={`工作积累 ${result.yearsToRetirement.toFixed(0)}年 · 退休提领 ${result.retirementYears.toFixed(0)}年`}
+                size="small"
+                sx={{ bgcolor: '#ffedd5', color: '#c2410c', fontWeight: 700, fontSize: '0.68rem', height: 20 }}
+              />
+            </Box>
+
+            <Stack spacing={2.2}>
+              
+              {/* 1. 年龄三合一紧凑行 */}
+              <Box>
+                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', display: 'block', mb: 1 }}>
+                  1. 生命时间轴
+                </Typography>
+                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1.5 }}>
+                  <Box sx={{ p: 1.2, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.3 }}>
+                      <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.72rem' }}>当前年龄</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#111827' }}>{form.currentAge}岁</Typography>
+                    </Box>
+                    <Slider
+                      size="small"
+                      value={Number(form.currentAge)}
+                      min={20}
+                      max={70}
+                      step={1}
+                      onChange={(e, v) => handleFieldChange('currentAge', v)}
+                      sx={{ color: '#c2410c', py: 0.5 }}
+                    />
+                  </Box>
+
+                  <Box sx={{ p: 1.2, borderRadius: 1.5, bgcolor: '#fff7ed', border: '1px solid #fed7aa' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.3 }}>
+                      <Typography variant="caption" sx={{ color: '#c2410c', fontSize: '0.72rem', fontWeight: 700 }}>退休年龄</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#c2410c' }}>{form.retirementAge}岁</Typography>
+                    </Box>
+                    <Slider
+                      size="small"
+                      value={Number(form.retirementAge)}
+                      min={Math.max(35, Number(form.currentAge))}
+                      max={75}
+                      step={1}
+                      onChange={(e, v) => handleFieldChange('retirementAge', v)}
+                      sx={{ color: '#c2410c', py: 0.5 }}
+                    />
+                  </Box>
+
+                  <Box sx={{ p: 1.2, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.3 }}>
+                      <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.72rem' }}>预估寿命</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#111827' }}>{form.lifeExpectancy}岁</Typography>
+                    </Box>
+                    <Slider
+                      size="small"
+                      value={Number(form.lifeExpectancy)}
+                      min={Math.max(65, Number(form.retirementAge) + 1)}
+                      max={100}
+                      step={1}
+                      onChange={(e, v) => handleFieldChange('lifeExpectancy', v)}
+                      sx={{ color: '#c2410c', py: 0.5 }}
+                    />
+                  </Box>
                 </Box>
-                <Chip
-                  label={`积累 ${result.yearsToRetirement.toFixed(0)}年 | 提领 ${result.retirementYears.toFixed(0)}年`}
-                  size="small"
-                  sx={{ bgcolor: '#ffedd5', color: '#c2410c', fontWeight: 700, fontSize: '0.7rem', height: 22 }}
-                />
               </Box>
 
-              <Stack spacing={2}>
-                
-                {/* 1. 年龄与生命周期 */}
-                <Box sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#374151', fontSize: '0.78rem', display: 'block', mb: 1.2 }}>
-                    1. 时间轴规划
-                  </Typography>
+              {/* 2. 积累期资金与月定投 */}
+              <Box>
+                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', display: 'block', mb: 1 }}>
+                  2. 积累期储备与月定投
+                </Typography>
 
-                  <Stack spacing={1.5}>
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>当前年龄</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{form.currentAge} 岁</Typography>
-                      </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.currentAge)}
-                        min={20}
-                        max={70}
-                        step={1}
-                        onChange={(e, val) => handleFieldChange('currentAge', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
+                <Stack spacing={1.5}>
+                  {/* 已有储备 */}
+                  <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                      <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>现有养老储蓄本金</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.85rem' }}>
+                        ¥{(form.currentSavings / 10000).toFixed(1)} 万元
+                      </Typography>
                     </Box>
+                    <Slider
+                      size="small"
+                      value={Number(form.currentSavings)}
+                      min={0}
+                      max={3000000}
+                      step={20000}
+                      onChange={(e, v) => handleFieldChange('currentSavings', v)}
+                      sx={{ color: '#c2410c', py: 0.6 }}
+                    />
+                    <Box sx={{ display: 'flex', gap: 0.6, mt: 0.4 }}>
+                      {[100000, 300000, 600000, 1000000, 1500000].map(amt => (
+                        <Chip
+                          key={amt}
+                          label={`${amt / 10000}万`}
+                          size="small"
+                          onClick={() => handleFieldChange('currentSavings', amt)}
+                          sx={{ fontSize: '0.68rem', height: 20, bgcolor: '#ffffff', border: '1px solid #e5e7eb', cursor: 'pointer' }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
 
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>计划退休年龄</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{form.retirementAge} 岁</Typography>
-                      </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.retirementAge)}
-                        min={Math.max(35, Number(form.currentAge))}
-                        max={75}
-                        step={1}
-                        onChange={(e, val) => handleFieldChange('retirementAge', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
+                  {/* 每月定投 */}
+                  <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                      <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>每月可定投追加</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.85rem' }}>
+                        ¥{Number(form.monthlyContribution).toLocaleString()} /月
+                      </Typography>
                     </Box>
+                    <Slider
+                      size="small"
+                      value={Number(form.monthlyContribution)}
+                      min={0}
+                      max={25000}
+                      step={500}
+                      onChange={(e, v) => handleFieldChange('monthlyContribution', v)}
+                      sx={{ color: '#c2410c', py: 0.6 }}
+                    />
+                    <Box sx={{ display: 'flex', gap: 0.6, mt: 0.4 }}>
+                      {[2000, 4000, 6000, 10000, 15000].map(amt => (
+                        <Chip
+                          key={amt}
+                          label={`${amt}/月`}
+                          size="small"
+                          onClick={() => handleFieldChange('monthlyContribution', amt)}
+                          sx={{ fontSize: '0.68rem', height: 20, bgcolor: '#ffffff', border: '1px solid #e5e7eb', cursor: 'pointer' }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+                </Stack>
+              </Box>
 
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>预估预期寿命</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{form.lifeExpectancy} 岁</Typography>
-                      </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.lifeExpectancy)}
-                        min={Math.max(65, Number(form.retirementAge) + 1)}
-                        max={100}
-                        step={1}
-                        onChange={(e, val) => handleFieldChange('lifeExpectancy', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
+              {/* 3. 退休后现金流收支 */}
+              <Box>
+                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', display: 'block', mb: 1 }}>
+                  3. 退休期现金流预估 (以今天购买力)
+                </Typography>
+
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                  <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.3 }}>
+                      <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.72rem' }}>目标月支出</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.8rem' }}>
+                        ¥{Number(form.desiredMonthlyExpense).toLocaleString()}
+                      </Typography>
                     </Box>
-                  </Stack>
+                    <Slider
+                      size="small"
+                      value={Number(form.desiredMonthlyExpense)}
+                      min={3000}
+                      max={30000}
+                      step={500}
+                      onChange={(e, v) => handleFieldChange('desiredMonthlyExpense', v)}
+                      sx={{ color: '#c2410c', py: 0.6 }}
+                    />
+                  </Box>
+
+                  <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.3 }}>
+                      <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.72rem' }}>社保基本养老金</Typography>
+                      <Typography variant="caption" sx={{ fontWeight: 800, color: '#0369a1', fontSize: '0.8rem' }}>
+                        ¥{Number(form.pensionIncome).toLocaleString()}
+                      </Typography>
+                    </Box>
+                    <Slider
+                      size="small"
+                      value={Number(form.pensionIncome)}
+                      min={1000}
+                      max={12000}
+                      step={200}
+                      onChange={(e, v) => handleFieldChange('pensionIncome', v)}
+                      sx={{ color: '#c2410c', py: 0.6 }}
+                    />
+                  </Box>
                 </Box>
+              </Box>
 
-                {/* 2. 积累期储备与月定投 */}
-                <Box sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#374151', fontSize: '0.78rem', display: 'block', mb: 1.2 }}>
-                    2. 积累期注入 (现阶段)
-                  </Typography>
+              {/* 4. 折叠式高阶宏观假设 (年化收益/通胀率) */}
+              <Box sx={{ pt: 1, borderTop: '1px solid #f3f4f6' }}>
+                <Button
+                  size="small"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  startIcon={<SettingsIcon sx={{ fontSize: 14 }} />}
+                  endIcon={showAdvanced ? <ExpandLessIcon sx={{ fontSize: 16 }} /> : <ExpandMoreIcon sx={{ fontSize: 16 }} />}
+                  sx={{ color: '#6b7280', fontSize: '0.75rem', p: 0, fontWeight: 600, '&:hover': { color: '#c2410c', bgcolor: 'transparent' } }}
+                >
+                  {showAdvanced ? '收起收益率与通胀假设' : `展开收益率与通胀假设 (默认年化 ${form.expectedReturn}% / 通胀 ${form.inflationRate}%)`}
+                </Button>
 
-                  <Stack spacing={1.5}>
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>已有养老储备</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>
-                          ¥{(form.currentSavings / 10000).toFixed(1)} 万元
-                        </Typography>
+                <Collapse in={showAdvanced}>
+                  <Box sx={{ p: 1.5, mt: 1.2, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #e5e7eb' }}>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1.2 }}>
+                      <Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.2 }}>
+                          <Typography variant="caption" sx={{ fontSize: '0.68rem', color: '#6b7280' }}>积累期收益</Typography>
+                          <Typography variant="caption" sx={{ fontSize: '0.72rem', fontWeight: 700 }}>{form.expectedReturn}%</Typography>
+                        </Box>
+                        <Slider
+                          size="small"
+                          value={Number(form.expectedReturn)}
+                          min={1.0}
+                          max={9.0}
+                          step={0.5}
+                          onChange={(e, v) => handleFieldChange('expectedReturn', v)}
+                          sx={{ color: '#c2410c', py: 0.4 }}
+                        />
                       </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.currentSavings)}
-                        min={0}
-                        max={3000000}
-                        step={20000}
-                        onChange={(e, val) => handleFieldChange('currentSavings', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
-                    </Box>
 
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>每月可定投追加</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>
-                          ¥{Number(form.monthlyContribution).toLocaleString()} /月
-                        </Typography>
+                      <Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.2 }}>
+                          <Typography variant="caption" sx={{ fontSize: '0.68rem', color: '#6b7280' }}>退休期收益</Typography>
+                          <Typography variant="caption" sx={{ fontSize: '0.72rem', fontWeight: 700 }}>{form.postRetirementReturn}%</Typography>
+                        </Box>
+                        <Slider
+                          size="small"
+                          value={Number(form.postRetirementReturn)}
+                          min={1.0}
+                          max={6.0}
+                          step={0.5}
+                          onChange={(e, v) => handleFieldChange('postRetirementReturn', v)}
+                          sx={{ color: '#c2410c', py: 0.4 }}
+                        />
                       </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.monthlyContribution)}
-                        min={0}
-                        max={30000}
-                        step={500}
-                        onChange={(e, val) => handleFieldChange('monthlyContribution', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
-                    </Box>
 
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>积累期年化投资回报</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{form.expectedReturn}% /年</Typography>
+                      <Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.2 }}>
+                          <Typography variant="caption" sx={{ fontSize: '0.68rem', color: '#6b7280' }}>年化通胀率</Typography>
+                          <Typography variant="caption" sx={{ fontSize: '0.72rem', fontWeight: 700 }}>{form.inflationRate}%</Typography>
+                        </Box>
+                        <Slider
+                          size="small"
+                          value={Number(form.inflationRate)}
+                          min={1.0}
+                          max={5.0}
+                          step={0.1}
+                          onChange={(e, v) => handleFieldChange('inflationRate', v)}
+                          sx={{ color: '#c2410c', py: 0.4 }}
+                        />
                       </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.expectedReturn)}
-                        min={1.0}
-                        max={10.0}
-                        step={0.5}
-                        onChange={(e, val) => handleFieldChange('expectedReturn', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
                     </Box>
-                  </Stack>
-                </Box>
+                  </Box>
+                </Collapse>
+              </Box>
 
-                {/* 3. 退休期开支与社保 */}
-                <Box sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#374151', fontSize: '0.78rem', display: 'block', mb: 1.2 }}>
-                    3. 退休后现金流与通胀
-                  </Typography>
-
-                  <Stack spacing={1.5}>
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>退休目标月支出 (现值)</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>
-                          ¥{Number(form.desiredMonthlyExpense).toLocaleString()} /月
-                        </Typography>
-                      </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.desiredMonthlyExpense)}
-                        min={3000}
-                        max={35000}
-                        step={500}
-                        onChange={(e, val) => handleFieldChange('desiredMonthlyExpense', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
-                    </Box>
-
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>社保基本养老金 (现值预估)</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>
-                          ¥{Number(form.pensionIncome).toLocaleString()} /月
-                        </Typography>
-                      </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.pensionIncome)}
-                        min={1000}
-                        max={15000}
-                        step={200}
-                        onChange={(e, val) => handleFieldChange('pensionIncome', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
-                    </Box>
-
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.3 }}>
-                        <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem' }}>年化通货膨胀率</Typography>
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{form.inflationRate}% /年</Typography>
-                      </Box>
-                      <Slider
-                        size="small"
-                        value={Number(form.inflationRate)}
-                        min={1.0}
-                        max={5.0}
-                        step={0.1}
-                        onChange={(e, val) => handleFieldChange('inflationRate', val)}
-                        sx={{ color: '#c2410c', py: 0.8 }}
-                      />
-                    </Box>
-                  </Stack>
-                </Box>
-
-              </Stack>
-            </Box>
+            </Stack>
           </Paper>
 
-          {/* 右侧：精算大屏与核心结论 (与左侧高度对齐) */}
-          <Stack spacing={2} sx={{ height: '100%', justifyContent: 'space-between' }}>
+          {/* 右侧：精算评估看板 (结论 + 直观跑道 + 核心数据 + 自救锦囊) */}
+          <Paper elevation={0} sx={{ p: 2.2, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
             
-            {/* 1. 核心精算结论卡 (Verdict Scorecard) */}
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 2, sm: 2.5 },
-                borderRadius: 2,
-                bgcolor: '#ffffff',
-                border: '1px solid',
-                borderColor: result.success ? '#bbf7d0' : '#fed7aa',
-                borderLeft: '5px solid',
-                borderLeftColor: result.success ? '#16a34a' : '#c2410c'
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, mb: 1.2 }}>
+            {/* 1. 核心诊断 Headline */}
+            <Box sx={{ mb: 2, pb: 1.8, borderBottom: '1px solid #f3f4f6' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, mb: 1 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                   {result.success ? (
                     <SafeIcon sx={{ color: '#16a34a', fontSize: 22 }} />
                   ) : (
                     <WarningIcon sx={{ color: '#c2410c', fontSize: 22 }} />
                   )}
-                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827', fontSize: '1rem' }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.98rem' }}>
                     精算评估诊断
                   </Typography>
                 </Box>
                 <Chip
-                  label={result.success ? `覆盖率 100% · 安全达标` : `覆盖率 ${coverageRatio}% · 需补充防线`}
+                  label={result.success ? `覆盖率 100% · 全周期安全` : `覆盖率 ${coverageRatio}% · 需补充防线`}
                   size="small"
                   sx={{
                     bgcolor: result.success ? '#f0fdf4' : '#fff7ed',
@@ -682,300 +737,212 @@ const PensionPlanner = () => {
 
               {result.success ? (
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: '#15803d', mb: 0.8, fontSize: { xs: '1.2rem', sm: '1.35rem' } }}>
+                  <Typography variant="h5" sx={{ fontWeight: 800, color: '#15803d', mb: 0.5, fontSize: { xs: '1.2rem', sm: '1.35rem' } }}>
                     资产可稳健覆盖至 {form.lifeExpectancy} 岁（全生命周期安全）
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#374151', lineHeight: 1.6, fontSize: '0.88rem' }}>
-                    在当前储蓄与定投规划下，到 {form.retirementAge} 岁退休时总资产预计达到{' '}
+                  <Typography variant="body2" sx={{ color: '#4b5563', fontSize: '0.86rem', lineHeight: 1.55 }}>
+                    到 {form.retirementAge} 岁退休时总资产预计达到{' '}
                     <Typography component="span" sx={{ fontWeight: 700, color: '#111827' }}>
                       {formatCurrency(result.retirementBalance)}
                     </Typography>
-                    。足以支撑退休后完整 {result.retirementYears.toFixed(0)} 年生活，即使计入长期通胀上浮，依然享有充分的安全边际。
+                    ，足以支撑退休后完整 {result.retirementYears.toFixed(0)} 年生活，享有充分的安全边际。
                   </Typography>
                 </Box>
               ) : (
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: '#c2410c', mb: 0.8, fontSize: { xs: '1.2rem', sm: '1.35rem' } }}>
-                    养老资产预计在 {result.depletionAge.toFixed(0)} 岁耗尽（存在 {result.gapYears.toFixed(0)} 年资金缺口）
+                  <Typography variant="h5" sx={{ fontWeight: 800, color: '#c2410c', mb: 0.5, fontSize: { xs: '1.2rem', sm: '1.35rem' } }}>
+                    养老资产预计在 {result.depletionAge.toFixed(0)} 岁耗尽（存在 {result.gapYears.toFixed(0)} 年缺口）
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#374151', lineHeight: 1.6, fontSize: '0.88rem', mb: 1.5 }}>
+                  <Typography variant="body2" sx={{ color: '#4b5563', fontSize: '0.86rem', lineHeight: 1.55 }}>
                     现有积累仅能支撑退休后约{' '}
                     <Typography component="span" sx={{ fontWeight: 700, color: '#c2410c' }}>
                       {result.yearsCovered.toFixed(1)} 年
                     </Typography>
-                    ，在距离目标寿命 {form.lifeExpectancy} 岁尚有 {result.gapYears.toFixed(0)} 年时面临资金断供风险。
+                    ，在距离目标寿命 {form.lifeExpectancy} 岁尚有 {result.gapYears.toFixed(0)} 年时面临断供风险。
                   </Typography>
-
-                  {/* 3 条智能破局自救建议 */}
-                  {advice && (
-                    <Box sx={{ p: 1.6, borderRadius: 1.5, bgcolor: '#fff7ed', border: '1px solid #fed7aa' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mb: 0.8 }}>
-                        <LightbulbIcon sx={{ color: '#c2410c', fontSize: 16 }} />
-                        <Typography variant="caption" sx={{ fontWeight: 700, color: '#9a3412', fontSize: '0.78rem' }}>
-                          实战破局的 3 条自救解法:
-                        </Typography>
-                      </Box>
-                      <Stack spacing={0.6}>
-                        <Typography variant="caption" sx={{ color: '#431407', fontSize: '0.76rem', display: 'block' }}>
-                          1. <strong>增加月定投</strong>：每月多存约 <strong>¥{advice.extraPerMonth.toLocaleString()}</strong> 元，复利即可填补缺口。
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: '#431407', fontSize: '0.76rem', display: 'block' }}>
-                          2. <strong>推迟退休</strong>：适当延后 <strong>{advice.delayYearsNeeded} 年</strong> 退休，多积累本金并缩短支取年限。
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: '#431407', fontSize: '0.76rem', display: 'block' }}>
-                          3. <strong>压缩开销</strong>：退休期月度支出削减 <strong>{advice.expenseCutPercent}%</strong>，即可做到收支平稳平衡。
-                        </Typography>
-                      </Stack>
-                    </Box>
-                  )}
                 </Box>
               )}
-            </Paper>
+            </Box>
 
-            {/* 2. 四大核心量化指标卡 (4-Grid Metrics) */}
+            {/* 2. 生命周期资金覆盖可视化跑道 (Visual Runway Bar) */}
+            <Box sx={{ p: 1.8, borderRadius: 1.8, bgcolor: '#f9fafb', border: '1px solid #e5e7eb', mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6 }}>
+                  <TimelineIcon sx={{ fontSize: 16, color: '#c2410c' }} />
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#374151', fontSize: '0.76rem' }}>
+                    生命周期资金跑道直观推演
+                  </Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: result.success ? '#15803d' : '#b91c1c', fontWeight: 700, fontSize: '0.74rem' }}>
+                  {result.success ? '全生命周期资金无断崖' : `在 ${result.depletionAge.toFixed(0)} 岁出现资金缺口`}
+                </Typography>
+              </Box>
+
+              {/* 多色段可视柱 */}
+              <Box sx={{ position: 'relative', height: 26, borderRadius: 1.2, overflow: 'hidden', display: 'flex', bgcolor: '#e5e7eb', width: '100%' }}>
+                {/* 积累期 (蓝) */}
+                <Box
+                  sx={{
+                    width: `${timelineProgress.accumPercent}%`,
+                    bgcolor: '#2563eb',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    fontSize: '0.68rem',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    px: 0.5
+                  }}
+                >
+                  积累期 {result.yearsToRetirement.toFixed(0)}年
+                </Box>
+
+                {/* 退休覆盖期 (绿/橙) */}
+                <Box
+                  sx={{
+                    width: `${timelineProgress.coveredPercent}%`,
+                    bgcolor: result.success ? '#16a34a' : '#ea580c',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    fontSize: '0.68rem',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    px: 0.5
+                  }}
+                >
+                  提领维持 {result.yearsCovered.toFixed(0)}年
+                </Box>
+
+                {/* 缺口期 (红) */}
+                {!result.success && (
+                  <Box
+                    sx={{
+                      width: `${timelineProgress.gapPercent}%`,
+                      bgcolor: '#dc2626',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      px: 0.5
+                    }}
+                  >
+                    缺口 {result.gapYears.toFixed(0)}年
+                  </Box>
+                )}
+              </Box>
+
+              {/* 关键时间刻度标尺 */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.8, color: '#6b7280', fontSize: '0.72rem' }}>
+                <Typography variant="caption">{form.currentAge}岁 (当下)</Typography>
+                <Typography variant="caption">{form.retirementAge}岁 (退休达峰)</Typography>
+                {!result.success && (
+                  <Typography variant="caption" sx={{ color: '#b91c1c', fontWeight: 800 }}>{result.depletionAge.toFixed(0)}岁 (断粮耗尽)</Typography>
+                )}
+                <Typography variant="caption">{form.lifeExpectancy}岁 (终局)</Typography>
+              </Box>
+            </Box>
+
+            {/* 3. 四大核心量化指标卡 (2x2 紧凑网格) */}
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr 1fr',
-                  sm: 'repeat(4, 1fr)'
-                },
-                gap: 1.2
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: 1.2,
+                mb: 2
               }}
             >
-              <Paper elevation={0} sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
-                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 0.3, fontSize: '0.72rem' }}>
-                  退休时资产规模
+              <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', fontSize: '0.72rem' }}>
+                  退休时资产规模 (峰值)
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#111827', fontSize: '1.1rem' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '1.05rem', my: 0.2 }}>
                   {formatCurrency(result.retirementBalance)}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.66rem' }}>
-                  在 {form.retirementAge} 岁达峰值
+                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.68rem' }}>
+                  在 {form.retirementAge} 岁达峰转入支取
                 </Typography>
-              </Paper>
+              </Box>
 
-              <Paper elevation={0} sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
-                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 0.3, fontSize: '0.72rem' }}>
+              <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', fontSize: '0.72rem' }}>
                   累计自筹本金投入
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#111827', fontSize: '1.1rem' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '1.05rem', my: 0.2 }}>
                   {formatCurrency(result.totalContribution)}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.66rem' }}>
-                  储蓄+定投总本金
+                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.68rem' }}>
+                  初始储蓄 + 每月定投总额
                 </Typography>
-              </Paper>
+              </Box>
 
-              <Paper elevation={0} sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
-                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 0.3, fontSize: '0.72rem' }}>
-                  首年退休月开销
+              <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', fontSize: '0.72rem' }}>
+                  首年退休月开销 (含通胀)
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#c2410c', fontSize: '1.1rem' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#c2410c', fontSize: '1.05rem', my: 0.2 }}>
                   {formatCurrencyExact(result.expenseAtRetirement)}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.66rem' }}>
-                  通胀后真实月开销
+                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.68rem' }}>
+                  通胀后等效今天生活标准
                 </Typography>
-              </Paper>
+              </Box>
 
-              <Paper elevation={0} sx={{ p: 1.6, borderRadius: 1.8, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
-                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 0.3, fontSize: '0.72rem' }}>
-                  首年社保养老金
+              <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', fontSize: '0.72rem' }}>
+                  首年社保养老金 (月领)
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#0369a1', fontSize: '1.1rem' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#0369a1', fontSize: '1.05rem', my: 0.2 }}>
                   {formatCurrencyExact(result.pensionAtRetirement)}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.66rem' }}>
-                  社保月度托底硬现金
+                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.68rem' }}>
+                  社保刚性月领底线现金
                 </Typography>
-              </Paper>
+              </Box>
             </Box>
 
-            {/* 3. 现金流提领收支平衡卡片 */}
-            <Paper elevation={0} sx={{ p: 1.8, borderRadius: 1.8, bgcolor: '#ffffff', border: '1px solid #e5e7eb' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                  <CompareIcon sx={{ color: '#c2410c', fontSize: 18 }} />
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#111827', fontSize: '0.8rem' }}>
-                    退休期现金流平衡结构
+            {/* 4. 自救锦囊建议 */}
+            {advice ? (
+              <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#fff7ed', border: '1px solid #fed7aa' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.6 }}>
+                  <LightbulbIcon sx={{ color: '#c2410c', fontSize: 16 }} />
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#9a3412', fontSize: '0.78rem' }}>
+                    平衡收支的 3 条实战破局解法:
                   </Typography>
                 </Box>
-                <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.74rem' }}>
-                  首年月度自筹净提取：<Typography component="span" variant="caption" sx={{ fontWeight: 700, color: '#c2410c' }}>{formatCurrencyExact(result.netMonthlyDeficitAtRetirement)}/月</Typography>
+                <Stack spacing={0.4}>
+                  <Typography variant="caption" sx={{ color: '#431407', fontSize: '0.74rem', display: 'block' }}>
+                    · <strong>增加月定投</strong>：每月多存约 <strong>¥{advice.extraPerMonth.toLocaleString()}</strong> 元，复利即可填补后半程缺口。
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: '#431407', fontSize: '0.74rem', display: 'block' }}>
+                    · <strong>推迟退休</strong>：延后 <strong>{advice.delayYearsNeeded} 年</strong> 退休，多攒几年本金并缩减支取期。
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: '#431407', fontSize: '0.74rem', display: 'block' }}>
+                    · <strong>优化开销</strong>：退休月度支出削减 <strong>{advice.expenseCutPercent}%</strong>，即可达到全程收支平衡。
+                  </Typography>
+                </Stack>
+              </Box>
+            ) : (
+              <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0', textAlign: 'center' }}>
+                <Typography variant="caption" sx={{ color: '#166534', fontWeight: 700, fontSize: '0.78rem' }}>
+                  健康储备状态：现有方案能够稳健穿越完整退休周期，建议保持纪律定期定投。
                 </Typography>
               </Box>
+            )}
 
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, pt: 1, borderTop: '1px solid #f3f4f6', textAlign: 'center' }}>
-                <Box>
-                  <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem', display: 'block' }}>社保替代率 (首年)</Typography>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0369a1' }}>
-                    {result.expenseAtRetirement ? `${((result.pensionAtRetirement / result.expenseAtRetirement) * 100).toFixed(0)}%` : '0%'}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem', display: 'block' }}>退休期累计支取</Typography>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#111827' }}>
-                    {formatCurrency(result.cumulativeWithdrawals)}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem', display: 'block' }}>资金覆盖安全度</Typography>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: result.success ? '#16a34a' : '#c2410c' }}>
-                    {result.success ? '充分冗余' : '承压紧绷'}
-                  </Typography>
-                </Box>
-              </Box>
-            </Paper>
-
-          </Stack>
+          </Paper>
         </Box>
 
-        {/* ========================================================================= */}
-        {/* 全宽模块 1：生命周期四阶段推演路线图 (Full-Width Milestone Roadmap) */}
-        {/* ========================================================================= */}
-        <Paper elevation={0} sx={{ p: { xs: 2, sm: 2.5 }, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <TimelineIcon sx={{ color: '#c2410c', fontSize: 20 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.98rem' }}>
-                全生命周期资金轨迹与关键节点推演
-              </Typography>
-            </Box>
-            <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-              从积累筑底到被动提领的全周期推演
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: '1fr 1fr',
-                md: 'repeat(4, 1fr)'
-              },
-              gap: 1.5
-            }}
-          >
-            {/* 阶段 1：起跑线 */}
-            <Box sx={{ p: 2, borderRadius: 1.8, bgcolor: '#f9fafb', border: '1px solid #e5e7eb', position: 'relative' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Chip
-                  label="阶段 01"
-                  size="small"
-                  sx={{ bgcolor: '#eff6ff', color: '#1d4ed8', fontWeight: 700, fontSize: '0.68rem', height: 20, borderRadius: 1 }}
-                />
-                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                  当下起跑
-                </Typography>
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#111827', mb: 0.5, fontSize: '1.05rem' }}>
-                {form.currentAge} 岁
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#4b5563', display: 'block', mb: 0.2 }}>
-                现有储备: <strong>{formatCurrency(form.currentSavings)}</strong>
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>
-                每月定投 ¥{Number(form.monthlyContribution).toLocaleString()}，开启复利滚雪球
-              </Typography>
-            </Box>
-
-            {/* 阶段 2：退休拐点 */}
-            <Box sx={{ p: 2, borderRadius: 1.8, bgcolor: '#fff7ed', border: '1px solid #fed7aa', position: 'relative' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Chip
-                  label="阶段 02"
-                  size="small"
-                  sx={{ bgcolor: '#ffedd5', color: '#c2410c', fontWeight: 700, fontSize: '0.68rem', height: 20, borderRadius: 1 }}
-                />
-                <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
-                  资产顶峰
-                </Typography>
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#111827', mb: 0.5, fontSize: '1.05rem' }}>
-                {form.retirementAge} 岁 (退出职场)
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, display: 'block', mb: 0.2 }}>
-                资产达峰: {formatCurrency(result.retirementBalance)}
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>
-                结束工薪收入，转入自筹资产提取与社保月领
-              </Typography>
-            </Box>
-
-            {/* 阶段 3：提领中段 */}
-            <Box sx={{ p: 2, borderRadius: 1.8, bgcolor: '#f9fafb', border: '1px solid #e5e7eb', position: 'relative' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Chip
-                  label="阶段 03"
-                  size="small"
-                  sx={{ bgcolor: '#f3f4f6', color: '#4b5563', fontWeight: 700, fontSize: '0.68rem', height: 20, borderRadius: 1 }}
-                />
-                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                  养老中段
-                </Typography>
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#111827', mb: 0.5, fontSize: '1.05rem' }}>
-                {Math.round((Number(form.retirementAge) + Number(form.lifeExpectancy)) / 2)} 岁
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#4b5563', display: 'block', mb: 0.2 }}>
-                刚性医疗与日常维持
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>
-                社保养老金持续提供确定性现金流托底
-              </Typography>
-            </Box>
-
-            {/* 阶段 4：终局结余 */}
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: 1.8,
-                bgcolor: result.success ? '#f0fdf4' : '#fef2f2',
-                border: '1px solid',
-                borderColor: result.success ? '#bbf7d0' : '#fecaca',
-                position: 'relative'
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Chip
-                  label="阶段 04"
-                  size="small"
-                  sx={{
-                    bgcolor: result.success ? '#dcfce7' : '#fee2e2',
-                    color: result.success ? '#15803d' : '#b91c1c',
-                    fontWeight: 700,
-                    fontSize: '0.68rem',
-                    height: 20,
-                    borderRadius: 1
-                  }}
-                />
-                <Typography variant="caption" sx={{ color: result.success ? '#15803d' : '#b91c1c', fontWeight: 700 }}>
-                  {result.success ? '从容终局' : '资金枯竭'}
-                </Typography>
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#111827', mb: 0.5, fontSize: '1.05rem' }}>
-                {result.success ? `${form.lifeExpectancy} 岁` : `${result.depletionAge.toFixed(0)} 岁断粮`}
-              </Typography>
-              <Typography variant="caption" sx={{ color: result.success ? '#166534' : '#b91c1c', fontWeight: 700, display: 'block', mb: 0.2 }}>
-                {result.success ? '资金全程覆盖充足' : `面临 ${result.gapYears.toFixed(0)} 年资金缺口`}
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>
-                {result.success ? '生活品质不打折，安享晚年' : '需提前按建议补充定投或延后退休'}
-              </Typography>
-            </Box>
-          </Box>
-        </Paper>
-
-        {/* ========================================================================= */}
-        {/* 全宽模块 2：逐年资产与现金流推演明细表 (Full-Width Trajectory Table) */}
-        {/* ========================================================================= */}
-        <Paper elevation={0} sx={{ p: { xs: 2, sm: 2.5 }, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb', mb: 3 }}>
+        {/* 逐年资产推演明细表格 (折叠式) */}
+        <Paper elevation={0} sx={{ p: 2, borderRadius: 2, bgcolor: '#ffffff', border: '1px solid #e5e7eb', mb: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <TrendingUpIcon sx={{ color: '#c2410c', fontSize: 20 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.98rem' }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
                 逐年资产余额与现金流明细表
               </Typography>
               <Chip
@@ -991,21 +958,21 @@ const PensionPlanner = () => {
               endIcon={showTable ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               sx={{ color: '#c2410c', fontWeight: 700, fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             >
-              {showTable ? '收起逐年明细' : '展开查看逐年明细'}
+              {showTable ? '收起明细表' : '展开查看逐年明细'}
             </Button>
           </Box>
 
           <Collapse in={showTable}>
-            <Box sx={{ maxHeight: 420, overflowY: 'auto', mt: 2, border: '1px solid #e5e7eb', borderRadius: 1.5 }}>
+            <Box sx={{ maxHeight: 360, overflowY: 'auto', mt: 2, border: '1px solid #e5e7eb', borderRadius: 1.5 }}>
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 1 }}>阶段</TableCell>
-                    <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 1 }}>年龄</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 1 }}>期末名义资产 (¥)</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 1 }}>月度定投 / 月度实际支出</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 1 }}>社保养老金月领</TableCell>
-                    <TableCell align="center" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 1 }}>状态评估</TableCell>
+                    <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 0.8 }}>阶段</TableCell>
+                    <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 0.8 }}>年龄</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 0.8 }}>期末名义资产 (¥)</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 0.8 }}>月度投入 / 月度支出</TableCell>
+                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 0.8 }}>社保养老金月领</TableCell>
+                    <TableCell align="center" sx={{ fontWeight: 700, fontSize: '0.75rem', bgcolor: '#f9fafb', py: 0.8 }}>状态评估</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1020,29 +987,29 @@ const PensionPlanner = () => {
                           '&:hover': { bgcolor: '#f3f4f6' }
                         }}
                       >
-                        <TableCell sx={{ fontSize: '0.75rem', py: 0.8 }}>
+                        <TableCell sx={{ fontSize: '0.75rem', py: 0.6 }}>
                           <Chip
                             label={row.phase}
                             size="small"
                             sx={{
                               fontSize: '0.68rem',
-                              height: 20,
+                              height: 18,
                               bgcolor: row.phase === '积累期' ? '#eff6ff' : row.phase === '退休期' ? '#f0fdf4' : row.phase === '缺口期' ? '#fee2e2' : '#f3f4f6',
                               color: row.phase === '积累期' ? '#1d4ed8' : row.phase === '退休期' ? '#15803d' : row.phase === '缺口期' ? '#b91c1c' : '#374151',
                             }}
                           />
                         </TableCell>
-                        <TableCell sx={{ fontWeight: 600, fontSize: '0.78rem', py: 0.8 }}>{row.age} 岁</TableCell>
-                        <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.78rem', py: 0.8, color: isDepleted ? '#b91c1c' : '#111827' }}>
+                        <TableCell sx={{ fontWeight: 600, fontSize: '0.78rem', py: 0.6 }}>{row.age} 岁</TableCell>
+                        <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.78rem', py: 0.6, color: isDepleted ? '#b91c1c' : '#111827' }}>
                           {formatCurrency(row.balance)}
                         </TableCell>
-                        <TableCell align="right" sx={{ fontSize: '0.74rem', py: 0.8, color: '#4b5563' }}>
+                        <TableCell align="right" sx={{ fontSize: '0.74rem', py: 0.6, color: '#4b5563' }}>
                           {row.annualExpense > 0 ? `月开支 ¥${Math.round(row.annualExpense / 12).toLocaleString()}` : `月定投 ¥${Number(form.monthlyContribution).toLocaleString()}`}
                         </TableCell>
-                        <TableCell align="right" sx={{ fontSize: '0.74rem', py: 0.8, color: '#0369a1', fontWeight: 600 }}>
+                        <TableCell align="right" sx={{ fontSize: '0.74rem', py: 0.6, color: '#0369a1', fontWeight: 600 }}>
                           {row.annualPension > 0 ? `¥${Math.round(row.annualPension / 12).toLocaleString()}` : '—'}
                         </TableCell>
-                        <TableCell align="center" sx={{ fontSize: '0.74rem', py: 0.8 }}>
+                        <TableCell align="center" sx={{ fontSize: '0.74rem', py: 0.6 }}>
                           {isDepleted ? (
                             <Typography variant="caption" sx={{ color: '#b91c1c', fontWeight: 700 }}>资金枯竭</Typography>
                           ) : isTurnPoint ? (
@@ -1060,14 +1027,12 @@ const PensionPlanner = () => {
           </Collapse>
         </Paper>
 
-        {/* ========================================================================= */}
-        {/* 全宽模块 3：精选实战参考：养老与家庭资产防守讨论 (Curated Articles) */}
-        {/* ========================================================================= */}
+        {/* 底部精选：养老与资产规划实战讨论 */}
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1 }}>
             <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '1rem' }}>
-                精选实战参考：家庭资产防守与养老讨论
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.98rem' }}>
+                精选实战参考：家庭资产防守与养老经验
               </Typography>
               <Typography variant="caption" sx={{ color: '#6b7280' }}>
                 从社保个人养老金、四笔钱法则到中年提前退休（FIRE）的真实经验
