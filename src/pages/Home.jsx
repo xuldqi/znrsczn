@@ -101,8 +101,7 @@ const Home = () => {
 
   // 分类 Tabs
   const feedTabs = useMemo(() => [
-    { id: 'all', name: '全部实战', filter: () => true },
-    { id: 'curated', name: '全网精选讨论', filter: a => Boolean(a.source) },
+    { id: 'hot', name: '全网热帖', filter: () => true },
     { id: 'career', name: '职场突围', filter: a => ['职场发展', '转型升级'].includes(a.category) },
     { id: 'finance', name: '财务与养老', filter: a => ['财务管理'].includes(a.category) },
     { id: 'side', name: '副业轻创', filter: a => ['副业指南'].includes(a.category) },

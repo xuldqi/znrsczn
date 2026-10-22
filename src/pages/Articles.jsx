@@ -50,15 +50,15 @@ const sourceStyles = {
 }
 
 const allCategoryTabs = [
-  '全部',
-  '全网精选',
+  '全网热帖',
   '职场发展',
   '转型升级',
   '副业指南',
   '财务管理',
   '中年危机',
   '心理健康',
-  '家庭关系'
+  '家庭关系',
+  '生活技能'
 ]
 
 const Articles = () => {
@@ -80,9 +80,9 @@ const Articles = () => {
 
   // 筛选
   const filteredArticles = useMemo(() => {
-    const selectedCat = allCategoryTabs[activeTab] || '全部'
+    const selectedCat = allCategoryTabs[activeTab] || '全网热帖'
     return sortedArticles.filter(article => {
-      const matchCat = selectedCat === '全部' || (selectedCat === '全网精选' ? Boolean(article.source) : article.category === selectedCat)
+      const matchCat = selectedCat === '全网热帖' || article.category === selectedCat
       if (!matchCat) return false
       if (!searchTerm.trim()) return true
       const term = searchTerm.toLowerCase()
