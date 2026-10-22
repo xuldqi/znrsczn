@@ -11,9 +11,7 @@ import {
   Button,
   Tabs,
   Tab,
-  Slider,
-  TextField,
-  InputAdornment
+  Slider
 } from '@mui/material'
 import {
   ArrowForward as ArrowForwardIcon,
@@ -22,8 +20,6 @@ import {
   BookmarkBorder as BookmarkIcon,
   LocalOfferOutlined as TagIcon,
   OpenInNew as OpenInNewIcon,
-  Search as SearchIcon,
-  Clear as ClearIcon,
   Headphones as HeadphonesIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
@@ -553,43 +549,6 @@ const Home = () => {
           {/* 左侧：主流文章流 (Feed) */}
           <Box sx={{ width: '100%' }}>
             
-            {/* 即时搜索框 */}
-            <Box sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="在全网热帖中即时检索（如：n8n、失业金、周金涛、大理、房贷延期...）"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value)
-                  setDisplayCount(10)
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon sx={{ color: '#9ca3af', fontSize: 19 }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: searchTerm ? (
-                    <InputAdornment position="end">
-                      <ClearIcon
-                        sx={{ color: '#9ca3af', fontSize: 18, cursor: 'pointer' }}
-                        onClick={() => setSearchTerm('')}
-                      />
-                    </InputAdornment>
-                  ) : null,
-                  sx: {
-                    borderRadius: 2,
-                    backgroundColor: '#ffffff',
-                    fontSize: '0.88rem',
-                    '& fieldset': { borderColor: '#e5e7eb' },
-                    '&:hover fieldset': { borderColor: '#d1d5db' },
-                    '&.Mui-focused fieldset': { borderColor: '#c2410c' }
-                  }
-                }}
-              />
-            </Box>
-
             {/* 分类 Tabs 切换条 */}
             <Box sx={{ borderBottom: '1px solid #e5e7eb', mb: 1.5, backgroundColor: '#ffffff', borderRadius: 2, p: 0.5, border: '1px solid #e5e7eb' }}>
               <Tabs
