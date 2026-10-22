@@ -258,13 +258,7 @@ const Articles = () => {
                     <Paper
                       key={article.id || idx}
                       elevation={0}
-                      onClick={() => {
-                        if (article.sourceUrl) {
-                          window.open(article.sourceUrl, '_blank')
-                        } else {
-                          navigate(`/article/${article.id}`)
-                        }
-                      }}
+                      onClick={() => navigate(`/article/${article.id}`)}
                       sx={{
                         p: 2.5,
                         width: '100%',
@@ -390,28 +384,6 @@ const Articles = () => {
                         </Box>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {article.sourceUrl && (
-                            <Button
-                              size="small"
-                              variant="text"
-                              component="a"
-                              href={article.sourceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
-                              sx={{
-                                color: '#c2410c',
-                                fontWeight: 700,
-                                fontSize: '0.78rem',
-                                p: '2px 8px',
-                                whiteSpace: 'nowrap',
-                                '&:hover': { bgcolor: '#fff7ed' }
-                              }}
-                            >
-                              前往原帖讨论 ↗
-                            </Button>
-                          )}
                           <Button
                             size="small"
                             variant="text"
@@ -420,14 +392,17 @@ const Articles = () => {
                               navigate(`/article/${article.id}`)
                             }}
                             sx={{
-                              color: '#9ca3af',
-                              fontSize: '0.75rem',
-                              p: '2px 6px',
+                              color: '#c2410c',
+                              fontWeight: 700,
+                              fontSize: '0.82rem',
+                              p: '3px 10px',
                               whiteSpace: 'nowrap',
-                              '&:hover': { color: '#4b5563', bgcolor: 'transparent' }
+                              borderRadius: 1,
+                              bgcolor: '#fff7ed',
+                              '&:hover': { bgcolor: '#ffedd5', color: '#9a3412' }
                             }}
                           >
-                            速览
+                            阅读全文 →
                           </Button>
                         </Box>
                       </Box>
@@ -486,13 +461,7 @@ const Articles = () => {
                   {trendingArticles.map((art, idx) => (
                     <Box
                       key={art.id || idx}
-                      onClick={() => {
-                        if (art.sourceUrl) {
-                          window.open(art.sourceUrl, '_blank')
-                        } else {
-                          navigate(`/article/${art.id}`)
-                        }
-                      }}
+                      onClick={() => navigate(`/article/${art.id}`)}
                       sx={{
                         cursor: 'pointer',
                         display: 'flex',

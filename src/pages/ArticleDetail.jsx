@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
+import defaultArticlesData from '../../articles.json'
 import {
   Container,
   Typography,
@@ -107,8 +108,11 @@ const ArticleDetail = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    const foundArticle = getArticle(slug)
-    if (foundArticle && foundArticle.status === 'published') {
+    let foundArticle = getArticle(slug)
+    if (!foundArticle && defaultArticlesData) {
+      foundArticle = defaultArticlesData[slug]
+    }
+    if (foundArticle && (foundArticle.status === 'published' || !foundArticle.status)) {
       setArticle(foundArticle)
     } else {
       setArticle(null)
@@ -337,58 +341,7 @@ const ArticleDetail = () => {
                 </Typography>
               </Box>
 
-              {/* 如果是全网精选来源帖子，展示显眼的原帖来源横幅 */}
-              {article.source && article.sourceUrl && (
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 2.2,
-                    mb: 3,
-                    borderRadius: 2,
-                    bgcolor: '#eff6ff',
-                    border: '1px solid #bfdbfe',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    gap: 1.5
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                    {article.source === '小宇宙' ? (
-                      <Typography variant="body2" sx={{ color: '#1e40af', fontSize: '0.88rem' }}>
-                        本音频收录自小宇宙播客<strong>《{article.author || '知行小酒馆'}》</strong>深度对谈
-                      </Typography>
-                    ) : (
-                      <Typography variant="body2" sx={{ color: '#1e40af', fontSize: '0.88rem' }}>
-                        本内容收录自 <strong>{article.source}</strong> 社区热帖讨论，原帖包含大量网友跟帖与实操交流
-                      </Typography>
-                    )}
-                  </Box>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    component="a"
-                    href={article.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
-                    sx={{
-                      bgcolor: '#2563eb',
-                      color: '#ffffff',
-                      fontWeight: 700,
-                      fontSize: '0.82rem',
-                      whiteSpace: 'nowrap',
-                      px: 2,
-                      py: 0.6,
-                      borderRadius: 1.2,
-                      '&:hover': { bgcolor: '#1d4ed8' }
-                    }}
-                  >
-                    前往【{article.source}】查看原帖与完整讨论 ↗
-                  </Button>
-                </Paper>
-              )}
+
 
               <Typography
                 variant="h4"
@@ -563,55 +516,7 @@ const ArticleDetail = () => {
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
 
-            {/* 原帖直达与讨论互动横幅 */}
-            {article.sourceUrl && (
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2.5,
-                  mt: 3.5,
-                  mb: 2,
-                  borderRadius: 2,
-                  bgcolor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  display: 'flex',
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  justifyContent: 'space-between',
-                  alignItems: { xs: 'flex-start', sm: 'center' },
-                  gap: 2
-                }}
-              >
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0f172a', mb: 0.5 }}>
-                    想查看原帖作者更多回帖与最新进展？
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#64748b' }}>
-                    原帖包含大量网友跟帖与实操交流，建议直接前往 {article.source} 参与讨论。
-                  </Typography>
-                </Box>
-                <Button
-                  variant="contained"
-                  component="a"
-                  href={article.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
-                  sx={{
-                    bgcolor: '#c2410c',
-                    color: '#ffffff',
-                    fontWeight: 700,
-                    fontSize: '0.82rem',
-                    whiteSpace: 'nowrap',
-                    px: 2.5,
-                    py: 0.8,
-                    borderRadius: 1.2,
-                    '&:hover': { bgcolor: '#9a3412' }
-                  }}
-                >
-                  前往 {article.source} 查看原帖与回帖 ↗
-                </Button>
-              </Paper>
-            )}
+
 
             {/* 标签列表 */}
             {article.tags && article.tags.length > 0 && (

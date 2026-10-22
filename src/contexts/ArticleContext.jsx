@@ -84,8 +84,8 @@ const api = {
 }
 
 export const ArticleProvider = ({ children }) => {
-  const [articles, setArticles] = useState({})
-  const [loading, setLoading] = useState(true)
+  const [articles, setArticles] = useState(defaultArticlesData)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // 从API加载数据
@@ -113,7 +113,7 @@ export const ArticleProvider = ({ children }) => {
 
   // 获取单篇文章
   const getArticle = (id) => {
-    return articles[id] || null
+    return articles[id] || defaultArticlesData[id] || null
   }
 
   // 获取所有文章

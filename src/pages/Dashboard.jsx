@@ -28,7 +28,8 @@ import {
   CheckCircle as CheckedIcon,
   RadioButtonUnchecked as UncheckedIcon,
   ArrowBack as ArrowBackIcon,
-  RestartAlt as ResetIcon
+  RestartAlt as ResetIcon,
+  GavelOutlined as GavelIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
@@ -464,7 +465,24 @@ const Dashboard = () => {
                 </Box>
               </Box>
 
-              <Box sx={{ pt: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <Box sx={{ pt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => navigate('/layoff-calculator')}
+                  startIcon={<GavelIcon sx={{ fontSize: 16, color: '#c2410c' }} />}
+                  sx={{
+                    borderColor: '#fed7aa',
+                    color: '#c2410c',
+                    bgcolor: '#fff7ed',
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    '&:hover': { borderColor: '#c2410c', bgcolor: '#ffedd5' }
+                  }}
+                >
+                  裁员赔偿测算器 (N+1/2N)
+                </Button>
                 <Button
                   size="small"
                   variant="outlined"
@@ -479,7 +497,7 @@ const Dashboard = () => {
                     '&:hover': { borderColor: '#a8a29e', bgcolor: '#fafaf9' }
                   }}
                 >
-                  打开完整版养老精算模型
+                  养老精算模型
                 </Button>
               </Box>
             </Paper>
@@ -569,6 +587,61 @@ const Dashboard = () => {
                     <Tab key={p.id} label={p.title.split('·')[0]} />
                   ))}
                 </Tabs>
+
+                {/* 裁员专享精准测算直通车 */}
+                {currentSop.id === 'layoff' && (
+                  <Box
+                    onClick={() => navigate('/layoff-calculator')}
+                    sx={{
+                      p: 1.5,
+                      mb: 2,
+                      borderRadius: 2,
+                      bgcolor: '#fff7ed',
+                      border: '1px solid #fed7aa',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      '&:hover': {
+                        borderColor: '#ea580c',
+                        bgcolor: '#ffedd5',
+                        boxShadow: '0 2px 8px rgba(194, 65, 12, 0.08)'
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
+                      <GavelIcon sx={{ color: '#c2410c', fontSize: 22 }} />
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#9a3412', fontSize: '0.88rem' }}>
+                          一键核算应得赔偿金总包 (N+1 / 2N)
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#c2410c', fontSize: '0.74rem', display: 'block' }}>
+                          含各城市社平工资封顶、未休年假 300% 折算及免税额度
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      sx={{
+                        bgcolor: '#c2410c',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.76rem',
+                        whiteSpace: 'nowrap',
+                        py: 0.4,
+                        px: 1.2,
+                        borderRadius: 1,
+                        boxShadow: 'none',
+                        '&:hover': { bgcolor: '#9a3412', boxShadow: 'none' }
+                      }}
+                    >
+                      立即测算 →
+                    </Button>
+                  </Box>
+                )}
 
                 {/* 清单细则 */}
                 <Stack spacing={1.5} sx={{ mb: 2.5 }}>

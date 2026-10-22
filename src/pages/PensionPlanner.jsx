@@ -1062,13 +1062,7 @@ const PensionPlanner = () => {
               <Paper
                 key={art.id}
                 elevation={0}
-                onClick={() => {
-                  if (art.sourceUrl) {
-                    window.open(art.sourceUrl, '_blank')
-                  } else {
-                    navigate(`/article/${art.id}`)
-                  }
-                }}
+                onClick={() => navigate(`/article/${art.id}`)}
                 sx={{
                   p: 2,
                   borderRadius: 2,
@@ -1139,10 +1133,9 @@ const PensionPlanner = () => {
                   <Button
                     size="small"
                     variant="text"
-                    endIcon={<OpenInNewIcon sx={{ fontSize: 12 }} />}
                     sx={{ color: '#c2410c', fontWeight: 700, fontSize: '0.78rem', p: 0, whiteSpace: 'nowrap' }}
                   >
-                    直达原帖 ↗
+                    阅读全文 →
                   </Button>
                 </Box>
               </Paper>

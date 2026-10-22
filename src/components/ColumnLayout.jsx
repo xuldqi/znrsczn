@@ -223,13 +223,7 @@ const ColumnLayout = ({
             {selectedTag === '全部' && featuredArticle && (
               <Paper
                 elevation={0}
-                onClick={() => {
-                  if (featuredArticle.sourceUrl) {
-                    window.open(featuredArticle.sourceUrl, '_blank')
-                  } else {
-                    navigate(`/article/${featuredArticle.id}`)
-                  }
-                }}
+                onClick={() => navigate(`/article/${featuredArticle.id}`)}
                 sx={{
                   p: 3,
                   mb: 2.5,
@@ -323,50 +317,27 @@ const ColumnLayout = ({
                   </Box>
 
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {featuredArticle.sourceUrl && (
-                      <Button
-                        size="small"
-                        variant="contained"
-                        component="a"
-                        href={featuredArticle.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
-                        sx={{
-                          bgcolor: '#c2410c',
-                          color: '#ffffff',
-                          fontWeight: 700,
-                          fontSize: '0.78rem',
-                          py: 0.4,
-                          px: 1.5,
-                          borderRadius: 1,
-                          whiteSpace: 'nowrap',
-                          '&:hover': { bgcolor: '#9a3412' }
-                        }}
-                      >
-                        前往{featuredArticle.source || '原帖'}讨论 ↗
-                      </Button>
-                    )}
                     <Button
                       size="small"
-                      variant="outlined"
+                      variant="contained"
                       onClick={(e) => {
                         e.stopPropagation()
                         navigate(`/article/${featuredArticle.id}`)
                       }}
                       sx={{
-                        borderColor: '#e5e7eb',
-                        color: '#4b5563',
-                        fontSize: '0.75rem',
-                        py: 0.3,
-                        px: 1,
+                        bgcolor: '#c2410c',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        py: 0.5,
+                        px: 1.8,
                         borderRadius: 1,
                         whiteSpace: 'nowrap',
-                        '&:hover': { borderColor: '#c2410c', color: '#c2410c' }
+                        boxShadow: 'none',
+                        '&:hover': { bgcolor: '#9a3412', boxShadow: 'none' }
                       }}
                     >
-                      速览
+                      阅读全文 →
                     </Button>
                   </Box>
                 </Box>
@@ -383,13 +354,7 @@ const ColumnLayout = ({
                     <Paper
                       key={article.id || idx}
                       elevation={0}
-                      onClick={() => {
-                        if (article.sourceUrl) {
-                          window.open(article.sourceUrl, '_blank')
-                        } else {
-                          navigate(`/article/${article.id}`)
-                        }
-                      }}
+                      onClick={() => navigate(`/article/${article.id}`)}
                       sx={{
                         p: 2.5,
                         width: '100%',
@@ -491,28 +456,6 @@ const ColumnLayout = ({
                         </Box>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {article.sourceUrl && (
-                            <Button
-                              size="small"
-                              variant="text"
-                              component="a"
-                              href={article.sourceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
-                              sx={{
-                                color: '#c2410c',
-                                fontWeight: 700,
-                                fontSize: '0.78rem',
-                                p: '2px 8px',
-                                whiteSpace: 'nowrap',
-                                '&:hover': { bgcolor: '#fff7ed' }
-                              }}
-                            >
-                              前往原帖讨论 ↗
-                            </Button>
-                          )}
                           <Button
                             size="small"
                             variant="text"
@@ -521,14 +464,17 @@ const ColumnLayout = ({
                               navigate(`/article/${article.id}`)
                             }}
                             sx={{
-                              color: '#9ca3af',
-                              fontSize: '0.75rem',
-                              p: '2px 6px',
+                              color: '#c2410c',
+                              fontWeight: 700,
+                              fontSize: '0.82rem',
+                              p: '3px 10px',
                               whiteSpace: 'nowrap',
-                              '&:hover': { color: '#4b5563', bgcolor: 'transparent' }
+                              borderRadius: 1,
+                              bgcolor: '#fff7ed',
+                              '&:hover': { bgcolor: '#ffedd5', color: '#9a3412' }
                             }}
                           >
-                            速览
+                            阅读全文 →
                           </Button>
                         </Box>
                       </Box>

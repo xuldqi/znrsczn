@@ -249,30 +249,8 @@ const SearchResults = () => {
                         </Typography>
                       </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        {article.sourceUrl && (
-                          <Typography
-                            component="a"
-                            href={article.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            variant="caption"
-                            sx={{
-                              color: '#6b7280',
-                              fontWeight: 600,
-                              fontSize: '0.75rem',
-                              whiteSpace: 'nowrap',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 0.3,
-                              '&:hover': { color: '#c2410c', textDecoration: 'underline' }
-                            }}
-                          >
-                            原帖 ↗
-                          </Typography>
-                        )}
-                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, bgcolor: '#fff7ed', px: 1, py: 0.4, borderRadius: 1 }}>
                           阅读全文 →
                         </Typography>
                       </Box>

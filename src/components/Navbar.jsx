@@ -37,7 +37,8 @@ import {
   MonetizationOn as MonetizationOnIcon,
   RateReview as FeedbackIcon,
   AutoStories as BookIcon,
-  SpaceDashboard as DashboardIcon
+  SpaceDashboard as DashboardIcon,
+  Gavel as GavelIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -283,14 +284,37 @@ const Navbar = () => {
               ))}
             </Menu>
 
-            {/* 3. 养老测算 */}
+            {/* 3. 裁员赔偿 */}
+            <Button
+              component={Link}
+              to="/layoff-calculator"
+              startIcon={<GavelIcon sx={{ fontSize: 17, color: '#c2410c' }} />}
+              sx={{
+                color: location.pathname === '/layoff-calculator' ? '#c2410c' : '#57534e',
+                px: 1.8,
+                py: 0.8,
+                borderRadius: 2,
+                fontWeight: location.pathname === '/layoff-calculator' ? 700 : 500,
+                fontSize: '0.92rem',
+                whiteSpace: 'nowrap',
+                backgroundColor: location.pathname === '/layoff-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  color: '#1c1917'
+                }
+              }}
+            >
+              裁员赔偿
+            </Button>
+
+            {/* 4. 养老测算 */}
             <Button
               component={Link}
               to="/pension-planner"
-              startIcon={<CalculateIcon sx={{ fontSize: 18, color: '#d97706' }} />}
+              startIcon={<CalculateIcon sx={{ fontSize: 17, color: '#d97706' }} />}
               sx={{
                 color: location.pathname === '/pension-planner' ? '#c2410c' : '#57534e',
-                px: 2,
+                px: 1.8,
                 py: 0.8,
                 borderRadius: 2,
                 fontWeight: location.pathname === '/pension-planner' ? 700 : 500,
@@ -523,9 +547,19 @@ const Navbar = () => {
         <List disablePadding>
           <ListItem disablePadding sx={{ mb: 0.6 }}>
             <ListItemButton
+              onClick={() => handleNavClick('/layoff-calculator')}
+              selected={location.pathname === '/layoff-calculator'}
+              sx={{ borderRadius: 2, color: location.pathname === '/layoff-calculator' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/layoff-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
+            >
+              <ListItemIcon sx={{ color: '#c2410c', minWidth: 38 }}><GavelIcon /></ListItemIcon>
+              <ListItemText primary="裁员赔偿测算 (N+1/2N)" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ mb: 0.6 }}>
+            <ListItemButton
               onClick={() => handleNavClick('/pension-planner')}
               selected={location.pathname === '/pension-planner'}
-              sx={{ borderRadius: 2, color: '#44403c' }}
+              sx={{ borderRadius: 2, color: location.pathname === '/pension-planner' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/pension-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
             >
               <ListItemIcon sx={{ color: '#d97706', minWidth: 38 }}><CalculateIcon /></ListItemIcon>
               <ListItemText primary="养老金缺口测算" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />

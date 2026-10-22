@@ -213,13 +213,7 @@ const Home = () => {
             {/* 1. 今日置顶焦点速递 (Pinned Focus Bar) */}
             <Paper
               elevation={0}
-              onClick={() => {
-                if (heroArticle.sourceUrl) {
-                  window.open(heroArticle.sourceUrl, '_blank')
-                } else {
-                  navigate(`/article/${heroArticle.id}`)
-                }
-              }}
+              onClick={() => navigate(`/article/${heroArticle.id}`)}
               sx={{
                 p: { xs: 1.8, sm: 2 },
                 mb: 2.2,
@@ -282,47 +276,28 @@ const Home = () => {
                   </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  {heroArticle.sourceUrl && (
-                    <Button
-                      size="small"
-                      variant="text"
-                      component="a"
-                      href={heroArticle.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
-                      sx={{
-                        color: '#c2410c',
-                        fontWeight: 700,
-                        fontSize: '0.8rem',
-                        p: '2px 8px',
-                        whiteSpace: 'nowrap',
-                        '&:hover': { bgcolor: '#fff7ed' }
-                      }}
-                    >
-                      直达原帖 ↗
-                    </Button>
-                  )}
-                  <Button
-                    size="small"
-                    variant="text"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      navigate(`/article/${heroArticle.id}`)
-                    }}
-                    sx={{
-                      color: '#6b7280',
-                      fontSize: '0.76rem',
-                      p: '2px 6px',
-                      whiteSpace: 'nowrap',
-                      '&:hover': { color: '#111827', bgcolor: 'transparent' }
-                    }}
-                  >
-                    速览
-                  </Button>
-                </Box>
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    navigate(`/article/${heroArticle.id}`)
+                  }}
+                  endIcon={<ArrowForwardIcon sx={{ fontSize: 13 }} />}
+                  sx={{
+                    bgcolor: '#c2410c',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    fontSize: '0.8rem',
+                    py: 0.4,
+                    px: 1.5,
+                    borderRadius: 1.2,
+                    whiteSpace: 'nowrap',
+                    '&:hover': { bgcolor: '#9a3412' }
+                  }}
+                >
+                  阅读全文 →
+                </Button>
               </Box>
 
               <Typography
@@ -483,13 +458,7 @@ const Home = () => {
                   <Paper
                     key={article.id || idx}
                     elevation={0}
-                    onClick={() => {
-                      if (article.sourceUrl) {
-                        window.open(article.sourceUrl, '_blank')
-                      } else {
-                        navigate(`/article/${article.id}`)
-                      }
-                    }}
+                    onClick={() => navigate(`/article/${article.id}`)}
                     sx={{
                       p: 2,
                       width: '100%',
@@ -506,7 +475,7 @@ const Home = () => {
                       }
                     }}
                   >
-                    {/* 第一行：社区来源 + 分类 + 标题 + 外部图标 */}
+                    {/* 第一行：社区来源 + 分类 + 标题 */}
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1.5, mb: 0.8 }}>
                       <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, flexWrap: 'wrap', flex: 1 }}>
                         {article.source && (
@@ -560,8 +529,6 @@ const Home = () => {
                         >
                           {article.title}
                         </Typography>
-
-                        <OpenInNewIcon sx={{ fontSize: 13, color: '#9ca3af', ml: 0.2, verticalAlign: 'middle' }} />
                       </Box>
                     </Box>
 
@@ -582,7 +549,7 @@ const Home = () => {
                       {article.excerpt || article.summary}
                     </Typography>
 
-                    {/* 第三行：热度指标 + 播客名/时间 + 标签 + 直达操作 */}
+                    {/* 第三行：热度指标 + 播客名/时间 + 标签 + 阅读全文 */}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                         {article.source === '小宇宙' ? (
@@ -626,47 +593,25 @@ const Home = () => {
                         ))}
                       </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                        {article.sourceUrl && (
-                          <Button
-                            size="small"
-                            variant="text"
-                            component="a"
-                            href={article.sourceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            endIcon={<OpenInNewIcon sx={{ fontSize: 12 }} />}
-                            sx={{
-                              color: '#c2410c',
-                              fontWeight: 700,
-                              fontSize: '0.78rem',
-                              p: '2px 8px',
-                              whiteSpace: 'nowrap',
-                              '&:hover': { bgcolor: '#fff7ed' }
-                            }}
-                          >
-                            直达原帖 ↗
-                          </Button>
-                        )}
-                        <Button
-                          size="small"
-                          variant="text"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            navigate(`/article/${article.id}`)
-                          }}
-                          sx={{
-                            color: '#9ca3af',
-                            fontSize: '0.74rem',
-                            p: '2px 6px',
-                            whiteSpace: 'nowrap',
-                            '&:hover': { color: '#4b5563', bgcolor: 'transparent' }
-                          }}
-                        >
-                          速览
-                        </Button>
-                      </Box>
+                      <Button
+                        size="small"
+                        variant="text"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          navigate(`/article/${article.id}`)
+                        }}
+                        endIcon={<ArrowForwardIcon sx={{ fontSize: 13 }} />}
+                        sx={{
+                          color: '#c2410c',
+                          fontWeight: 700,
+                          fontSize: '0.78rem',
+                          p: '2px 8px',
+                          whiteSpace: 'nowrap',
+                          '&:hover': { bgcolor: '#fff7ed' }
+                        }}
+                      >
+                        阅读全文 →
+                      </Button>
                     </Box>
                   </Paper>
                 )
