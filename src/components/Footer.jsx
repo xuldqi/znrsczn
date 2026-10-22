@@ -13,7 +13,7 @@ const Footer = () => {
     { label: '35+副业轻创', path: '/side-business' },
     { label: '家庭资产配置', path: '/finance' },
     { label: '家庭亲子沟通', path: '/family' },
-    { label: '心理焦虑脱敏', path: '/psychology' },
+    { label: '告别焦虑内耗', path: '/psychology' },
     { label: '中年人生重构', path: '/midlife-crisis' },
   ]
 

@@ -230,7 +230,13 @@ const Home = () => {
           {/* 左侧：今日置顶焦点热帖 */}
           <Paper
             elevation={0}
-            onClick={() => navigate(`/article/${heroArticle.id}`)}
+            onClick={() => {
+              if (heroArticle.sourceUrl) {
+                window.open(heroArticle.sourceUrl, '_blank')
+              } else {
+                navigate(`/article/${heroArticle.id}`)
+              }
+            }}
             sx={{
               p: { xs: 2.5, sm: 3.5 },
               width: '100%',
@@ -254,7 +260,7 @@ const Home = () => {
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
                 <Chip
-                  label="今日置顶"
+                  label="今日焦点"
                   size="small"
                   sx={{
                     bgcolor: '#fee2e2',
@@ -293,7 +299,7 @@ const Home = () => {
                   }}
                 />
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  {heroArticle.readTime || '5分钟阅读'}
+                  {heroArticle.hotMetric || '420+ 条讨论'}
                 </Typography>
               </Box>
 
@@ -352,49 +358,61 @@ const Home = () => {
 
             <Box sx={{ pt: 1.5, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {heroArticle.source === '小宇宙' ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <HeadphonesIcon sx={{ fontSize: 16, color: '#ea580c' }} />
-                    <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.8rem' }}>
-                      播客《{heroArticle.author || '小宇宙精选'}》
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600, fontSize: '0.8rem' }}>
-                    {heroArticle.source ? `${heroArticle.source} · @${heroArticle.author || '精选'}` : (heroArticle.author || '精选热帖')}
-                  </Typography>
-                )}
+                <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600, fontSize: '0.8rem' }}>
+                  {heroArticle.source === '小宇宙' ? `播客《${heroArticle.author || '知行小酒馆'}》` : (heroArticle.hotMetric || `${heroArticle.source || '全网'} 讨论`)}
+                </Typography>
                 <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.8rem' }}>
                   · {heroArticle.date || '近期'}
                 </Typography>
               </Box>
 
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 {heroArticle.sourceUrl && (
-                  <Typography
+                  <Button
+                    size="small"
+                    variant="contained"
                     component="a"
                     href={heroArticle.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    variant="caption"
+                    endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
                     sx={{
-                      color: '#6b7280',
-                      fontWeight: 600,
+                      bgcolor: '#c2410c',
+                      color: '#ffffff',
+                      fontWeight: 700,
                       fontSize: '0.8rem',
+                      py: 0.5,
+                      px: 1.8,
+                      borderRadius: 1.2,
                       whiteSpace: 'nowrap',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.3,
-                      '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                      '&:hover': { bgcolor: '#9a3412' }
                     }}
                   >
-                    原帖 ↗
-                  </Typography>
+                    前往{heroArticle.source || '原帖'}讨论 ↗
+                  </Button>
                 )}
-                <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, whiteSpace: 'nowrap', fontSize: '0.82rem' }}>
-                  查看详情 →
-                </Typography>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    navigate(`/article/${heroArticle.id}`)
+                  }}
+                  sx={{
+                    borderColor: '#e5e7eb',
+                    color: '#4b5563',
+                    fontWeight: 600,
+                    fontSize: '0.78rem',
+                    py: 0.4,
+                    px: 1.2,
+                    borderRadius: 1.2,
+                    whiteSpace: 'nowrap',
+                    '&:hover': { borderColor: '#c2410c', color: '#c2410c' }
+                  }}
+                >
+                  速览要点
+                </Button>
               </Box>
             </Box>
           </Paper>
@@ -427,7 +445,13 @@ const Home = () => {
                 {trendingArticles.map((art, idx) => (
                   <Box
                     key={art.id || idx}
-                    onClick={() => navigate(`/article/${art.id}`)}
+                    onClick={() => {
+                      if (art.sourceUrl) {
+                        window.open(art.sourceUrl, '_blank')
+                      } else {
+                        navigate(`/article/${art.id}`)
+                      }
+                    }}
                     sx={{
                       cursor: 'pointer',
                       display: 'flex',
@@ -487,11 +511,8 @@ const Home = () => {
                             {art.source}
                           </Typography>
                         )}
-                        <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem' }}>
-                          {art.category}
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
-                          · {art.readTime || '3分钟阅读'}
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem' }}>
+                          {art.hotMetric || '全网热帖'}
                         </Typography>
                       </Box>
                     </Box>
@@ -675,7 +696,13 @@ const Home = () => {
                   <Paper
                     key={article.id || idx}
                     elevation={0}
-                    onClick={() => navigate(`/article/${article.id}`)}
+                    onClick={() => {
+                      if (article.sourceUrl) {
+                        window.open(article.sourceUrl, '_blank')
+                      } else {
+                        navigate(`/article/${article.id}`)
+                      }
+                    }}
                     sx={{
                       p: 2.5,
                       width: '100%',
@@ -722,7 +749,7 @@ const Home = () => {
                         />
                       )}
                       <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                        {article.readTime || '3分钟阅读'}
+                        {article.hotMetric || '全网精选'}
                       </Typography>
                     </Box>
 
@@ -766,13 +793,9 @@ const Home = () => {
                               播客《{article.author || '知行小酒馆'}》
                             </Typography>
                           </Box>
-                        ) : article.author ? (
-                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
-                            {article.source ? `${article.source} 楼主` : '发布者'} · @{article.author}
-                          </Typography>
                         ) : (
                           <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
-                            {article.source || '全网精选'}
+                            {article.hotMetric || `${article.source || '全网'} 讨论`}
                           </Typography>
                         )}
 
@@ -780,7 +803,7 @@ const Home = () => {
                           · {article.date || '近期'}
                         </Typography>
 
-                        {article.tags && article.tags.slice(0, 2).map((t) => (
+                        {article.tags && article.tags.slice(0, 3).map((t) => (
                           <Typography
                             key={t}
                             variant="caption"
@@ -804,32 +827,46 @@ const Home = () => {
                         ))}
                       </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         {article.sourceUrl && (
-                          <Typography
+                          <Button
+                            size="small"
+                            variant="text"
                             component="a"
                             href={article.sourceUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            variant="caption"
+                            endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
                             sx={{
-                              color: '#6b7280',
-                              fontWeight: 600,
-                              fontSize: '0.75rem',
+                              color: '#c2410c',
+                              fontWeight: 700,
+                              fontSize: '0.78rem',
+                              p: '2px 8px',
                               whiteSpace: 'nowrap',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 0.3,
-                              '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                              '&:hover': { bgcolor: '#fff7ed' }
                             }}
                           >
-                            原帖 ↗
-                          </Typography>
+                            前往原帖讨论 ↗
+                          </Button>
                         )}
-                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                          阅读全文 →
-                        </Typography>
+                        <Button
+                          size="small"
+                          variant="text"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            navigate(`/article/${article.id}`)
+                          }}
+                          sx={{
+                            color: '#9ca3af',
+                            fontSize: '0.75rem',
+                            p: '2px 6px',
+                            whiteSpace: 'nowrap',
+                            '&:hover': { color: '#4b5563', bgcolor: 'transparent' }
+                          }}
+                        >
+                          速览
+                        </Button>
                       </Box>
                     </Box>
                   </Paper>

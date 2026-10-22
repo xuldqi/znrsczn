@@ -258,7 +258,13 @@ const Articles = () => {
                     <Paper
                       key={article.id || idx}
                       elevation={0}
-                      onClick={() => navigate(`/article/${article.id}`)}
+                      onClick={() => {
+                        if (article.sourceUrl) {
+                          window.open(article.sourceUrl, '_blank')
+                        } else {
+                          navigate(`/article/${article.id}`)
+                        }
+                      }}
                       sx={{
                         p: 2.5,
                         width: '100%',
@@ -305,7 +311,7 @@ const Articles = () => {
                           />
                         )}
                         <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                          {article.readTime || '3分钟阅读'}
+                          {article.hotMetric || '全网精选'}
                         </Typography>
                       </Box>
 
@@ -349,13 +355,9 @@ const Articles = () => {
                                 播客《{article.author || '知行小酒馆'}》
                               </Typography>
                             </Box>
-                          ) : article.author ? (
-                            <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
-                              {article.source ? `${article.source} 楼主` : '发布者'} · @{article.author}
-                            </Typography>
                           ) : (
                             <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
-                              {article.source || '全网精选'}
+                              {article.hotMetric || `${article.source || '全网'} 讨论`}
                             </Typography>
                           )}
 
@@ -363,7 +365,7 @@ const Articles = () => {
                             · {article.date || '近期'}
                           </Typography>
 
-                          {article.tags && article.tags.slice(0, 2).map((t) => (
+                          {article.tags && article.tags.slice(0, 3).map((t) => (
                             <Typography
                               key={t}
                               variant="caption"
@@ -387,32 +389,46 @@ const Articles = () => {
                           ))}
                         </Box>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           {article.sourceUrl && (
-                            <Typography
+                            <Button
+                              size="small"
+                              variant="text"
                               component="a"
                               href={article.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              variant="caption"
+                              endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
                               sx={{
-                                color: '#6b7280',
-                                fontWeight: 600,
-                                fontSize: '0.75rem',
+                                color: '#c2410c',
+                                fontWeight: 700,
+                                fontSize: '0.78rem',
+                                p: '2px 8px',
                                 whiteSpace: 'nowrap',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 0.3,
-                                '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                                '&:hover': { bgcolor: '#fff7ed' }
                               }}
                             >
-                              原帖 ↗
-                            </Typography>
+                              前往原帖讨论 ↗
+                            </Button>
                           )}
-                          <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                            阅读全文 →
-                          </Typography>
+                          <Button
+                            size="small"
+                            variant="text"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              navigate(`/article/${article.id}`)
+                            }}
+                            sx={{
+                              color: '#9ca3af',
+                              fontSize: '0.75rem',
+                              p: '2px 6px',
+                              whiteSpace: 'nowrap',
+                              '&:hover': { color: '#4b5563', bgcolor: 'transparent' }
+                            }}
+                          >
+                            速览
+                          </Button>
                         </Box>
                       </Box>
                     </Paper>
@@ -470,7 +486,13 @@ const Articles = () => {
                   {trendingArticles.map((art, idx) => (
                     <Box
                       key={art.id || idx}
-                      onClick={() => navigate(`/article/${art.id}`)}
+                      onClick={() => {
+                        if (art.sourceUrl) {
+                          window.open(art.sourceUrl, '_blank')
+                        } else {
+                          navigate(`/article/${art.id}`)
+                        }
+                      }}
                       sx={{
                         cursor: 'pointer',
                         display: 'flex',
@@ -509,7 +531,7 @@ const Articles = () => {
                           {art.title}
                         </Typography>
                         <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem' }}>
-                          {art.category} · {art.readTime || '3分钟'}
+                          {art.source || '全网'} · {art.hotMetric || '精选热帖'}
                         </Typography>
                       </Box>
                     </Box>

@@ -330,7 +330,7 @@ const ArticleDetail = () => {
                   />
                 )}
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  {article.readTime || '5分钟精读'}
+                  {article.hotMetric || '全网热帖'}
                 </Typography>
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
                   · 收录于 {article.date || '近期'}
@@ -342,11 +342,11 @@ const ArticleDetail = () => {
                 <Paper
                   elevation={0}
                   sx={{
-                    p: 2,
-                    mb: 2.5,
+                    p: 2.2,
+                    mb: 3,
                     borderRadius: 2,
-                    bgcolor: '#f0f9ff',
-                    border: '1px solid #bae6fd',
+                    bgcolor: '#eff6ff',
+                    border: '1px solid #bfdbfe',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -356,12 +356,12 @@ const ArticleDetail = () => {
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
                     {article.source === '小宇宙' ? (
-                      <Typography variant="body2" sx={{ color: '#0369a1', fontSize: '0.88rem' }}>
-                        本文精选自小宇宙播客<strong>《{article.author}》</strong>深度对谈
+                      <Typography variant="body2" sx={{ color: '#1e40af', fontSize: '0.88rem' }}>
+                        本音频收录自小宇宙播客<strong>《{article.author || '知行小酒馆'}》</strong>深度对谈
                       </Typography>
                     ) : (
-                      <Typography variant="body2" sx={{ color: '#0369a1', fontSize: '0.88rem' }}>
-                        本文精选自 <strong>{article.source}</strong> 社区热帖，原帖发布者：<strong>@{article.author}</strong>
+                      <Typography variant="body2" sx={{ color: '#1e40af', fontSize: '0.88rem' }}>
+                        本内容收录自 <strong>{article.source}</strong> 社区热帖讨论，原帖包含大量网友跟帖与实操交流
                       </Typography>
                     )}
                   </Box>
@@ -374,15 +374,18 @@ const ArticleDetail = () => {
                     rel="noopener noreferrer"
                     endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
                     sx={{
-                      bgcolor: '#0284c7',
+                      bgcolor: '#2563eb',
                       color: '#ffffff',
                       fontWeight: 700,
-                      fontSize: '0.78rem',
+                      fontSize: '0.82rem',
                       whiteSpace: 'nowrap',
-                      '&:hover': { bgcolor: '#0369a1' }
+                      px: 2,
+                      py: 0.6,
+                      borderRadius: 1.2,
+                      '&:hover': { bgcolor: '#1d4ed8' }
                     }}
                   >
-                    跳转{article.source}原始讨论 ↗
+                    前往【{article.source}】查看原帖与完整讨论 ↗
                   </Button>
                 </Paper>
               )}
@@ -430,7 +433,7 @@ const ArticleDetail = () => {
                       <HeadphonesIcon sx={{ fontSize: 20, color: '#ea580c' }} />
                       <Box>
                         <Typography variant="caption" sx={{ color: '#1f2937', fontWeight: 700, display: 'block' }}>
-                          播客《{article.author}》
+                          播客《{article.author || '知行小酒馆'}》
                         </Typography>
                         <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.72rem' }}>
                           小宇宙音频 · 收录于 {article.date || '近期'}
@@ -440,10 +443,10 @@ const ArticleDetail = () => {
                   ) : (
                     <Box>
                       <Typography variant="caption" sx={{ color: '#1f2937', fontWeight: 700, display: 'block' }}>
-                        {article.source ? `${article.source} · @${article.author}` : (article.author || '精选热帖')}
+                        {article.source || '全网精选'} · {article.hotMetric || '社区讨论'}
                       </Typography>
                       <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.72rem' }}>
-                        社区原帖实录 · 收录于 {article.date || '近期'}
+                        社区原帖存档 · 收录于 {article.date || '近期'}
                       </Typography>
                     </Box>
                   )}
@@ -560,6 +563,56 @@ const ArticleDetail = () => {
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
 
+            {/* 原帖直达与讨论互动横幅 */}
+            {article.sourceUrl && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2.5,
+                  mt: 3.5,
+                  mb: 2,
+                  borderRadius: 2,
+                  bgcolor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  justifyContent: 'space-between',
+                  alignItems: { xs: 'flex-start', sm: 'center' },
+                  gap: 2
+                }}
+              >
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#0f172a', mb: 0.5 }}>
+                    想查看原帖作者更多回帖与最新进展？
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: '#64748b' }}>
+                    原帖包含大量网友跟帖与实操交流，建议直接前往 {article.source} 参与讨论。
+                  </Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  component="a"
+                  href={article.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
+                  sx={{
+                    bgcolor: '#c2410c',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    fontSize: '0.82rem',
+                    whiteSpace: 'nowrap',
+                    px: 2.5,
+                    py: 0.8,
+                    borderRadius: 1.2,
+                    '&:hover': { bgcolor: '#9a3412' }
+                  }}
+                >
+                  前往 {article.source} 查看原帖与回帖 ↗
+                </Button>
+              </Paper>
+            )}
+
             {/* 标签列表 */}
             {article.tags && article.tags.length > 0 && (
               <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid #f3f4f6', display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
@@ -645,7 +698,7 @@ const ArticleDetail = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
                     <TocIcon sx={{ color: '#c2410c', fontSize: 18 }} />
                     <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
-                      文章实战大纲
+                      讨论要点索引
                     </Typography>
                   </Box>
 
