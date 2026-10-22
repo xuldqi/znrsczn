@@ -328,23 +328,34 @@ const Dashboard = () => {
 
       {/* 📊 控制台主面板 */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Grid container spacing={3}>
-          
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              lg: 'repeat(2, 1fr)'
+            },
+            gap: 3,
+            width: '100%',
+            alignItems: 'stretch'
+          }}
+        >
           {/* 左侧：现金流跑道与养老缺口监测器 */}
-          <Grid item xs={12} lg={6}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 2.5, sm: 3.5 },
-                height: '100%',
-                borderRadius: 2.5,
-                backgroundColor: '#ffffff',
-                border: '1px solid #e7e5e4',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
-            >
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, sm: 3.5 },
+              width: '100%',
+              height: '100%',
+              boxSizing: 'border-box',
+              borderRadius: 2.5,
+              backgroundColor: '#ffffff',
+              border: '1px solid #e7e5e4',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}
+          >
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -472,23 +483,23 @@ const Dashboard = () => {
                 </Button>
               </Box>
             </Paper>
-          </Grid>
 
           {/* 右侧：关键变故应急预案看板 */}
-          <Grid item xs={12} lg={6}>
-            <Paper
-              elevation={0}
-              sx={{
-                p: { xs: 2.5, sm: 3.5 },
-                height: '100%',
-                borderRadius: 2.5,
-                backgroundColor: '#ffffff',
-                border: '1px solid #e7e5e4',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}
-            >
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, sm: 3.5 },
+              width: '100%',
+              height: '100%',
+              boxSizing: 'border-box',
+              borderRadius: 2.5,
+              backgroundColor: '#ffffff',
+              border: '1px solid #e7e5e4',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
+            }}
+          >
               <Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -642,15 +653,26 @@ const Dashboard = () => {
                 </Button>
               </Box>
             </Paper>
-          </Grid>
-        </Grid>
+        </Box>
 
         {/* 🧭 四大自救战区入口 */}
         <Box sx={{ mt: 4, mb: 1 }}>
           <Typography variant="subtitle2" sx={{ color: '#78716c', fontWeight: 700, letterSpacing: '0.05em', mb: 2 }}>
             四大自救战区专栏
           </Typography>
-          <Grid container spacing={2}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(4, 1fr)'
+              },
+              gap: 2,
+              width: '100%',
+              alignItems: 'stretch'
+            }}
+          >
             {[
               {
                 title: '职场突围战',
@@ -681,46 +703,48 @@ const Dashboard = () => {
                 path: '/family'
               }
             ].map((col) => (
-              <Grid item xs={12} sm={6} md={3} key={col.title}>
-                <Paper
-                  elevation={0}
-                  onClick={() => navigate(col.path)}
-                  sx={{
-                    p: 2.2,
-                    borderRadius: 2,
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e7e5e4',
-                    cursor: 'pointer',
-                    transition: 'all 0.18s ease',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    minHeight: 110,
-                    '&:hover': {
-                      borderColor: '#c2410c',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-                    }
-                  }}
-                >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      {col.icon}
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917' }}>
-                        {col.title}
-                      </Typography>
-                    </Box>
-                    <Typography variant="caption" sx={{ color: '#a8a29e', fontWeight: 600 }}>
-                      {col.count}
+              <Paper
+                key={col.title}
+                elevation={0}
+                onClick={() => navigate(col.path)}
+                sx={{
+                  p: 2.2,
+                  width: '100%',
+                  height: '100%',
+                  boxSizing: 'border-box',
+                  borderRadius: 2,
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e7e5e4',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  minHeight: 110,
+                  '&:hover': {
+                    borderColor: '#c2410c',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+                  }
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {col.icon}
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917' }}>
+                      {col.title}
                     </Typography>
                   </Box>
-                  <Typography variant="caption" sx={{ color: '#78716c', mt: 1.5, display: 'block' }}>
-                    {col.desc}
+                  <Typography variant="caption" sx={{ color: '#a8a29e', fontWeight: 600 }}>
+                    {col.count}
                   </Typography>
-                </Paper>
-              </Grid>
+                </Box>
+                <Typography variant="caption" sx={{ color: '#78716c', mt: 1.5, display: 'block' }}>
+                  {col.desc}
+                </Typography>
+              </Paper>
             ))}
-          </Grid>
+          </Box>
         </Box>
       </Container>
 
