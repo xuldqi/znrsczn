@@ -22,7 +22,8 @@ import {
   BookmarkBorder as BookmarkIcon,
   Check as CheckIcon,
   FormatListBulleted as TocIcon,
-  OpenInNew as OpenInNewIcon
+  OpenInNew as OpenInNewIcon,
+  Headphones as HeadphonesIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
@@ -354,9 +355,15 @@ const ArticleDetail = () => {
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                    <Typography variant="body2" sx={{ color: '#0369a1', fontSize: '0.88rem' }}>
-                      本文精选自 <strong>{article.source}</strong> 社区高赞实录，原作者：<strong>{article.author}</strong>
-                    </Typography>
+                    {article.source === '小宇宙' ? (
+                      <Typography variant="body2" sx={{ color: '#0369a1', fontSize: '0.88rem' }}>
+                        本文精选自小宇宙播客<strong>《{article.author}》</strong>深度对谈
+                      </Typography>
+                    ) : (
+                      <Typography variant="body2" sx={{ color: '#0369a1', fontSize: '0.88rem' }}>
+                        本文精选自 <strong>{article.source}</strong> 社区热帖，原帖发布者：<strong>@{article.author}</strong>
+                      </Typography>
+                    )}
                   </Box>
                   <Button
                     size="small"
@@ -415,20 +422,31 @@ const ArticleDetail = () => {
                 </Box>
               )}
 
-              {/* 作者行与互动按钮 */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 2, borderTop: '1px solid #f3f4f6' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                  <Avatar sx={{ width: 28, height: 28, bgcolor: '#c2410c', fontSize: '0.8rem', fontWeight: 700 }}>
-                    {article.author ? article.author.charAt(0) : '实'}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: '#1f2937', fontWeight: 700, display: 'block' }}>
-                      {article.author || '中年自救研究组'}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.72rem' }}>
-                      一线实战导师
-                    </Typography>
-                  </Box>
+              {/* 来源与归属行 */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 2, borderTop: '1px solid #f3f4f6', flexWrap: 'wrap', gap: 1.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  {article.source === '小宇宙' ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                      <HeadphonesIcon sx={{ fontSize: 20, color: '#ea580c' }} />
+                      <Box>
+                        <Typography variant="caption" sx={{ color: '#1f2937', fontWeight: 700, display: 'block' }}>
+                          播客《{article.author}》
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.72rem' }}>
+                          小宇宙音频 · 收录于 {article.date || '近期'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <Typography variant="caption" sx={{ color: '#1f2937', fontWeight: 700, display: 'block' }}>
+                        {article.source ? `${article.source} · @${article.author}` : (article.author || '精选热帖')}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.72rem' }}>
+                        社区原帖实录 · 收录于 {article.date || '近期'}
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
 
                 <Stack direction="row" spacing={1}>

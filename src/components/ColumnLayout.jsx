@@ -16,7 +16,8 @@ import {
   NavigateNext as NavigateNextIcon,
   SpaceDashboardOutlined as DashboardIcon,
   LocalOfferOutlined as TagIcon,
-  OpenInNew as OpenInNewIcon
+  OpenInNew as OpenInNewIcon,
+  Headphones as HeadphonesIcon
 } from '@mui/icons-material'
 import Footer from './Footer'
 
@@ -281,16 +282,22 @@ const ColumnLayout = ({
                   {featuredArticle.excerpt || featuredArticle.summary}
                 </Typography>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1.5, borderTop: '1px solid #f9fafb' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1.5, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Avatar sx={{ width: 22, height: 22, fontSize: '0.7rem', bgcolor: '#c2410c' }}>
-                      {featuredArticle.author ? featuredArticle.author.charAt(0) : '专'}
-                    </Avatar>
-                    <Typography variant="caption" sx={{ color: '#374151', fontWeight: 600 }}>
-                      {featuredArticle.author || '特约导师'}
-                    </Typography>
+                    {featuredArticle.source === '小宇宙' ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <HeadphonesIcon sx={{ fontSize: 15, color: '#ea580c' }} />
+                        <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.78rem' }}>
+                          播客《{featuredArticle.author || '小宇宙精选'}》
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Typography variant="caption" sx={{ color: '#374151', fontWeight: 600, fontSize: '0.78rem' }}>
+                        {featuredArticle.source ? `${featuredArticle.source} 楼主 · @${featuredArticle.author || '精选'}` : (featuredArticle.author || '专栏精选')}
+                      </Typography>
+                    )}
                     <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                      · {featuredArticle.date || '实战精选'}
+                      · {featuredArticle.date || '近期'}
                     </Typography>
                   </Box>
 
@@ -393,16 +400,26 @@ const ColumnLayout = ({
                         {article.excerpt || article.summary}
                       </Typography>
 
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#c2410c' }}>
-                            {article.author ? article.author.charAt(0) : '专'}
-                          </Avatar>
-                          <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                            {article.author || '实战导师'}
-                          </Typography>
-                          <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                            · {article.date || '最近'}
+                          {article.source === '小宇宙' ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                              <HeadphonesIcon sx={{ fontSize: 14, color: '#ea580c' }} />
+                              <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.75rem' }}>
+                                播客《{article.author || '知行小酒馆'}》
+                              </Typography>
+                            </Box>
+                          ) : article.author ? (
+                            <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                              {article.source ? `${article.source} 楼主` : '发布者'} · @{article.author}
+                            </Typography>
+                          ) : (
+                            <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                              {article.source || '专栏收录'}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                            · {article.date || '近期'}
                           </Typography>
                         </Box>
 

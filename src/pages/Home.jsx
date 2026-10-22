@@ -11,8 +11,9 @@ import {
   Button,
   Tabs,
   Tab,
-  Avatar,
-  Slider
+  Slider,
+  TextField,
+  InputAdornment
 } from '@mui/material'
 import {
   ArrowForward as ArrowForwardIcon,
@@ -20,7 +21,10 @@ import {
   TrendingUp as TrendingUpIcon,
   BookmarkBorder as BookmarkIcon,
   LocalOfferOutlined as TagIcon,
-  OpenInNew as OpenInNewIcon
+  OpenInNew as OpenInNewIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon,
+  Headphones as HeadphonesIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
@@ -64,6 +68,8 @@ const Home = () => {
   const { getAllArticles } = useArticles()
 
   const [activeTab, setActiveTab] = useState(0)
+  const [selectedSource, setSelectedSource] = useState('全部')
+  const [searchTerm, setSearchTerm] = useState('')
   const [displayCount, setDisplayCount] = useState(10)
 
   // 侧边栏挂件：家庭现金流跑道简易速算
@@ -83,18 +89,39 @@ const Home = () => {
     return [...publishedArticles].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
   }, [publishedArticles])
 
+  // 各来源平台统计数
+  const sourceCounts = useMemo(() => {
+    const counts = {}
+    publishedArticles.forEach(a => {
+      const s = a.source || '其他'
+      counts[s] = (counts[s] || 0) + 1
+    })
+    return counts
+  }, [publishedArticles])
+
+  // 各专栏统计数
+  const categoryCounts = useMemo(() => {
+    return {
+      career: publishedArticles.filter(a => ['职场发展', '转型升级'].includes(a.category)).length,
+      side: publishedArticles.filter(a => ['副业指南'].includes(a.category)).length,
+      finance: publishedArticles.filter(a => ['财务管理'].includes(a.category)).length,
+      family: publishedArticles.filter(a => ['中年危机', '心理健康', '家庭关系', '生活技能'].includes(a.category)).length,
+    }
+  }, [publishedArticles])
+
   // 少数派式头条焦点（置顶重磅特稿）
   const heroArticle = sortedArticles[0] || {
-    id: 'career-35-tips',
-    title: '突遭裁员的 72 小时应急手册：权益防御、证据留存与社保接续',
-    excerpt: '面对突如其来的离职交涉，普通人最容易犯的错误是当场盲签协议。按步骤固定考勤流水，核算 N+1 与未休年假折算，由失业基金代缴医保。',
-    author: '职场战略组',
-    date: '2024-01-20',
-    readTime: '8分钟阅读',
-    category: '职场发展'
+    id: 'web-tianya-cycle-survival',
+    title: '康波周期与大变局下，普通人如何保全资产与守住现金流',
+    excerpt: '重读周金涛与天涯经济周期研判：面对经济下行与降薪风险，普通家庭最核心的不是追求超额收益，而是切断高风险杠杆，储备 36 个月刚性流动资金跑道。',
+    author: 'KKndme',
+    date: '2026-10-22',
+    readTime: '12分钟精读',
+    category: '财务管理',
+    source: '天涯论坛'
   }
 
-  // 少数派式热门排行前 4 篇
+  // 热门排行前 4 篇
   const trendingArticles = useMemo(() => {
     return sortedArticles.slice(1, 5)
   }, [sortedArticles])
@@ -109,9 +136,34 @@ const Home = () => {
   ], [])
 
   const currentTab = feedTabs[activeTab] || feedTabs[0]
+
   const filteredArticles = useMemo(() => {
-    return sortedArticles.filter(currentTab.filter)
-  }, [sortedArticles, currentTab])
+    return sortedArticles.filter(article => {
+      // 1. 分类匹配
+      const matchCategory = currentTab.filter(article)
+      if (!matchCategory) return false
+
+      // 2. 社区来源匹配
+      if (selectedSource !== '全部' && article.source !== selectedSource) {
+        return false
+      }
+
+      // 3. 搜索词匹配
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase().trim()
+        const titleMatch = (article.title || '').toLowerCase().includes(term)
+        const excerptMatch = (article.excerpt || article.summary || '').toLowerCase().includes(term)
+        const tagMatch = Array.isArray(article.tags) && article.tags.some(t => t.toLowerCase().includes(term))
+        const sourceMatch = (article.source || '').toLowerCase().includes(term)
+        const authorMatch = (article.author || '').toLowerCase().includes(term)
+        if (!titleMatch && !excerptMatch && !tagMatch && !sourceMatch && !authorMatch) {
+          return false
+        }
+      }
+
+      return true
+    })
+  }, [sortedArticles, currentTab, selectedSource, searchTerm])
 
   const visibleArticles = filteredArticles.slice(0, displayCount)
   const hasMore = filteredArticles.length > displayCount
@@ -119,37 +171,42 @@ const Home = () => {
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f5f8', color: '#1c1917', width: '100%', overflowX: 'hidden' }}>
       
-      {/* 少数派风格顶通提示条 */}
-      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 1.5 }}>
+      {/* 全网动态顶通提示条 */}
+      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 1.2 }}>
         <Container maxWidth="lg">
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, flexWrap: 'wrap' }}>
               <Chip
-                label="工具"
+                label="每日收录"
                 size="small"
                 sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
               />
-              <Typography variant="body2" sx={{ color: '#4b5563', fontSize: '0.85rem' }}>
-                自救工作台：内置现金流跑道测算器与突发变故 72 小时应急防御看板
+              <Typography variant="body2" sx={{ color: '#374151', fontSize: '0.85rem', fontWeight: 600 }}>
+                已收录全网 {publishedArticles.length} 篇逆周期自救与赚钱实录
+              </Typography>
+              <Typography variant="caption" sx={{ color: '#9ca3af', display: { xs: 'none', md: 'inline' } }}>
+                · 每日 03:30 自动收录天涯/知乎/LINUX DO/小宇宙
               </Typography>
             </Box>
 
-            <Button
-              size="small"
-              onClick={() => navigate('/dashboard')}
-              endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
-              sx={{
-                color: '#c2410c',
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                p: 0,
-                minWidth: 'auto',
-                whiteSpace: 'nowrap',
-                '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
-              }}
-            >
-              打开工作台
-            </Button>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Button
+                size="small"
+                onClick={() => navigate('/dashboard')}
+                endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
+                sx={{
+                  color: '#c2410c',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  p: 0,
+                  minWidth: 'auto',
+                  whiteSpace: 'nowrap',
+                  '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
+                }}
+              >
+                自救工作台 (跑道与防御红线) →
+              </Button>
+            </Box>
           </Box>
         </Container>
       </Box>
@@ -271,16 +328,22 @@ const Home = () => {
               </Typography>
             </Box>
 
-            <Box sx={{ pt: 2, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ pt: 2, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                <Avatar sx={{ width: 26, height: 26, bgcolor: '#c2410c', fontSize: '0.75rem', fontWeight: 700 }}>
-                  {heroArticle.author ? heroArticle.author.charAt(0) : '专'}
-                </Avatar>
-                <Typography variant="caption" sx={{ color: '#374151', fontWeight: 600 }}>
-                  {heroArticle.author || '特约研究组'}
-                </Typography>
+                {heroArticle.source === '小宇宙' ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <HeadphonesIcon sx={{ fontSize: 16, color: '#ea580c' }} />
+                    <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.8rem' }}>
+                      播客《{heroArticle.author || '小宇宙精选'}》
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography variant="caption" sx={{ color: '#374151', fontWeight: 700, fontSize: '0.8rem' }}>
+                    {heroArticle.source ? `${heroArticle.source} 楼主 · @${heroArticle.author || '精选'}` : (heroArticle.author || '精选神贴')}
+                  </Typography>
+                )}
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  · {heroArticle.date || '最近更新'}
+                  · {heroArticle.date || '近期热议'}
                 </Typography>
               </Box>
 
@@ -450,28 +513,28 @@ const Home = () => {
                 title: '职场突围战',
                 tag: '职场防线',
                 desc: '35岁破局 · 经验变现 · 合法维权',
-                count: '38 篇实录',
+                count: `${categoryCounts.career} 篇精选`,
                 path: '/career'
               },
               {
                 title: '副业与轻创',
                 tag: '开源创收',
-                desc: '零成本起步 · 咨询陪跑 · 数字模板',
-                count: '24 篇实录',
+                desc: '零成本起步 · 咨询陪跑 · 出海插件',
+                count: `${categoryCounts.side} 篇精选`,
                 path: '/side-business'
               },
               {
                 title: '资产与养老',
                 tag: '底线防御',
                 desc: '四笔钱法则 · 养老精算 · 债务重构',
-                count: '32 篇实录',
+                count: `${categoryCounts.finance} 篇精选`,
                 path: '/finance'
               },
               {
                 title: '身心与家庭',
                 tag: '基石支撑',
                 desc: '中年内耗脱敏 · 亲子沟通 · 健康指标',
-                count: '43 篇实录',
+                count: `${categoryCounts.family} 篇精选`,
                 path: '/family'
               }
             ].map((col) => (
@@ -547,8 +610,46 @@ const Home = () => {
         >
           {/* 左侧：主流文章流 (Feed) */}
           <Box sx={{ width: '100%' }}>
+            
+            {/* 即时搜索框 */}
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="在全网热帖中即时检索（如：n8n、失业金、周金涛、大理、房贷延期...）"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value)
+                  setDisplayCount(10)
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: '#9ca3af', fontSize: 19 }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchTerm ? (
+                    <InputAdornment position="end">
+                      <ClearIcon
+                        sx={{ color: '#9ca3af', fontSize: 18, cursor: 'pointer' }}
+                        onClick={() => setSearchTerm('')}
+                      />
+                    </InputAdornment>
+                  ) : null,
+                  sx: {
+                    borderRadius: 2,
+                    backgroundColor: '#ffffff',
+                    fontSize: '0.88rem',
+                    '& fieldset': { borderColor: '#e5e7eb' },
+                    '&:hover fieldset': { borderColor: '#d1d5db' },
+                    '&.Mui-focused fieldset': { borderColor: '#c2410c' }
+                  }
+                }}
+              />
+            </Box>
+
             {/* 分类 Tabs 切换条 */}
-            <Box sx={{ borderBottom: '1px solid #e5e7eb', mb: 2.5, backgroundColor: '#ffffff', borderRadius: 2, p: 0.5, border: '1px solid #e5e7eb' }}>
+            <Box sx={{ borderBottom: '1px solid #e5e7eb', mb: 1.5, backgroundColor: '#ffffff', borderRadius: 2, p: 0.5, border: '1px solid #e5e7eb' }}>
               <Tabs
                 value={activeTab}
                 onChange={(e, val) => {
@@ -578,6 +679,72 @@ const Home = () => {
                 ))}
               </Tabs>
             </Box>
+
+            {/* 社区来源快捷筛选胶囊 */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mb: 2.5, overflowX: 'auto', pb: 0.5, '::-webkit-scrollbar': { display: 'none' } }}>
+              <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', whiteSpace: 'nowrap', mr: 0.5 }}>
+                社区来源:
+              </Typography>
+              {[
+                { id: '全部', name: '全部社区', count: publishedArticles.length },
+                { id: '天涯论坛', name: '天涯论坛', count: sourceCounts['天涯论坛'] || 0 },
+                { id: '知乎', name: '知乎', count: sourceCounts['知乎'] || 0 },
+                { id: 'LINUX DO', name: 'LINUX DO', count: sourceCounts['LINUX DO'] || 0 },
+                { id: '少数派', name: '少数派', count: sourceCounts['少数派'] || 0 },
+                { id: '小宇宙', name: '小宇宙播客', count: sourceCounts['小宇宙'] || 0 },
+                { id: '雪球', name: '雪球', count: sourceCounts['雪球'] || 0 },
+                { id: 'V2EX', name: 'V2EX', count: sourceCounts['V2EX'] || 0 },
+                { id: '豆瓣', name: '豆瓣', count: sourceCounts['豆瓣'] || 0 },
+              ].map((src) => {
+                const isSelected = selectedSource === src.id
+                return (
+                  <Chip
+                    key={src.id}
+                    label={`${src.name} ${src.count}`}
+                    size="small"
+                    onClick={() => {
+                      setSelectedSource(src.id)
+                      setDisplayCount(10)
+                    }}
+                    sx={{
+                      cursor: 'pointer',
+                      fontWeight: isSelected ? 700 : 500,
+                      fontSize: '0.72rem',
+                      height: 24,
+                      borderRadius: 1,
+                      whiteSpace: 'nowrap',
+                      bgcolor: isSelected ? '#1f2937' : '#ffffff',
+                      color: isSelected ? '#ffffff' : '#4b5563',
+                      border: isSelected ? '1px solid #1f2937' : '1px solid #e5e7eb',
+                      '&:hover': {
+                        bgcolor: isSelected ? '#111827' : '#f3f4f6'
+                      }
+                    }}
+                  />
+                )
+              })}
+            </Box>
+
+            {/* 检索结果统计提示 */}
+            {(searchTerm || selectedSource !== '全部') && (
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="caption" sx={{ color: '#6b7280' }}>
+                  筛选出 <Typography component="span" variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{filteredArticles.length}</Typography> 条讨论
+                  {selectedSource !== '全部' && ` (来源: ${selectedSource})`}
+                  {searchTerm && ` (包含关键词 "${searchTerm}")`}
+                </Typography>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setSearchTerm('')
+                    setSelectedSource('全部')
+                  }}
+                  sx={{ color: '#c2410c', fontSize: '0.75rem', p: 0, minWidth: 'auto', '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' } }}
+                >
+                  重置筛选
+                </Button>
+              </Box>
+            )}
 
             {/* 少数派标准文章卡片列表 */}
             <Stack spacing={2} sx={{ width: '100%' }}>
@@ -669,17 +836,51 @@ const Home = () => {
                       {article.excerpt || article.summary}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#c2410c' }}>
-                          {article.author ? article.author.charAt(0) : '专'}
-                        </Avatar>
-                        <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                          {article.author || '实战导师'}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1.2, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                        {article.source === '小宇宙' ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <HeadphonesIcon sx={{ fontSize: 14, color: '#ea580c' }} />
+                            <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.75rem' }}>
+                              播客《{article.author || '知行小酒馆'}》
+                            </Typography>
+                          </Box>
+                        ) : article.author ? (
+                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                            {article.source ? `${article.source} 楼主` : '发布者'} · @{article.author}
+                          </Typography>
+                        ) : (
+                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                            {article.source || '全网精选'}
+                          </Typography>
+                        )}
+
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                          · {article.date || '近期'}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                          · {article.date || '最近'}
-                        </Typography>
+
+                        {article.tags && article.tags.slice(0, 2).map((t) => (
+                          <Typography
+                            key={t}
+                            variant="caption"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSearchTerm(t)
+                            }}
+                            sx={{
+                              color: '#6b7280',
+                              fontSize: '0.7rem',
+                              bgcolor: '#f3f4f6',
+                              px: 0.8,
+                              py: 0.1,
+                              borderRadius: 0.8,
+                              cursor: 'pointer',
+                              '&:hover': { color: '#c2410c', bgcolor: '#ffedd5' }
+                            }}
+                          >
+                            #{t}
+                          </Typography>
+                        ))}
                       </Box>
 
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>

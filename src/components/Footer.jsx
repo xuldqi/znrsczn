@@ -67,7 +67,7 @@ const Footer = () => {
                 fontSize: '0.88rem'
               }}
             >
-              一本沉静靠谱的人生成长与避险备忘录。用量化测算工具与 137 篇一线实战经验，陪伴 35+ 职场人安稳跨越人生过渡期。
+              一本沉静靠谱的人生成长与避险备忘录。用量化测算工具与全网高质量实战热帖，陪伴 35+ 职场人安稳跨越人生过渡期。
             </Typography>
             <Typography variant="caption" sx={{ color: '#a8a29e', display: 'block' }}>
               © {new Date().getFullYear()} 中年自救指南 · 温暖 · 笃定 · 可落地

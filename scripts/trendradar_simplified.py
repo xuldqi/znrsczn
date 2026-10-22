@@ -402,16 +402,18 @@ def main():
     added_count = 0
     updated_count = 0
 
+    today_str = datetime.date.today().strftime('%Y-%m-%d')
     for item in ADDITIONAL_FEEDS:
         art_id = item["id"]
         # 清洗全部字段中的 emoji
         for field in ["title", "excerpt", "author", "content"]:
             item[field] = clean_emojis(item.get(field, ""))
         
-        # 确保必备元数据
+        # 确保必备元数据与当前采集时间
         if not item.get("category"):
             item["category"] = infer_category(item.get("title", ""), item.get("content", ""))
         
+        item["date"] = today_str
         item["status"] = "published"
         item["isExternal"] = True
 

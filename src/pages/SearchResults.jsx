@@ -15,7 +15,9 @@ import {
 import {
   Search as SearchIcon,
   Clear as ClearIcon,
-  ArrowForward as ArrowForwardIcon
+  ArrowForward as ArrowForwardIcon,
+  Headphones as HeadphonesIcon,
+  OpenInNew as OpenInNewIcon
 } from '@mui/icons-material'
 import { useArticles } from '../contexts/ArticleContext'
 import Footer from '../components/Footer'
@@ -148,7 +150,7 @@ const SearchResults = () => {
                 onClick={() => navigate('/articles')}
                 sx={{ color: '#c2410c', borderColor: '#c2410c' }}
               >
-                查阅全部 137 篇指南
+                查阅全网热帖文库
               </Button>
             </Paper>
           ) : (
@@ -224,22 +226,56 @@ const SearchResults = () => {
                       {article.excerpt || article.summary}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#c2410c' }}>
-                          {article.author ? article.author.charAt(0) : '专'}
-                        </Avatar>
-                        <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                          {article.author || '实战导师'}
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                          · {article.date || '最近'}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                        {article.source === '小宇宙' ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <HeadphonesIcon sx={{ fontSize: 14, color: '#ea580c' }} />
+                            <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.75rem' }}>
+                              播客《{article.author || '知行小酒馆'}》
+                            </Typography>
+                          </Box>
+                        ) : article.author ? (
+                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                            {article.source ? `${article.source} 楼主` : '发布者'} · @{article.author}
+                          </Typography>
+                        ) : (
+                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                            {article.source || '精选热帖'}
+                          </Typography>
+                        )}
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                          · {article.date || '近期'}
                         </Typography>
                       </Box>
 
-                      <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
-                        阅读全文 →
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        {article.sourceUrl && (
+                          <Typography
+                            component="a"
+                            href={article.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            variant="caption"
+                            sx={{
+                              color: '#6b7280',
+                              fontWeight: 600,
+                              fontSize: '0.75rem',
+                              whiteSpace: 'nowrap',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.3,
+                              '&:hover': { color: '#c2410c', textDecoration: 'underline' }
+                            }}
+                          >
+                            原帖 ↗
+                          </Typography>
+                        )}
+                        <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>
+                          阅读全文 →
+                        </Typography>
+                      </Box>
                     </Box>
                   </Paper>
                 )

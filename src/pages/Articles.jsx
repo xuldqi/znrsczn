@@ -20,7 +20,8 @@ import {
   SpaceDashboardOutlined as DashboardIcon,
   TrendingUp as TrendingUpIcon,
   ArrowForward as ArrowForwardIcon,
-  OpenInNew as OpenInNewIcon
+  OpenInNew as OpenInNewIcon,
+  Headphones as HeadphonesIcon
 } from '@mui/icons-material'
 import { useArticles } from '../contexts/ArticleContext'
 import Footer from '../components/Footer'
@@ -119,17 +120,17 @@ const Articles = () => {
                   letterSpacing: '-0.02em'
                 }}
               >
-                实战指南文库
+                全网热帖文库
               </Typography>
               <Chip
-                label={`${publishedArticles.length} 篇实录`}
+                label={`${publishedArticles.length} 篇热帖`}
                 size="small"
                 sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.75rem', height: 24, borderRadius: 1 }}
               />
             </Box>
 
             <Typography variant="body1" sx={{ color: '#4b5563', fontSize: '0.96rem', lineHeight: 1.7 }}>
-              面向 35-50 岁人群的系统化行动方案：涵盖离职维权、劳动纠纷证据保全、轻资产副业启动、家庭四笔钱资产防线与中年心理调适。
+              面向 35-50 岁人群的逆周期与自救热帖精粹：聚合天涯神贴、LINUX DO 赚钱小项目、小宇宙播客对谈、知乎与 V2EX 实战经验。
             </Typography>
           </Box>
 
@@ -339,17 +340,51 @@ const Articles = () => {
                         {article.excerpt || article.summary}
                       </Typography>
 
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Avatar sx={{ width: 20, height: 20, fontSize: '0.65rem', bgcolor: '#c2410c' }}>
-                            {article.author ? article.author.charAt(0) : '专'}
-                          </Avatar>
-                          <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600 }}>
-                            {article.author || '实战导师'}
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1.2, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                          {article.source === '小宇宙' ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                              <HeadphonesIcon sx={{ fontSize: 14, color: '#ea580c' }} />
+                              <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.75rem' }}>
+                                播客《{article.author || '知行小酒馆'}》
+                              </Typography>
+                            </Box>
+                          ) : article.author ? (
+                            <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                              {article.source ? `${article.source} 楼主` : '发布者'} · @{article.author}
+                            </Typography>
+                          ) : (
+                            <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                              {article.source || '全网精选'}
+                            </Typography>
+                          )}
+
+                          <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                            · {article.date || '近期'}
                           </Typography>
-                          <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                            · {article.date || '最近'}
-                          </Typography>
+
+                          {article.tags && article.tags.slice(0, 2).map((t) => (
+                            <Typography
+                              key={t}
+                              variant="caption"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSearchTerm(t)
+                              }}
+                              sx={{
+                                color: '#6b7280',
+                                fontSize: '0.7rem',
+                                bgcolor: '#f3f4f6',
+                                px: 0.8,
+                                py: 0.1,
+                                borderRadius: 0.8,
+                                cursor: 'pointer',
+                                '&:hover': { color: '#c2410c', bgcolor: '#ffedd5' }
+                              }}
+                            >
+                              #{t}
+                            </Typography>
+                          ))}
                         </Box>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
