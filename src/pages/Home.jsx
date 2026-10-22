@@ -9,18 +9,16 @@ import {
   Stack,
   Chip,
   Button,
-  Tabs,
-  Tab,
   Slider
 } from '@mui/material'
 import {
   ArrowForward as ArrowForwardIcon,
   SpaceDashboardOutlined as DashboardIcon,
-  TrendingUp as TrendingUpIcon,
   BookmarkBorder as BookmarkIcon,
   LocalOfferOutlined as TagIcon,
   OpenInNew as OpenInNewIcon,
-  Headphones as HeadphonesIcon
+  Headphones as HeadphonesIcon,
+  FilterList as FilterListIcon
 } from '@mui/icons-material'
 import Footer from '../components/Footer'
 
@@ -68,7 +66,7 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState(0)
   const [selectedSource, setSelectedSource] = useState('全部')
   const [searchTerm, setSearchTerm] = useState('')
-  const [displayCount, setDisplayCount] = useState(10)
+  const [displayCount, setDisplayCount] = useState(12)
 
   // 侧边栏挂件：家庭现金流跑道简易速算
   const [sidebarSavings, setSidebarSavings] = useState(30)
@@ -97,17 +95,7 @@ const Home = () => {
     return counts
   }, [publishedArticles])
 
-  // 各专栏统计数
-  const categoryCounts = useMemo(() => {
-    return {
-      career: publishedArticles.filter(a => ['职场发展', '转型升级'].includes(a.category)).length,
-      side: publishedArticles.filter(a => ['副业指南'].includes(a.category)).length,
-      finance: publishedArticles.filter(a => ['财务管理'].includes(a.category)).length,
-      family: publishedArticles.filter(a => ['中年危机', '心理健康', '家庭关系', '生活技能'].includes(a.category)).length,
-    }
-  }, [publishedArticles])
-
-  // 少数派式头条焦点（置顶重磅特稿）
+  // 今日置顶精选（高信噪比置顶焦点头条）
   const heroArticle = sortedArticles[0] || {
     id: 'web-tianya-cycle-survival',
     title: '康波周期与大变局下，普通人如何保全资产与守住现金流',
@@ -116,13 +104,9 @@ const Home = () => {
     date: '2026-10-22',
     readTime: '12分钟精读',
     category: '财务管理',
-    source: '天涯论坛'
+    source: '天涯论坛',
+    sourceUrl: 'https://bbs.tianya.cn/'
   }
-
-  // 热门排行前 4 篇
-  const trendingArticles = useMemo(() => {
-    return sortedArticles.slice(1, 5)
-  }, [sortedArticles])
 
   // 分类 Tabs
   const feedTabs = useMemo(() => [
@@ -169,8 +153,8 @@ const Home = () => {
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f4f5f8', color: '#1c1917', width: '100%', overflowX: 'hidden' }}>
       
-      {/* 全网动态顶通提示条 */}
-      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 1.2 }}>
+      {/* 顶通微状态栏 */}
+      <Box sx={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', py: 1.1 }}>
         <Container maxWidth="lg">
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, flexWrap: 'wrap' }}>
@@ -180,7 +164,7 @@ const Home = () => {
                 sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
               />
               <Typography variant="body2" sx={{ color: '#374151', fontSize: '0.85rem', fontWeight: 600 }}>
-                聚合天涯神贴、LINUX DO搞钱项目、小宇宙播客与真实经历 (已整理 {publishedArticles.length} 篇)
+                聚合天涯神贴、LINUX DO搞钱项目、知乎维权与小宇宙播客 (已整理 {publishedArticles.length} 篇真实讨论)
               </Typography>
               <Typography variant="caption" sx={{ color: '#9ca3af', display: { xs: 'none', md: 'inline' } }}>
                 · 每天凌晨自动同步
@@ -209,105 +193,147 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* 少数派经典 Hero：左侧焦点大卡 + 右侧排行列表 (01-04) */}
-      <Container maxWidth="lg" sx={{ pt: 3.5, pb: 4 }}>
+      {/* 方案 A 主体：高信噪比情报雷达 (Readhub / Hacker News Style) */}
+      <Container maxWidth="lg" sx={{ pt: 2.5, pb: 6 }}>
         <Box
           sx={{
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
-              md: '1.7fr 1fr'
+              md: '2.5fr 1fr'
             },
-            gap: 2.5,
+            gap: 3,
             width: '100%',
-            alignItems: 'stretch'
+            alignItems: 'flex-start'
           }}
         >
-          {/* 左侧：今日置顶焦点热帖 */}
-          <Paper
-            elevation={0}
-            onClick={() => {
-              if (heroArticle.sourceUrl) {
-                window.open(heroArticle.sourceUrl, '_blank')
-              } else {
-                navigate(`/article/${heroArticle.id}`)
-              }
-            }}
-            sx={{
-              p: { xs: 2.5, sm: 3.5 },
-              width: '100%',
-              height: '100%',
-              boxSizing: 'border-box',
-              borderRadius: 2.5,
-              backgroundColor: '#ffffff',
-              border: '1px solid #e5e7eb',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                borderColor: '#c2410c',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-                '& .hero-title': { color: '#c2410c' }
-              }
-            }}
-          >
-            <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
-                <Chip
-                  label="今日焦点"
-                  size="small"
-                  sx={{
-                    bgcolor: '#fee2e2',
-                    color: '#b91c1c',
-                    fontWeight: 700,
-                    fontSize: '0.72rem',
-                    height: 22,
-                    borderRadius: 1
-                  }}
-                />
-                {heroArticle.source && (
+          {/* 左侧：主情报流 (Pinned Focus + Filter Pills + Discussion Rows) */}
+          <Box sx={{ width: '100%' }}>
+            
+            {/* 1. 今日置顶焦点速递 (Pinned Focus Bar) */}
+            <Paper
+              elevation={0}
+              onClick={() => {
+                if (heroArticle.sourceUrl) {
+                  window.open(heroArticle.sourceUrl, '_blank')
+                } else {
+                  navigate(`/article/${heroArticle.id}`)
+                }
+              }}
+              sx={{
+                p: { xs: 1.8, sm: 2 },
+                mb: 2.2,
+                borderRadius: 2,
+                bgcolor: '#ffffff',
+                border: '1px solid #fed7aa',
+                borderLeft: '4px solid #c2410c',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                '&:hover': {
+                  borderColor: '#c2410c',
+                  boxShadow: '0 4px 16px rgba(194, 65, 12, 0.08)',
+                  '& .focus-title': { color: '#c2410c' }
+                }
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                   <Chip
-                    label={heroArticle.source}
+                    label="今日焦点"
                     size="small"
                     sx={{
-                      bgcolor: sourceStyles[heroArticle.source]?.bg || '#f3f4f6',
-                      color: sourceStyles[heroArticle.source]?.color || '#374151',
-                      border: `1px solid ${sourceStyles[heroArticle.source]?.border || '#e5e7eb'}`,
-                      fontSize: '0.72rem',
+                      bgcolor: '#c2410c',
+                      color: '#ffffff',
                       fontWeight: 700,
+                      fontSize: '0.72rem',
                       height: 22,
                       borderRadius: 1
                     }}
                   />
-                )}
-                <Chip
-                  label={heroArticle.category}
-                  size="small"
-                  sx={{
-                    bgcolor: '#f3f4f6',
-                    color: '#6b7280',
-                    fontWeight: 600,
-                    fontSize: '0.72rem',
-                    height: 22,
-                    borderRadius: 1
-                  }}
-                />
-                <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  {heroArticle.hotMetric || '420+ 条讨论'}
-                </Typography>
+                  {heroArticle.source && (
+                    <Chip
+                      label={heroArticle.source}
+                      size="small"
+                      sx={{
+                        bgcolor: sourceStyles[heroArticle.source]?.bg || '#f3f4f6',
+                        color: sourceStyles[heroArticle.source]?.color || '#374151',
+                        border: `1px solid ${sourceStyles[heroArticle.source]?.border || '#e5e7eb'}`,
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        height: 22,
+                        borderRadius: 1
+                      }}
+                    />
+                  )}
+                  <Chip
+                    label={heroArticle.category}
+                    size="small"
+                    sx={{
+                      bgcolor: '#f3f4f6',
+                      color: '#4b5563',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      height: 22,
+                      borderRadius: 1
+                    }}
+                  />
+                  <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                    {heroArticle.hotMetric || '全网精选讨论'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  {heroArticle.sourceUrl && (
+                    <Button
+                      size="small"
+                      variant="text"
+                      component="a"
+                      href={heroArticle.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
+                      sx={{
+                        color: '#c2410c',
+                        fontWeight: 700,
+                        fontSize: '0.8rem',
+                        p: '2px 8px',
+                        whiteSpace: 'nowrap',
+                        '&:hover': { bgcolor: '#fff7ed' }
+                      }}
+                    >
+                      直达原帖 ↗
+                    </Button>
+                  )}
+                  <Button
+                    size="small"
+                    variant="text"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/article/${heroArticle.id}`)
+                    }}
+                    sx={{
+                      color: '#6b7280',
+                      fontSize: '0.76rem',
+                      p: '2px 6px',
+                      whiteSpace: 'nowrap',
+                      '&:hover': { color: '#111827', bgcolor: 'transparent' }
+                    }}
+                  >
+                    速览
+                  </Button>
+                </Box>
               </Box>
 
               <Typography
-                className="hero-title"
-                variant="h5"
+                className="focus-title"
+                variant="subtitle1"
                 sx={{
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: '#111827',
-                  fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                  lineHeight: 1.4,
-                  mb: 1.5,
+                  fontSize: { xs: '0.98rem', sm: '1.05rem' },
+                  lineHeight: 1.45,
+                  mb: 0.6,
                   transition: 'color 0.15s'
                 }}
               >
@@ -318,337 +344,139 @@ const Home = () => {
                 variant="body2"
                 sx={{
                   color: '#4b5563',
-                  fontSize: '0.92rem',
-                  lineHeight: 1.7,
+                  fontSize: '0.86rem',
+                  lineHeight: 1.55,
                   display: '-webkit-box',
-                  WebkitLineClamp: 3,
+                  WebkitLineClamp: 1,
                   WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                  mb: 2
+                  overflow: 'hidden'
                 }}
               >
                 {heroArticle.excerpt}
               </Typography>
+            </Paper>
 
-              {heroArticle.tags && heroArticle.tags.length > 0 && (
-                <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap', mb: 2 }}>
-                  {heroArticle.tags.slice(0, 4).map((t) => (
-                    <Typography
-                      key={t}
-                      variant="caption"
-                      sx={{
-                        color: '#6b7280',
-                        bgcolor: '#f4f5f8',
-                        fontSize: '0.72rem',
-                        px: 0.9,
-                        py: 0.2,
-                        borderRadius: 0.8
+            {/* 2. 一体化紧凑药丸筛选栏 (Integrated Pill Filter) */}
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 1.5, sm: 2 },
+                mb: 2.2,
+                borderRadius: 2,
+                bgcolor: '#ffffff',
+                border: '1px solid #e5e7eb'
+              }}
+            >
+              {/* 分类药丸 (Row 1) */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, overflowX: 'auto', pb: 1, mb: 1.2, borderBottom: '1px solid #f3f4f6', '::-webkit-scrollbar': { display: 'none' } }}>
+                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', whiteSpace: 'nowrap', mr: 0.5 }}>
+                  专栏方向:
+                </Typography>
+                {feedTabs.map((tab, idx) => {
+                  const isSelected = activeTab === idx
+                  return (
+                    <Chip
+                      key={tab.id}
+                      label={tab.name}
+                      size="small"
+                      onClick={() => {
+                        setActiveTab(idx)
+                        setDisplayCount(12)
                       }}
-                    >
-                      #{t}
-                    </Typography>
-                  ))}
-                </Box>
-              )}
-            </Box>
-
-            <Box sx={{ pt: 1.5, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600, fontSize: '0.8rem' }}>
-                  {heroArticle.source === '小宇宙' ? `播客《${heroArticle.author || '知行小酒馆'}》` : (heroArticle.hotMetric || `${heroArticle.source || '全网'} 讨论`)}
-                </Typography>
-                <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.8rem' }}>
-                  · {heroArticle.date || '近期'}
-                </Typography>
+                      sx={{
+                        cursor: 'pointer',
+                        fontWeight: isSelected ? 700 : 500,
+                        fontSize: '0.78rem',
+                        height: 28,
+                        borderRadius: 1.5,
+                        px: 0.5,
+                        whiteSpace: 'nowrap',
+                        bgcolor: isSelected ? '#1f2937' : '#f9fafb',
+                        color: isSelected ? '#ffffff' : '#4b5563',
+                        border: isSelected ? '1px solid #1f2937' : '1px solid #e5e7eb',
+                        transition: 'all 0.15s',
+                        '&:hover': {
+                          bgcolor: isSelected ? '#111827' : '#f3f4f6',
+                          borderColor: isSelected ? '#111827' : '#d1d5db'
+                        }
+                      }}
+                    />
+                  )
+                })}
               </Box>
 
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {heroArticle.sourceUrl && (
+              {/* 社区来源药丸 (Row 2) */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, overflowX: 'auto', '::-webkit-scrollbar': { display: 'none' } }}>
+                <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', whiteSpace: 'nowrap', mr: 0.5 }}>
+                  社区来源:
+                </Typography>
+                {[
+                  { id: '全部', name: '全部社区', count: publishedArticles.length },
+                  { id: '天涯论坛', name: '天涯', count: sourceCounts['天涯论坛'] || 0 },
+                  { id: '知乎', name: '知乎', count: sourceCounts['知乎'] || 0 },
+                  { id: 'LINUX DO', name: 'LINUX DO', count: sourceCounts['LINUX DO'] || 0 },
+                  { id: '少数派', name: '少数派', count: sourceCounts['少数派'] || 0 },
+                  { id: '小宇宙', name: '小宇宙', count: sourceCounts['小宇宙'] || 0 },
+                  { id: '雪球', name: '雪球', count: sourceCounts['雪球'] || 0 },
+                  { id: 'V2EX', name: 'V2EX', count: sourceCounts['V2EX'] || 0 },
+                  { id: '豆瓣', name: '豆瓣', count: sourceCounts['豆瓣'] || 0 },
+                ].map((src) => {
+                  const isSelected = selectedSource === src.id
+                  return (
+                    <Chip
+                      key={src.id}
+                      label={`${src.name} (${src.count})`}
+                      size="small"
+                      onClick={() => {
+                        setSelectedSource(src.id)
+                        setDisplayCount(12)
+                      }}
+                      sx={{
+                        cursor: 'pointer',
+                        fontWeight: isSelected ? 700 : 500,
+                        fontSize: '0.72rem',
+                        height: 24,
+                        borderRadius: 1,
+                        whiteSpace: 'nowrap',
+                        bgcolor: isSelected ? '#c2410c' : '#ffffff',
+                        color: isSelected ? '#ffffff' : '#6b7280',
+                        border: isSelected ? '1px solid #c2410c' : '1px solid #e5e7eb',
+                        transition: 'all 0.15s',
+                        '&:hover': {
+                          bgcolor: isSelected ? '#9a3412' : '#f9fafb'
+                        }
+                      }}
+                    />
+                  )
+                })}
+              </Box>
+
+              {/* 筛选统计与重置 */}
+              {(searchTerm || selectedSource !== '全部' || activeTab !== 0) && (
+                <Box sx={{ mt: 1.5, pt: 1.2, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Typography variant="caption" sx={{ color: '#6b7280' }}>
+                    当前匹配到 <Typography component="span" variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{filteredArticles.length}</Typography> 条讨论
+                    {selectedSource !== '全部' && ` · 来源: ${selectedSource}`}
+                    {activeTab !== 0 && ` · 专栏: ${currentTab.name}`}
+                    {searchTerm && ` · 关键词 "${searchTerm}"`}
+                  </Typography>
                   <Button
                     size="small"
-                    variant="contained"
-                    component="a"
-                    href={heroArticle.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    endIcon={<OpenInNewIcon sx={{ fontSize: 14 }} />}
-                    sx={{
-                      bgcolor: '#c2410c',
-                      color: '#ffffff',
-                      fontWeight: 700,
-                      fontSize: '0.8rem',
-                      py: 0.5,
-                      px: 1.8,
-                      borderRadius: 1.2,
-                      whiteSpace: 'nowrap',
-                      '&:hover': { bgcolor: '#9a3412' }
+                    onClick={() => {
+                      setSearchTerm('')
+                      setSelectedSource('全部')
+                      setActiveTab(0)
                     }}
+                    sx={{ color: '#c2410c', fontSize: '0.75rem', p: 0, minWidth: 'auto', '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' } }}
                   >
-                    前往{heroArticle.source || '原帖'}讨论 ↗
+                    重置所有筛选
                   </Button>
-                )}
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    navigate(`/article/${heroArticle.id}`)
-                  }}
-                  sx={{
-                    borderColor: '#e5e7eb',
-                    color: '#4b5563',
-                    fontWeight: 600,
-                    fontSize: '0.78rem',
-                    py: 0.4,
-                    px: 1.2,
-                    borderRadius: 1.2,
-                    whiteSpace: 'nowrap',
-                    '&:hover': { borderColor: '#c2410c', color: '#c2410c' }
-                  }}
-                >
-                  速览要点
-                </Button>
-              </Box>
-            </Box>
-          </Paper>
+                </Box>
+              )}
+            </Paper>
 
-          {/* 右侧：少数派热门排行 (01 - 04) */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              width: '100%',
-              height: '100%',
-              boxSizing: 'border-box',
-              borderRadius: 2.5,
-              backgroundColor: '#ffffff',
-              border: '1px solid #e5e7eb',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}
-          >
-            <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <TrendingUpIcon sx={{ color: '#c2410c', fontSize: 20 }} />
-                <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.98rem' }}>
-                  大家都在看
-                </Typography>
-              </Box>
-
-              <Stack spacing={2}>
-                {trendingArticles.map((art, idx) => (
-                  <Box
-                    key={art.id || idx}
-                    onClick={() => {
-                      if (art.sourceUrl) {
-                        window.open(art.sourceUrl, '_blank')
-                      } else {
-                        navigate(`/article/${art.id}`)
-                      }
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: 1.5,
-                      '&:hover .rank-title': { color: '#c2410c' }
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 900,
-                        fontSize: '1.1rem',
-                        lineHeight: 1.2,
-                        color: idx === 0 ? '#c2410c' : '#9ca3af',
-                        minWidth: 24,
-                        fontFamily: '"SF Pro Display", sans-serif'
-                      }}
-                    >
-                      0{idx + 1}
-                    </Typography>
-
-                    <Box sx={{ flex: 1 }}>
-                      <Typography
-                        className="rank-title"
-                        variant="body2"
-                        sx={{
-                          fontWeight: 700,
-                          color: '#1f2937',
-                          lineHeight: 1.45,
-                          fontSize: '0.88rem',
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          transition: 'color 0.15s'
-                        }}
-                      >
-                        {art.title}
-                      </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.5, flexWrap: 'wrap' }}>
-                        {art.source && (
-                          <Typography
-                            component="span"
-                            variant="caption"
-                            sx={{
-                              bgcolor: sourceStyles[art.source]?.bg || '#f3f4f6',
-                              color: sourceStyles[art.source]?.color || '#4b5563',
-                              border: `1px solid ${sourceStyles[art.source]?.border || '#e5e7eb'}`,
-                              px: 0.6,
-                              py: 0.1,
-                              borderRadius: 0.6,
-                              fontSize: '0.68rem',
-                              fontWeight: 700
-                            }}
-                          >
-                            {art.source}
-                          </Typography>
-                        )}
-                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.7rem' }}>
-                          {art.hotMetric || '全网热帖'}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                ))}
-              </Stack>
-            </Box>
-
-            <Box sx={{ pt: 2, mt: 2, borderTop: '1px solid #f3f4f6', display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                size="small"
-                variant="text"
-                onClick={() => navigate('/articles')}
-                endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
-                sx={{ color: '#4b5563', fontWeight: 600, fontSize: '0.8rem', p: 0, '&:hover': { color: '#c2410c', bgcolor: 'transparent' } }}
-              >
-                浏览更多热帖
-              </Button>
-            </Box>
-          </Paper>
-        </Box>
-      </Container>
-
-      {/* 主流信息流 + 实用工具侧边栏 */}
-      <Container maxWidth="lg" sx={{ pt: 1, pb: 5 }}>
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: {
-              xs: '1fr',
-              md: '2.3fr 1fr'
-            },
-            gap: 3.5,
-            width: '100%',
-            alignItems: 'flex-start'
-          }}
-        >
-          {/* 左侧：主流文章流 (Feed) */}
-          <Box sx={{ width: '100%' }}>
-            
-            {/* 分类 Tabs 切换条 */}
-            <Box sx={{ borderBottom: '1px solid #e5e7eb', mb: 1.5, backgroundColor: '#ffffff', borderRadius: 2, p: 0.5, border: '1px solid #e5e7eb' }}>
-              <Tabs
-                value={activeTab}
-                onChange={(e, val) => {
-                  setActiveTab(val)
-                  setDisplayCount(10)
-                }}
-                variant="scrollable"
-                scrollButtons="auto"
-                sx={{
-                  minHeight: 40,
-                  '& .MuiTabs-indicator': { backgroundColor: '#c2410c', height: 2 },
-                  '& .MuiTab-root': {
-                    minHeight: 40,
-                    fontWeight: 600,
-                    fontSize: '0.88rem',
-                    color: '#6b7280',
-                    textTransform: 'none',
-                    minWidth: 'auto',
-                    px: 2,
-                    py: 1,
-                    '&.Mui-selected': { color: '#c2410c' }
-                  }
-                }}
-              >
-                {feedTabs.map((tab) => (
-                  <Tab key={tab.id} label={tab.name} />
-                ))}
-              </Tabs>
-            </Box>
-
-            {/* 社区来源快捷筛选胶囊 */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mb: 2.5, overflowX: 'auto', pb: 0.5, '::-webkit-scrollbar': { display: 'none' } }}>
-              <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 700, fontSize: '0.75rem', whiteSpace: 'nowrap', mr: 0.5 }}>
-                社区来源:
-              </Typography>
-              {[
-                { id: '全部', name: '全部社区', count: publishedArticles.length },
-                { id: '天涯论坛', name: '天涯论坛', count: sourceCounts['天涯论坛'] || 0 },
-                { id: '知乎', name: '知乎', count: sourceCounts['知乎'] || 0 },
-                { id: 'LINUX DO', name: 'LINUX DO', count: sourceCounts['LINUX DO'] || 0 },
-                { id: '少数派', name: '少数派', count: sourceCounts['少数派'] || 0 },
-                { id: '小宇宙', name: '小宇宙播客', count: sourceCounts['小宇宙'] || 0 },
-                { id: '雪球', name: '雪球', count: sourceCounts['雪球'] || 0 },
-                { id: 'V2EX', name: 'V2EX', count: sourceCounts['V2EX'] || 0 },
-                { id: '豆瓣', name: '豆瓣', count: sourceCounts['豆瓣'] || 0 },
-              ].map((src) => {
-                const isSelected = selectedSource === src.id
-                return (
-                  <Chip
-                    key={src.id}
-                    label={`${src.name} ${src.count}`}
-                    size="small"
-                    onClick={() => {
-                      setSelectedSource(src.id)
-                      setDisplayCount(10)
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      fontWeight: isSelected ? 700 : 500,
-                      fontSize: '0.72rem',
-                      height: 24,
-                      borderRadius: 1,
-                      whiteSpace: 'nowrap',
-                      bgcolor: isSelected ? '#1f2937' : '#ffffff',
-                      color: isSelected ? '#ffffff' : '#4b5563',
-                      border: isSelected ? '1px solid #1f2937' : '1px solid #e5e7eb',
-                      '&:hover': {
-                        bgcolor: isSelected ? '#111827' : '#f3f4f6'
-                      }
-                    }}
-                  />
-                )
-              })}
-            </Box>
-
-            {/* 检索结果统计提示 */}
-            {(searchTerm || selectedSource !== '全部') && (
-              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="caption" sx={{ color: '#6b7280' }}>
-                  筛选出 <Typography component="span" variant="caption" sx={{ fontWeight: 700, color: '#111827' }}>{filteredArticles.length}</Typography> 条讨论
-                  {selectedSource !== '全部' && ` (来源: ${selectedSource})`}
-                  {searchTerm && ` (包含关键词 "${searchTerm}")`}
-                </Typography>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setSearchTerm('')
-                    setSelectedSource('全部')
-                  }}
-                  sx={{ color: '#c2410c', fontSize: '0.75rem', p: 0, minWidth: 'auto', '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' } }}
-                >
-                  重置筛选
-                </Button>
-              </Box>
-            )}
-
-            {/* 少数派标准文章卡片列表 */}
-            <Stack spacing={2} sx={{ width: '100%' }}>
+            {/* 3. 高密度讨论列表 (Readhub / Hacker News Feed) */}
+            <Stack spacing={1.5} sx={{ width: '100%' }}>
               {visibleArticles.map((article, idx) => {
                 const colorConfig = categoryStyles[article.category] || { bg: '#f3f4f6', color: '#374151', border: '#e5e7eb' }
                 return (
@@ -663,7 +491,7 @@ const Home = () => {
                       }
                     }}
                     sx={{
-                      p: 2.5,
+                      p: 2,
                       width: '100%',
                       boxSizing: 'border-box',
                       borderRadius: 2,
@@ -672,93 +500,105 @@ const Home = () => {
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                       '&:hover': {
-                        borderColor: '#c2410c',
-                        boxShadow: '0 4px 14px rgba(0,0,0,0.05)',
+                        borderColor: '#fdba74',
+                        boxShadow: '0 4px 14px rgba(0,0,0,0.04)',
                         '& .article-title': { color: '#c2410c' }
                       }
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, flexWrap: 'wrap' }}>
-                      <Chip
-                        label={article.category}
-                        size="small"
-                        sx={{
-                          bgcolor: colorConfig.bg,
-                          color: colorConfig.color,
-                          border: `1px solid ${colorConfig.border}`,
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          height: 20,
-                          borderRadius: 0.8
-                        }}
-                      />
-                      {article.source && (
-                        <Chip
-                          label={`来源 · ${article.source}`}
-                          size="small"
+                    {/* 第一行：社区来源 + 分类 + 标题 + 外部图标 */}
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1.5, mb: 0.8 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, flexWrap: 'wrap', flex: 1 }}>
+                        {article.source && (
+                          <Typography
+                            component="span"
+                            variant="caption"
+                            sx={{
+                              bgcolor: sourceStyles[article.source]?.bg || '#f3f4f6',
+                              color: sourceStyles[article.source]?.color || '#374151',
+                              border: `1px solid ${sourceStyles[article.source]?.border || '#e5e7eb'}`,
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              px: 0.7,
+                              py: 0.15,
+                              borderRadius: 0.8,
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {article.source}
+                          </Typography>
+                        )}
+                        <Typography
+                          component="span"
+                          variant="caption"
                           sx={{
-                            bgcolor: sourceStyles[article.source]?.bg || '#f3f4f6',
-                            color: sourceStyles[article.source]?.color || '#374151',
-                            border: `1px solid ${sourceStyles[article.source]?.border || '#e5e7eb'}`,
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
-                            height: 20,
-                            borderRadius: 0.8
+                            bgcolor: colorConfig.bg,
+                            color: colorConfig.color,
+                            border: `1px solid ${colorConfig.border}`,
+                            fontSize: '0.68rem',
+                            fontWeight: 600,
+                            px: 0.6,
+                            py: 0.15,
+                            borderRadius: 0.8,
+                            whiteSpace: 'nowrap'
                           }}
-                        />
-                      )}
-                      <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                        {article.hotMetric || '全网精选'}
-                      </Typography>
+                        >
+                          {article.category}
+                        </Typography>
+
+                        <Typography
+                          className="article-title"
+                          component="span"
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: 700,
+                            color: '#111827',
+                            fontSize: '0.98rem',
+                            lineHeight: 1.45,
+                            transition: 'color 0.15s'
+                          }}
+                        >
+                          {article.title}
+                        </Typography>
+
+                        <OpenInNewIcon sx={{ fontSize: 13, color: '#9ca3af', ml: 0.2, verticalAlign: 'middle' }} />
+                      </Box>
                     </Box>
 
-                    <Typography
-                      className="article-title"
-                      variant="subtitle1"
-                      sx={{
-                        fontWeight: 700,
-                        color: '#111827',
-                        fontSize: '1.02rem',
-                        lineHeight: 1.45,
-                        mb: 0.8,
-                        transition: 'color 0.15s'
-                      }}
-                    >
-                      {article.title}
-                    </Typography>
-
+                    {/* 第二行：一句话精要导读 (单行截断，高信噪比) */}
                     <Typography
                       variant="body2"
                       sx={{
                         color: '#4b5563',
                         fontSize: '0.86rem',
-                        lineHeight: 1.6,
+                        lineHeight: 1.55,
                         display: '-webkit-box',
-                        WebkitLineClamp: 2,
+                        WebkitLineClamp: 1,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
-                        mb: 1.5
+                        mb: 1.2
                       }}
                     >
                       {article.excerpt || article.summary}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1.2, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
+                    {/* 第三行：热度指标 + 播客名/时间 + 标签 + 直达操作 */}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: 1, borderTop: '1px solid #f9fafb', flexWrap: 'wrap', gap: 1 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                         {article.source === '小宇宙' ? (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                            <HeadphonesIcon sx={{ fontSize: 14, color: '#ea580c' }} />
-                            <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.75rem' }}>
+                            <HeadphonesIcon sx={{ fontSize: 13, color: '#ea580c' }} />
+                            <Typography variant="caption" sx={{ color: '#ea580c', fontWeight: 700, fontSize: '0.74rem' }}>
                               播客《{article.author || '知行小酒馆'}》
                             </Typography>
                           </Box>
                         ) : (
-                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.75rem', fontWeight: 600 }}>
+                          <Typography variant="caption" sx={{ color: '#4b5563', fontSize: '0.74rem', fontWeight: 600 }}>
                             {article.hotMetric || `${article.source || '全网'} 讨论`}
                           </Typography>
                         )}
 
-                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.75rem' }}>
+                        <Typography variant="caption" sx={{ color: '#9ca3af', fontSize: '0.74rem' }}>
                           · {article.date || '近期'}
                         </Typography>
 
@@ -774,7 +614,7 @@ const Home = () => {
                               color: '#6b7280',
                               fontSize: '0.7rem',
                               bgcolor: '#f3f4f6',
-                              px: 0.8,
+                              px: 0.7,
                               py: 0.1,
                               borderRadius: 0.8,
                               cursor: 'pointer',
@@ -786,7 +626,7 @@ const Home = () => {
                         ))}
                       </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                         {article.sourceUrl && (
                           <Button
                             size="small"
@@ -796,7 +636,7 @@ const Home = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
+                            endIcon={<OpenInNewIcon sx={{ fontSize: 12 }} />}
                             sx={{
                               color: '#c2410c',
                               fontWeight: 700,
@@ -806,7 +646,7 @@ const Home = () => {
                               '&:hover': { bgcolor: '#fff7ed' }
                             }}
                           >
-                            前往原帖讨论 ↗
+                            直达原帖 ↗
                           </Button>
                         )}
                         <Button
@@ -818,7 +658,7 @@ const Home = () => {
                           }}
                           sx={{
                             color: '#9ca3af',
-                            fontSize: '0.75rem',
+                            fontSize: '0.74rem',
                             p: '2px 6px',
                             whiteSpace: 'nowrap',
                             '&:hover': { color: '#4b5563', bgcolor: 'transparent' }
@@ -833,12 +673,12 @@ const Home = () => {
               })}
             </Stack>
 
-            {/* 加载更多 */}
+            {/* 加载更多按钮 */}
             {hasMore && (
               <Box sx={{ textAlign: 'center', mt: 3 }}>
                 <Button
                   variant="outlined"
-                  onClick={() => setDisplayCount(prev => prev + 10)}
+                  onClick={() => setDisplayCount(prev => prev + 12)}
                   sx={{
                     borderColor: '#d1d5db',
                     color: '#374151',
@@ -846,27 +686,27 @@ const Home = () => {
                     py: 1,
                     borderRadius: 2,
                     fontWeight: 600,
-                    fontSize: '0.88rem',
+                    fontSize: '0.85rem',
                     bgcolor: '#ffffff',
                     whiteSpace: 'nowrap',
                     '&:hover': { borderColor: '#9ca3af', bgcolor: '#f9fafb' }
                   }}
                 >
-                  加载更多实战指南 ({filteredArticles.length - visibleArticles.length} 篇待展开)
+                  加载更多实战讨论 (还有 {filteredArticles.length - visibleArticles.length} 篇待展开)
                 </Button>
               </Box>
             )}
           </Box>
 
-          {/* 右侧：少数派风格侧边栏 (Sidebar Widgets) */}
+          {/* 右侧：精简实用工具与便签侧边栏 (Sticky Sidebar) */}
           <Box sx={{ width: '100%', position: 'sticky', top: 76 }}>
-            <Stack spacing={2.5}>
+            <Stack spacing={2.2}>
               
               {/* 挂件 1：工作台现金流跑道简易速测组件 */}
               <Paper
                 elevation={0}
                 sx={{
-                  p: 2.5,
+                  p: 2.2,
                   width: '100%',
                   boxSizing: 'border-box',
                   borderRadius: 2,
@@ -874,17 +714,17 @@ const Home = () => {
                   border: '1px solid #e5e7eb'
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                  <DashboardIcon sx={{ color: '#c2410c', fontSize: 20 }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.2 }}>
+                  <DashboardIcon sx={{ color: '#c2410c', fontSize: 19 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
                     测测存款能撑多久
                   </Typography>
                 </Box>
                 <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 2, lineHeight: 1.5 }}>
-                  算一算如果突然断了收入，手里的存款能在不降低生活质量的情况下维持多久。
+                  如果突然断了收入，手里的存款能在不降低生活质量的情况下维持多久。
                 </Typography>
 
-                <Box sx={{ mb: 2 }}>
+                <Box sx={{ mb: 1.8 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                     <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600 }}>手头可动用存款</Typography>
                     <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>{sidebarSavings} 万元</Typography>
@@ -916,7 +756,7 @@ const Home = () => {
                   />
                 </Box>
 
-                <Box sx={{ p: 1.5, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #e5e7eb', textAlign: 'center', mb: 2 }}>
+                <Box sx={{ p: 1.4, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #e5e7eb', textAlign: 'center', mb: 2 }}>
                   <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>大概能维持生活</Typography>
                   <Typography variant="h5" sx={{ fontWeight: 900, color: '#c2410c', my: 0.2 }}>
                     {sidebarRunway} <Typography component="span" variant="caption" sx={{ color: '#6b7280' }}>个月</Typography>
@@ -928,12 +768,12 @@ const Home = () => {
                   fullWidth
                   size="small"
                   onClick={() => navigate('/dashboard')}
-                  endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
+                  endIcon={<ArrowForwardIcon sx={{ fontSize: 14 }} />}
                   sx={{
                     bgcolor: '#111827',
                     color: '#ffffff',
                     fontWeight: 700,
-                    py: 1,
+                    py: 0.9,
                     borderRadius: 1.5,
                     whiteSpace: 'nowrap',
                     '&:hover': { bgcolor: '#c2410c' }
@@ -947,7 +787,7 @@ const Home = () => {
               <Paper
                 elevation={0}
                 sx={{
-                  p: 2.5,
+                  p: 2.2,
                   width: '100%',
                   boxSizing: 'border-box',
                   borderRadius: 2,
@@ -955,19 +795,19 @@ const Home = () => {
                   border: '1px solid #e5e7eb'
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.2 }}>
                   <BookmarkIcon sx={{ color: '#c2410c', fontSize: 18 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
                     被裁谈话的 3 条常识
                   </Typography>
                 </Box>
 
-                <Stack spacing={1.5}>
+                <Stack spacing={1.4}>
                   <Box>
                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
                       1. 千万别在现场匆忙签字
                     </Typography>
-                    <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+                    <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.74rem', lineHeight: 1.5, display: 'block' }}>
                       把解除协议带回家看清再签，算清楚 N+1 与未休年假的折算。
                     </Typography>
                   </Box>
@@ -975,7 +815,7 @@ const Home = () => {
                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
                       2. 趁没断网赶紧存好流水
                     </Typography>
-                    <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+                    <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.74rem', lineHeight: 1.5, display: 'block' }}>
                       权限切断前，把打卡记录、绩效通知和近 12 个月工资流水保存好。
                     </Typography>
                   </Box>
@@ -983,7 +823,7 @@ const Home = () => {
                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
                       3. 主动离职领不到失业金
                     </Typography>
-                    <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
+                    <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.74rem', lineHeight: 1.5, display: 'block' }}>
                       协议上必须明确写着用人单位提出解除，才能享受失业金和医保代缴。
                     </Typography>
                   </Box>
@@ -994,7 +834,7 @@ const Home = () => {
               <Paper
                 elevation={0}
                 sx={{
-                  p: 2.5,
+                  p: 2.2,
                   width: '100%',
                   boxSizing: 'border-box',
                   borderRadius: 2,
@@ -1002,24 +842,27 @@ const Home = () => {
                   border: '1px solid #e5e7eb'
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.2 }}>
                   <TagIcon sx={{ color: '#6b7280', fontSize: 18 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
                     大家常搜的话题
                   </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8 }}>
                   {popularTags.map((tag) => (
                     <Chip
                       key={tag}
                       label={tag}
                       size="small"
-                      onClick={() => navigate(`/search?q=${encodeURIComponent(tag)}`)}
+                      onClick={() => {
+                        setSearchTerm(tag)
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }}
                       sx={{
                         bgcolor: '#f3f4f6',
                         color: '#4b5563',
-                        fontSize: '0.75rem',
+                        fontSize: '0.74rem',
                         borderRadius: 1,
                         cursor: 'pointer',
                         '&:hover': { bgcolor: '#fee2e2', color: '#b91c1c' }
