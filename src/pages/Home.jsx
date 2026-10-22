@@ -248,18 +248,17 @@ const Home = () => {
           {/* 顶栏徽章 */}
           <Chip
             icon={<ShieldIcon sx={{ fontSize: 16, color: '#38bdf8 !important' }} />}
-            label="35+ 职场人破局 · 养老防守 · 家庭抗风险自救操作系统"
+            label="专为 35+ 职场人打造的自救与破局系统"
             sx={{
-              mb: 3,
+              mb: 2.5,
               px: 2,
-              py: 2.2,
+              py: 2,
               borderRadius: '50px',
-              backgroundColor: 'rgba(56, 189, 248, 0.1)',
+              backgroundColor: 'rgba(56, 189, 248, 0.08)',
               color: '#38bdf8',
               fontWeight: 600,
-              fontSize: { xs: '0.8rem', sm: '0.9rem' },
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              backdropFilter: 'blur(10px)'
+              fontSize: { xs: '0.8rem', sm: '0.88rem' },
+              border: '1px solid rgba(56, 189, 248, 0.2)'
             }}
           />
 
@@ -268,67 +267,59 @@ const Home = () => {
             variant="h1"
             sx={{
               fontWeight: 900,
-              mb: 2.5,
-              fontSize: { xs: '2.5rem', sm: '3.6rem', md: '4.4rem' },
+              mb: 2,
+              fontSize: { xs: '2.5rem', sm: '3.6rem', md: '4.2rem' },
               letterSpacing: '-0.035em',
-              lineHeight: 1.12,
-              background: 'linear-gradient(180deg, #ffffff 0%, #cbd5e1 70%, #94a3b8 100%)',
+              lineHeight: 1.15,
+              background: 'linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%)',
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 20px 40px rgba(0,0,0,0.6)'
+              WebkitTextFillColor: 'transparent'
             }}
           >
-            中年不躺平，自救有系统
+            中年自救指南
           </Typography>
 
-          {/* 副标题 */}
+          {/* 纯粹极简副标：只有一句，绝不说教 */}
           <Typography
             variant="h5"
             sx={{
               color: '#94a3b8',
               fontWeight: 400,
               fontSize: { xs: '1.05rem', sm: '1.25rem' },
-              mb: 5,
+              mb: 4.5,
               lineHeight: 1.6,
-              maxWidth: '780px',
+              maxWidth: '650px',
               mx: 'auto'
             }}
           >
-            应对 35 岁职场瓶颈、测算未来养老金缺口、筑牢家庭资产防火墙、拒绝空洞精神内耗。
-            <Box component="span" sx={{ color: '#38bdf8', fontWeight: 600, display: 'block', mt: 0.5 }}>
-              拒绝鸡汤，用真实数据、量化工具与 137 篇落地作战手册赋能人生下半场。
-            </Box>
+            用量化工具与实战经验，陪你走过人生的关键十年。
           </Typography>
 
-          {/* 核心亮点数据条 */}
+          {/* 极简数据标签 */}
           <Stack
             direction="row"
-            spacing={{ xs: 1.5, sm: 4 }}
+            spacing={{ xs: 1.5, sm: 3 }}
             justifyContent="center"
             flexWrap="wrap"
             useFlexGap
-            sx={{ mb: 6 }}
+            sx={{ mb: 5 }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#e2e8f0', fontSize: '0.92rem', fontWeight: 600 }}>
-              <BookIcon sx={{ color: '#3b82f6', fontSize: 20 }} />
-              <span>137 篇实战自救指南</span>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 600 }}>
+              <BookIcon sx={{ color: '#38bdf8', fontSize: 18 }} />
+              <span>137 篇实战指南</span>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#e2e8f0', fontSize: '0.92rem', fontWeight: 600 }}>
-              <CalculateIcon sx={{ color: '#10b981', fontSize: 20 }} />
-              <span>智能养老金缺口测算器</span>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 600 }}>
+              <CalculateIcon sx={{ color: '#34d399', fontSize: 18 }} />
+              <span>养老金智能速算</span>
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#e2e8f0', fontSize: '0.92rem', fontWeight: 600 }}>
-              <BoltIcon sx={{ color: '#f59e0b', fontSize: 20 }} />
-              <span>35+ 轻创业避坑沙盘</span>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#e2e8f0', fontSize: '0.92rem', fontWeight: 600 }}>
-              <FireIcon sx={{ color: '#ef4444', fontSize: 20 }} />
-              <span>危机压力四维自测</span>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: '#cbd5e1', fontSize: '0.9rem', fontWeight: 600 }}>
+              <BoltIcon sx={{ color: '#fbbf24', fontSize: 18 }} />
+              <span>35+ 轻创避坑沙盒</span>
             </Box>
           </Stack>
 
           {/* 快捷跳转按钮 */}
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" sx={{ maxWidth: 520, mx: 'auto' }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" sx={{ maxWidth: 460, mx: 'auto' }}>
             <Button
               variant="contained"
               size="large"
@@ -339,16 +330,16 @@ const Home = () => {
               startIcon={<CalculateIcon />}
               sx={{
                 bgcolor: '#2563eb',
-                py: 1.6,
+                py: 1.4,
                 px: 3.5,
                 borderRadius: '50px',
-                fontSize: '1rem',
+                fontSize: '0.95rem',
                 fontWeight: 700,
-                boxShadow: '0 10px 25px rgba(37, 99, 235, 0.4)',
+                boxShadow: '0 8px 20px rgba(37, 99, 235, 0.35)',
                 '&:hover': { bgcolor: '#1d4ed8' }
               }}
             >
-              30秒测算我的养老金缺口
+              30秒测算养老金缺口
             </Button>
             <Button
               variant="outlined"
@@ -359,18 +350,17 @@ const Home = () => {
               }}
               endIcon={<ArrowForwardIcon />}
               sx={{
-                borderColor: 'rgba(255,255,255,0.25)',
+                borderColor: 'rgba(255,255,255,0.2)',
                 color: '#e2e8f0',
-                py: 1.6,
+                py: 1.4,
                 px: 3.5,
                 borderRadius: '50px',
-                fontSize: '1rem',
+                fontSize: '0.95rem',
                 fontWeight: 600,
-                backdropFilter: 'blur(10px)',
-                '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.08)' }
+                '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.06)' }
               }}
             >
-              浏览 137 篇突围文库
+              浏览全部实战文章
             </Button>
           </Stack>
         </Container>
