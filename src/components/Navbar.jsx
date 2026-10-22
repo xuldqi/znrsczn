@@ -90,12 +90,12 @@ const Navbar = () => {
 
   // 指南专栏下拉聚合
   const guideCategories = [
-    { path: '/articles', label: '全网热帖文库', desc: '天涯/知乎/LINUX DO等全网精选热帖检索', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
-    { path: '/career', label: '职场突围', desc: '35岁破局 · 经验变现 · 生存法则', icon: <Work sx={{ color: '#2563eb' }} /> },
-    { path: '/side-business', label: '副业轻创', desc: '低成本变现 · 技能产品化', icon: <MonetizationOnIcon sx={{ color: '#059669' }} /> },
-    { path: '/finance', label: '财务防守', desc: '家庭资产配置 · 抵御黑天鹅', icon: <AccountBalance sx={{ color: '#d97706' }} /> },
-    { path: '/family', label: '家庭生活', desc: '亲子沟通降温 · 伴侣关系保温', icon: <FamilyRestroom sx={{ color: '#db2777' }} /> },
-    { path: '/psychology', label: '心理破局', desc: '中年焦虑脱敏 · 情绪边界感', icon: <Psychology sx={{ color: '#7c3aed' }} /> },
+    { path: '/articles', label: '全网热帖文库', desc: '天涯神贴、LINUX DO搞钱、小宇宙对谈', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
+    { path: '/career', label: '职场与维权', desc: '裁员自救、争取2N赔偿、35岁找工作', icon: <Work sx={{ color: '#2563eb' }} /> },
+    { path: '/side-business', label: '副业与搞钱', desc: 'Chrome插件出海、独立开发、接单外包', icon: <MonetizationOnIcon sx={{ color: '#059669' }} /> },
+    { path: '/finance', label: '房贷与钱袋子', desc: '防断供、银行协商延期、家庭备用金', icon: <AccountBalance sx={{ color: '#d97706' }} /> },
+    { path: '/family', label: '生活日常', desc: '极简省钱做饭、闲鱼出清、家庭开销', icon: <FamilyRestroom sx={{ color: '#db2777' }} /> },
+    { path: '/psychology', label: '心态调适', desc: '拒绝精神内耗、放下虚荣心、接纳平凡', icon: <Psychology sx={{ color: '#7c3aed' }} /> },
   ]
 
   const isGuideActive = ['/articles', '/career', '/side-business', '/finance', '/family', '/psychology'].some(p => location.pathname === p)

@@ -130,7 +130,7 @@ const Articles = () => {
             </Box>
 
             <Typography variant="body1" sx={{ color: '#4b5563', fontSize: '0.96rem', lineHeight: 1.7 }}>
-              面向 35-50 岁人群的逆周期与自救热帖精粹：聚合天涯神贴、LINUX DO 赚钱小项目、小宇宙播客对谈、知乎与 V2EX 实战经验。
+              聚合天涯神贴、LINUX DO 搞钱灵感、小宇宙对谈与知乎真实经历。汇集全网关于被裁自保、轻资产尝试与省钱生活的诚恳讨论。
             </Typography>
           </Box>
 
@@ -139,7 +139,7 @@ const Articles = () => {
             <TextField
               fullWidth
               size="small"
-              placeholder="搜索实战关键词，如：离职维权、副业、失业金、四笔钱、养老..."
+              placeholder="搜索关键词，如：2N赔偿、副业、失业金、房贷延期、大理旅居..."
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value)

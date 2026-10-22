@@ -333,7 +333,7 @@ const ArticleDetail = () => {
                   {article.readTime || '5分钟精读'}
                 </Typography>
                 <Typography variant="caption" sx={{ color: '#9ca3af' }}>
-                  · 发布于 {article.date || '近期实战'}
+                  · 收录于 {article.date || '近期'}
                 </Typography>
               </Box>
 
@@ -414,7 +414,7 @@ const ArticleDetail = () => {
                   }}
                 >
                   <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 800, display: 'block', mb: 0.5, letterSpacing: '0.05em' }}>
-                    实战导读 / 核心要义
+                    内容要点
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#44403c', fontSize: '0.94rem', lineHeight: 1.75 }}>
                     {article.excerpt || article.summary}

@@ -67,10 +67,10 @@ const Footer = () => {
                 fontSize: '0.88rem'
               }}
             >
-              一本沉静靠谱的人生成长与避险备忘录。用量化测算工具与全网高质量实战热帖，陪伴 35+ 职场人安稳跨越人生过渡期。
+              记录普通人在失业、中年转型与家庭日常中的真实经历与实用办法。聚合天涯神贴、LINUX DO 赚钱灵感、小宇宙对谈与知乎真实经历。
             </Typography>
             <Typography variant="caption" sx={{ color: '#a8a29e', display: 'block' }}>
-              © {new Date().getFullYear()} 中年自救指南 · 温暖 · 笃定 · 可落地
+              © {new Date().getFullYear()} 中年自救指南 · 真实接地气 · 不灌鸡汤 · 拒绝焦虑
             </Typography>
           </Grid>
 

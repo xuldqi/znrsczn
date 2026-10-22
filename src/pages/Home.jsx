@@ -53,14 +53,16 @@ const sourceStyles = {
 }
 
 const popularTags = [
-  '离职维权',
-  '失业金申领',
-  '社保医保代缴',
-  '四笔钱配置',
-  '轻资产副业',
-  '个人养老金',
-  '考勤流水固化',
-  '向上管理'
+  '2N赔偿',
+  '失业金代缴医保',
+  '房贷协商延期',
+  'Chrome插件出海',
+  'n8n外贸自动化',
+  '周金涛康波',
+  '极简做饭省钱',
+  '大理旅居',
+  '闲鱼卖闲置回血',
+  '35岁程序员转型'
 ]
 
 const Home = () => {
@@ -129,10 +131,10 @@ const Home = () => {
   // 分类 Tabs
   const feedTabs = useMemo(() => [
     { id: 'hot', name: '全网热帖', filter: () => true },
-    { id: 'career', name: '职场突围', filter: a => ['职场发展', '转型升级'].includes(a.category) },
-    { id: 'finance', name: '财务与养老', filter: a => ['财务管理'].includes(a.category) },
-    { id: 'side', name: '副业轻创', filter: a => ['副业指南'].includes(a.category) },
-    { id: 'mind', name: '身心与家庭', filter: a => ['中年危机', '心理健康', '家庭关系', '生活技能'].includes(a.category) },
+    { id: 'career', name: '职场与维权', filter: a => ['职场发展', '转型升级'].includes(a.category) },
+    { id: 'side', name: '副业与搞钱', filter: a => ['副业指南'].includes(a.category) },
+    { id: 'finance', name: '房贷与钱袋子', filter: a => ['财务管理'].includes(a.category) },
+    { id: 'mind', name: '生活与心态', filter: a => ['中年危机', '心理健康', '家庭关系', '生活技能'].includes(a.category) },
   ], [])
 
   const currentTab = feedTabs[activeTab] || feedTabs[0]
@@ -182,10 +184,10 @@ const Home = () => {
                 sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
               />
               <Typography variant="body2" sx={{ color: '#374151', fontSize: '0.85rem', fontWeight: 600 }}>
-                已收录全网 {publishedArticles.length} 篇逆周期自救与赚钱实录
+                聚合天涯神贴、LINUX DO搞钱项目、小宇宙播客与真实经历 (已整理 {publishedArticles.length} 篇)
               </Typography>
               <Typography variant="caption" sx={{ color: '#9ca3af', display: { xs: 'none', md: 'inline' } }}>
-                · 每日 03:30 自动收录天涯/知乎/LINUX DO/小宇宙
+                · 每天凌晨自动同步
               </Typography>
             </Box>
 
@@ -204,7 +206,7 @@ const Home = () => {
                   '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
                 }}
               >
-                自救工作台 (跑道与防御红线) →
+                测算备用金能撑多久 →
               </Button>
             </Box>
           </Box>
@@ -253,7 +255,7 @@ const Home = () => {
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, mb: 2 }}>
                 <Chip
-                  label="焦点推荐"
+                  label="今日必读"
                   size="small"
                   sx={{
                     bgcolor: '#c2410c',
@@ -397,7 +399,7 @@ const Home = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <TrendingUpIcon sx={{ color: '#c2410c', fontSize: 20 }} />
                 <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#111827', fontSize: '0.98rem' }}>
-                  热门实战榜
+                  大家都在看
                 </Typography>
               </Box>
 
@@ -486,7 +488,7 @@ const Home = () => {
                 endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
                 sx={{ color: '#4b5563', fontWeight: 600, fontSize: '0.8rem', p: 0, '&:hover': { color: '#c2410c', bgcolor: 'transparent' } }}
               >
-                查看完整榜单
+                浏览更多热帖
               </Button>
             </Box>
           </Paper>
@@ -510,31 +512,31 @@ const Home = () => {
           >
             {[
               {
-                title: '职场突围战',
-                tag: '职场防线',
-                desc: '35岁破局 · 经验变现 · 合法维权',
-                count: `${categoryCounts.career} 篇精选`,
+                title: '职场与维权',
+                tag: '防裁自保',
+                desc: '争取2N补偿、保留考勤证据、35岁求职真相',
+                count: `${categoryCounts.career} 篇讨论`,
                 path: '/career'
               },
               {
-                title: '副业与轻创',
-                tag: '开源创收',
-                desc: '零成本起步 · 咨询陪跑 · 出海插件',
-                count: `${categoryCounts.side} 篇精选`,
+                title: '副业与搞钱',
+                tag: '小而美尝试',
+                desc: 'Chrome插件出海、n8n自动化、自由职业接单',
+                count: `${categoryCounts.side} 篇分享`,
                 path: '/side-business'
               },
               {
-                title: '资产与养老',
-                tag: '底线防御',
-                desc: '四笔钱法则 · 养老精算 · 债务重构',
-                count: `${categoryCounts.finance} 篇精选`,
+                title: '房贷与钱袋子',
+                tag: '防断供保命',
+                desc: '银行协商延期还本、家庭备用金测算、资产配置',
+                count: `${categoryCounts.finance} 篇经验`,
                 path: '/finance'
               },
               {
-                title: '身心与家庭',
-                tag: '基石支撑',
-                desc: '中年内耗脱敏 · 亲子沟通 · 健康指标',
-                count: `${categoryCounts.family} 篇精选`,
+                title: '生活与心态',
+                tag: '过好日子',
+                desc: '极简省钱备餐、闲鱼二手出清、停止精神内耗',
+                count: `${categoryCounts.family} 篇心得`,
                 path: '/family'
               }
             ].map((col) => (
@@ -960,16 +962,16 @@ const Home = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
                   <DashboardIcon sx={{ color: '#c2410c', fontSize: 20 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
-                    家庭跑道速测
+                    测测存款能撑多久
                   </Typography>
                 </Box>
                 <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 2, lineHeight: 1.5 }}>
-                  假定极端零收入状态，测算家庭可用备用金可维持的月数。
+                  算一算如果突然断了收入，手里的存款能在不降低生活质量的情况下维持多久。
                 </Typography>
 
                 <Box sx={{ mb: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600 }}>流动备用金</Typography>
+                    <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600 }}>手头可动用存款</Typography>
                     <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>{sidebarSavings} 万元</Typography>
                   </Box>
                   <Slider
@@ -985,7 +987,7 @@ const Home = () => {
 
                 <Box sx={{ mb: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600 }}>月刚性开销</Typography>
+                    <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 600 }}>全家每月刚性支出</Typography>
                     <Typography variant="caption" sx={{ color: '#c2410c', fontWeight: 700 }}>¥{sidebarMonthly.toLocaleString()}</Typography>
                   </Box>
                   <Slider
@@ -1000,7 +1002,7 @@ const Home = () => {
                 </Box>
 
                 <Box sx={{ p: 1.5, borderRadius: 1.5, bgcolor: '#f9fafb', border: '1px solid #e5e7eb', textAlign: 'center', mb: 2 }}>
-                  <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>预计可支撑跑道</Typography>
+                  <Typography variant="caption" sx={{ color: '#6b7280', display: 'block' }}>大概能维持生活</Typography>
                   <Typography variant="h5" sx={{ fontWeight: 900, color: '#c2410c', my: 0.2 }}>
                     {sidebarRunway} <Typography component="span" variant="caption" sx={{ color: '#6b7280' }}>个月</Typography>
                   </Typography>
@@ -1022,11 +1024,11 @@ const Home = () => {
                     '&:hover': { bgcolor: '#c2410c' }
                   }}
                 >
-                  进入完整自救工作台
+                  去工作台查看完整自测
                 </Button>
               </Paper>
 
-              {/* 挂件 2：突发变故应急原则便签 */}
+              {/* 挂件 2：被裁当天的常识便签 */}
               <Paper
                 elevation={0}
                 sx={{
@@ -1041,33 +1043,33 @@ const Home = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
                   <BookmarkIcon sx={{ color: '#c2410c', fontSize: 18 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
-                    72h 防御红线
+                    被裁谈话的 3 条常识
                   </Typography>
                 </Box>
 
                 <Stack spacing={1.5}>
                   <Box>
                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
-                      1. 绝不现场盲签协议
+                      1. 千万别在现场匆忙签字
                     </Typography>
                     <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
-                      要求对方出具书面解约函，把协议草案带回家复核 N+1 与年假折算。
+                      把解除协议带回家看清再签，算清楚 N+1 与未休年假的折算。
                     </Typography>
                   </Box>
                   <Box>
                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
-                      2. 及时固化流水凭证
+                      2. 趁没断网赶紧存好流水
                     </Typography>
                     <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
-                      在内网断开前备份考勤打卡、绩效通知与近 12 个月银行工资流水。
+                      权限切断前，把打卡记录、绩效通知和近 12 个月工资流水保存好。
                     </Typography>
                   </Box>
                   <Box>
                     <Typography variant="caption" sx={{ fontWeight: 700, color: '#1f2937', display: 'block' }}>
-                      3. 失业金申领医保接续
+                      3. 主动离职领不到失业金
                     </Typography>
                     <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.5, display: 'block' }}>
-                      非自愿离职享受失业金，期间由失业保险基金直接代缴医疗保险。
+                      协议上必须明确写着用人单位提出解除，才能享受失业金和医保代缴。
                     </Typography>
                   </Box>
                 </Stack>
@@ -1088,7 +1090,7 @@ const Home = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
                   <TagIcon sx={{ color: '#6b7280', fontSize: 18 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
-                    热门实战标签
+                    大家常搜的话题
                   </Typography>
                 </Box>
 
