@@ -383,7 +383,28 @@ const Articles = () => {
                           ))}
                         </Box>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                          {article.sourceUrl && (
+                            <Button
+                              size="small"
+                              variant="text"
+                              component="a"
+                              href={article.sourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              endIcon={<OpenInNewIcon sx={{ fontSize: 11 }} />}
+                              sx={{
+                                color: '#78716c',
+                                fontSize: '0.74rem',
+                                p: '2px 4px',
+                                whiteSpace: 'nowrap',
+                                '&:hover': { color: '#c2410c', bgcolor: 'transparent' }
+                              }}
+                            >
+                              原帖 ↗
+                            </Button>
+                          )}
                           <Button
                             size="small"
                             variant="text"

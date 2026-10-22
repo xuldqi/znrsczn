@@ -405,7 +405,29 @@ const ArticleDetail = () => {
                   )}
                 </Box>
 
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                  {article.sourceUrl && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      component="a"
+                      href={article.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
+                      sx={{
+                        color: '#c2410c',
+                        borderColor: '#fed7aa',
+                        bgcolor: '#fff7ed',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        whiteSpace: 'nowrap',
+                        '&:hover': { bgcolor: '#ffedd5', borderColor: '#c2410c' }
+                      }}
+                    >
+                      跳转原帖 ↗
+                    </Button>
+                  )}
                   <Button
                     size="small"
                     variant="outlined"
@@ -516,7 +538,57 @@ const ArticleDetail = () => {
               dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
 
-
+            {/* 来源与原帖出处卡片 */}
+            {article.sourceUrl && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2.2,
+                  mt: 3.5,
+                  mb: 2,
+                  borderRadius: 2,
+                  bgcolor: '#fafaf9',
+                  border: '1px solid #e7e5e4',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 1.5
+                }}
+              >
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1c1917', fontSize: '0.88rem', mb: 0.3 }}>
+                    内容出处：{article.source || '全网精选'}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.76rem' }}>
+                    本站为方便阅读已做完整排版存档。如需参与原帖网友讨论互动，可前往原始出处。
+                  </Typography>
+                </Box>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  component="a"
+                  href={article.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  endIcon={<OpenInNewIcon sx={{ fontSize: 13 }} />}
+                  sx={{
+                    color: '#c2410c',
+                    borderColor: '#fed7aa',
+                    bgcolor: '#ffffff',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    whiteSpace: 'nowrap',
+                    px: 1.8,
+                    py: 0.6,
+                    borderRadius: 1,
+                    '&:hover': { bgcolor: '#fff7ed', borderColor: '#c2410c' }
+                  }}
+                >
+                  前往原帖查看讨论 ↗
+                </Button>
+              </Paper>
+            )}
 
             {/* 标签列表 */}
             {article.tags && article.tags.length > 0 && (
