@@ -58,12 +58,57 @@ const ColumnLayout = ({
   const [selectedTag, setSelectedTag] = useState('全部')
   const [displayCount, setDisplayCount] = useState(10)
 
-  // 过滤文章
+  // 智能提取该专栏所有真实存在的精选高频标签
+  const displayTags = useMemo(() => {
+    // 统计本专栏所有文章的真实标签
+    const tagCount = {}
+    articles.forEach(a => {
+      const artTags = Array.isArray(a.tags) ? a.tags : []
+      artTags.forEach(t => {
+        if (!t) return
+        const cleanT = t.trim()
+        if (['少数派', '知乎', '知乎精选', '天涯论坛', 'V2EX', 'LINUX DO', '雪球', '豆瓣', '深度长文', a.category].includes(cleanT)) return
+        tagCount[cleanT] = (tagCount[cleanT] || 0) + 1
+      })
+    })
+
+    // 高频标签排序
+    const topDynamicTags = Object.entries(tagCount)
+      .sort((a, b) => b[1] - a[1])
+      .map(entry => entry[0])
+
+    // 如果传入了预设标签，优先保留在文章库中有实际内容的标签
+    const merged = Array.from(new Set([...(tags || []), ...topDynamicTags]))
+    const validTags = merged.filter(t => {
+      const lowerT = t.toLowerCase()
+      return articles.some(a => {
+        const artTags = Array.isArray(a.tags) ? a.tags : []
+        return artTags.some(at => at.toLowerCase().includes(lowerT) || lowerT.includes(at.toLowerCase())) ||
+               (a.title || '').toLowerCase().includes(lowerT) ||
+               (a.excerpt || a.summary || '').toLowerCase().includes(lowerT) ||
+               (a.content || '').toLowerCase().includes(lowerT)
+      })
+    })
+
+    return validTags.slice(0, 8)
+  }, [articles, tags])
+
+  // 增强版智能过滤：支持标签精准匹配、包含匹配、标题关键词与正文关联
   const filteredArticles = useMemo(() => {
     if (selectedTag === '全部') return articles
+    const target = selectedTag.toLowerCase().trim()
     return articles.filter(a => {
       const artTags = Array.isArray(a.tags) ? a.tags : []
-      return artTags.includes(selectedTag) || a.title?.includes(selectedTag) || a.category === selectedTag
+      // 1. 标签包含匹配
+      const tagMatch = artTags.some(t => t.toLowerCase().includes(target) || target.includes(t.toLowerCase()))
+      // 2. 标题包含
+      const titleMatch = (a.title || '').toLowerCase().includes(target)
+      // 3. 摘要包含
+      const excerptMatch = (a.excerpt || a.summary || '').toLowerCase().includes(target)
+      // 4. 正文关键词包含
+      const contentMatch = (a.content || '').toLowerCase().includes(target)
+
+      return tagMatch || titleMatch || excerptMatch || contentMatch
     })
   }, [articles, selectedTag])
 
@@ -188,12 +233,12 @@ const ColumnLayout = ({
           <Box sx={{ width: '100%' }}>
             
             {/* 标签过滤条 */}
-            {tags.length > 0 && (
+            {displayTags.length > 0 && (
               <Box sx={{ mb: 2.5, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                 <Typography variant="caption" sx={{ color: '#6b7280', fontWeight: 600, mr: 0.5, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <TagIcon sx={{ fontSize: 15 }} /> 细分标签：
                 </Typography>
-                {['全部', ...tags].map((t) => (
+                {['全部', ...displayTags].map((t) => (
                   <Chip
                     key={t}
                     label={t}
@@ -341,6 +386,36 @@ const ColumnLayout = ({
                     </Button>
                   </Box>
                 </Box>
+              </Paper>
+            )}
+
+            {/* 空状态提示 */}
+            {filteredArticles.length === 0 && (
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 4,
+                  textAlign: 'center',
+                  borderRadius: 2,
+                  bgcolor: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  my: 2
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#111827', mb: 1 }}>
+                  暂未找到匹配「{selectedTag}」的专项文章
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#6b7280', mb: 2.5, fontSize: '0.88rem' }}>
+                  您可以尝试切换其他标签，或查看本专栏的全部精选实操。
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => setSelectedTag('全部')}
+                  sx={{ borderColor: '#c2410c', color: '#c2410c', '&:hover': { borderColor: '#9a3412', bgcolor: 'rgba(194, 65, 12, 0.05)' } }}
+                >
+                  查看本专栏全部文章 ({articles.length}篇)
+                </Button>
               </Paper>
             )}
 
