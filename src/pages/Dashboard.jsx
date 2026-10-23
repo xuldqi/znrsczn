@@ -283,7 +283,7 @@ const Dashboard = () => {
                   mb: 0.5
                 }}
               >
-                中年自救工作台
+                35+ 自救工作台
               </Typography>
               <Typography variant="body2" sx={{ color: '#78716c' }}>
                 实时测算家庭现金流安全垫，核对关键变故应对 SOP，守护关键十年。

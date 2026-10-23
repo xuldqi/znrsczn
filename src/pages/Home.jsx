@@ -167,7 +167,7 @@ const Home = () => {
                 sx={{ bgcolor: '#fef3c7', color: '#92400e', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
               />
               <Typography variant="body2" sx={{ color: '#374151', fontSize: '0.85rem', fontWeight: 600 }}>
-                中年逆境自救与轻资产破局实战手册 · 真实经历 · 债务防线 · 技能变现
+                35+ 逆境自救与轻资产破局实战手册 · 真实经历 · 债务防线 · 技能变现
               </Typography>
             </Box>
 

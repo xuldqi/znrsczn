@@ -206,7 +206,7 @@ const ArticleDetail = () => {
               onClick={() => navigate('/')}
               sx={{ bgcolor: '#c2410c', fontWeight: 700, '&:hover': { bgcolor: '#9a3412' } }}
             >
-              返回自救指南首页
+              返回 35+指南首页
             </Button>
           </Paper>
         </Container>

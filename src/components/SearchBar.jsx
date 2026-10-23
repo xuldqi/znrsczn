@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 import { Search, Clear, TrendingUp } from '@mui/icons-material'
 
-const SearchBar = ({ onSearch, placeholder = "搜索中年人自救指南...", variant = "outlined" }) => {
+const SearchBar = ({ onSearch, placeholder = "搜索 35+ 实战指南与突围经验...", variant = "outlined" }) => {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)

@@ -203,7 +203,7 @@ const Login = () => {
                         mb: 1
                       }}
                     >
-                      中年人自救指南
+                      35+指南
                     </Typography>
                     <Typography
                       variant="body1"

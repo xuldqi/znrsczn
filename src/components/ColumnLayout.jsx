@@ -623,7 +623,7 @@ const ColumnLayout = ({
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <DashboardIcon sx={{ color: '#c2410c', fontSize: 20 }} />
                   <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#111827' }}>
-                    中年自救工作台
+                    35+ 自救工作台
                   </Typography>
                 </Box>
                 <Typography variant="caption" sx={{ color: '#6b7280', display: 'block', mb: 2, lineHeight: 1.5 }}>

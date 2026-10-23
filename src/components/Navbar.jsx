@@ -176,7 +176,7 @@ const Navbar = () => {
               <Box
                 component="img"
                 src="/logo.svg"
-                alt="中年自救指南"
+                alt="35+指南"
                 sx={{
                   width: 30,
                   height: 30,
@@ -184,7 +184,7 @@ const Navbar = () => {
                   boxShadow: '0 2px 6px rgba(194, 65, 12, 0.25)'
                 }}
               />
-              中年自救指南
+              35+指南
             </Typography>
           </Box>
 
@@ -494,7 +494,7 @@ const Navbar = () => {
             <Box
               component="img"
               src="/logo.svg"
-              alt="中年自救指南"
+              alt="35+指南"
               sx={{
                 width: 26,
                 height: 26,
@@ -503,7 +503,7 @@ const Navbar = () => {
               }}
             />
             <Typography variant="h6" sx={{ fontWeight: 800, color: '#1c1917', fontSize: '1.15rem' }}>
-              中年自救指南
+              35+指南
             </Typography>
           </Box>
           <IconButton onClick={handleDrawerToggle} size="small" sx={{ color: '#78716c' }}>

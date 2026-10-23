@@ -57,7 +57,7 @@ const Footer = () => {
               }}
             >
               <BookIcon sx={{ color: '#c2410c', fontSize: 24 }} />
-              中年自救指南
+              35+指南
             </Typography>
             <Typography 
               variant="body2" 
@@ -72,7 +72,7 @@ const Footer = () => {
               记录普通人在失业、中年转型与家庭日常中的真实经历与实用办法，提供理性的抗风险自救工具与实战指南。
             </Typography>
             <Typography variant="caption" sx={{ color: '#a8a29e', display: 'block' }}>
-              © {new Date().getFullYear()} 中年自救指南 · 真实接地气 · 不灌鸡汤 · 拒绝焦虑
+              © {new Date().getFullYear()} 35+指南 · 真实接地气 · 不灌鸡汤 · 拒绝焦虑
             </Typography>
           </Grid>
 
