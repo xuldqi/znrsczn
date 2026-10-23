@@ -36,6 +36,7 @@ const LayoffCalculator = lazy(() => import('./pages/LayoffCalculator'))
 const RetirementSalaryCalculator = lazy(() => import('./pages/RetirementSalaryCalculator'))
 const SavingsPlanner = lazy(() => import('./pages/SavingsPlanner'))
 const Membership = lazy(() => import('./pages/Membership'))
+const MarketTemperature = lazy(() => import('./pages/MarketTemperature'))
 
 import './App.css'
 
@@ -244,6 +245,7 @@ function App() {
                       <Route path="/layoff-calculator" element={<LayoffCalculator />} />
                       <Route path="/retirement-calculator" element={<RetirementSalaryCalculator />} />
                       <Route path="/savings-planner" element={<SavingsPlanner />} />
+                      <Route path="/market-temperature" element={<MarketTemperature />} />
                       <Route path="/life-skills" element={<LifeSkills />} />
                       <Route path="/side-business" element={<SideBusiness />} />
                       <Route path="/midlife-crisis" element={<MidlifeCrisis />} />

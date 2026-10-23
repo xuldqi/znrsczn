@@ -69,7 +69,7 @@ const Footer = () => {
                 fontSize: '0.88rem'
               }}
             >
-              记录普通人在失业、中年转型与家庭日常中的真实经历与实用办法。聚合天涯神贴、LINUX DO 赚钱灵感、小宇宙对谈与知乎真实经历。
+              记录普通人在失业、中年转型与家庭日常中的真实经历与实用办法，提供理性的抗风险自救工具与实战指南。
             </Typography>
             <Typography variant="caption" sx={{ color: '#a8a29e', display: 'block' }}>
               © {new Date().getFullYear()} 中年自救指南 · 真实接地气 · 不灌鸡汤 · 拒绝焦虑

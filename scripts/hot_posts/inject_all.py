@@ -19,6 +19,7 @@ from scripts.hot_posts.batch2_v2ex import ARTICLES as B2
 from scripts.hot_posts.batch3_tianya import ARTICLES as B3
 from scripts.hot_posts.batch4_douban import ARTICLES as B4
 from scripts.hot_posts.batch5_xueqiu import ARTICLES as B5
+from scripts.hot_posts.batch6_expansion import ARTICLES as B6
 
 def main():
     root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -29,8 +30,8 @@ def main():
         existing_articles = json.load(f)
     print(f"Existing article count: {len(existing_articles)}")
     
-    all_new = B1 + B2 + B3 + B4 + B5
-    print(f"[2/5] Validating and cleaning {len(all_new)} new articles across 5 batches...")
+    all_new = B1 + B2 + B3 + B4 + B5 + B6
+    print(f"[2/5] Validating and cleaning {len(all_new)} new articles across 6 batches...")
     
     validated_new = {}
     for idx, art in enumerate(all_new):

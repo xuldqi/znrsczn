@@ -41,7 +41,8 @@ import {
   Gavel as GavelIcon,
   Savings as SavingsIcon,
   TrendingUp as TrendingUpIcon,
-  Build as BuildIcon
+  Build as BuildIcon,
+  Thermostat as ThermostatIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -113,11 +114,12 @@ const Navbar = () => {
     { path: '/transformation', label: '技能转型 / 重新出发', desc: '跨界转行、大龄技术转型、第二增长曲线', icon: <TrendingUpIcon sx={{ color: '#ea580c' }} /> },
     { path: '/interests', label: '兴趣爱好 / 精神寄托', desc: '纯粹热爱、独处放空、户外徒步、心流充电', icon: <Diamond sx={{ color: '#0284c7' }} /> },
     { path: '/midlife-crisis', label: '中年危机 / 避坑突围', desc: '35岁+危机应对、认知重构、拒绝加盟踩坑', icon: <FeedbackIcon sx={{ color: '#dc2626' }} /> },
-    { path: '/articles', label: '全部实战文库', desc: '全网精选自救实录全景总库 (260+篇)', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
+    { path: '/articles', label: '全部实战文库', desc: '全网精选自救实录全景总库', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
   ]
 
   // 实战工具体系
   const toolItems = [
+    { path: '/market-temperature', label: '有知有行温度计与四笔钱', desc: '全市场估值冷热度、有知有行四笔钱自测与股债资产配置', icon: <ThermostatIcon sx={{ color: '#c2410c' }} /> },
     { path: '/layoff-calculator', label: '裁员赔偿精算器', desc: 'N+1 / 2N / 试用期 / 社平3倍封顶与仲裁测算', icon: <GavelIcon sx={{ color: '#c2410c' }} /> },
     { path: '/retirement-calculator', label: '法定延迟退休金精算器', desc: '2025新规改革方案、基础与个人账户养老金', icon: <CalculateIcon sx={{ color: '#d97706' }} /> },
     { path: '/savings-planner', label: '36个月生存与存钱规划', desc: '失业现金流跑道测算、极简存钱、消费降级', icon: <SavingsIcon sx={{ color: '#047857' }} /> },

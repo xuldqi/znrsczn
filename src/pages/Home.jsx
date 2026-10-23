@@ -162,23 +162,19 @@ const Home = () => {
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, flexWrap: 'wrap' }}>
               <Chip
-                label="每日收录"
+                label="实战指南"
                 size="small"
-                sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
+                sx={{ bgcolor: '#fef3c7', color: '#92400e', fontWeight: 700, fontSize: '0.72rem', height: 20, borderRadius: 1 }}
               />
               <Typography variant="body2" sx={{ color: '#374151', fontSize: '0.85rem', fontWeight: 600 }}>
-                聚合天涯神贴、LINUX DO搞钱项目、知乎维权与小宇宙播客 (已整理 {publishedArticles.length} 篇真实讨论)
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#9ca3af', display: { xs: 'none', md: 'inline' } }}>
-                · 每天凌晨自动同步
+                中年逆境自救与轻资产破局实战手册 · 真实经历 · 债务防线 · 技能变现
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
               <Button
                 size="small"
-                onClick={() => navigate('/dashboard')}
-                endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
+                onClick={() => navigate('/market-temperature')}
                 sx={{
                   color: '#c2410c',
                   fontWeight: 700,
@@ -189,7 +185,23 @@ const Home = () => {
                   '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
                 }}
               >
-                测算备用金能撑多久 →
+                有知有行温度计与四笔钱 →
+              </Button>
+              <Button
+                size="small"
+                onClick={() => navigate('/dashboard')}
+                endIcon={<ArrowForwardIcon sx={{ fontSize: 15 }} />}
+                sx={{
+                  color: '#4b5563',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  p: 0,
+                  minWidth: 'auto',
+                  whiteSpace: 'nowrap',
+                  '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
+                }}
+              >
+                自救工作台
               </Button>
             </Box>
           </Box>

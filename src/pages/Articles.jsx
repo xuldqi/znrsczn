@@ -120,17 +120,17 @@ const Articles = () => {
                   letterSpacing: '-0.02em'
                 }}
               >
-                全网热帖文库
+                全网实战文库
               </Typography>
               <Chip
-                label={`${publishedArticles.length} 篇热帖`}
+                label="精选方案"
                 size="small"
-                sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: '0.75rem', height: 24, borderRadius: 1 }}
+                sx={{ bgcolor: '#fef3c7', color: '#92400e', fontWeight: 700, fontSize: '0.75rem', height: 24, borderRadius: 1 }}
               />
             </Box>
 
             <Typography variant="body1" sx={{ color: '#4b5563', fontSize: '0.96rem', lineHeight: 1.7 }}>
-              聚合天涯神贴、LINUX DO 搞钱灵感、小宇宙对谈与知乎真实经历。汇集全网关于被裁自保、轻资产尝试与省钱生活的诚恳讨论。
+              汇集关于职场突围、被裁自保、债务重组、轻资产变现与家庭防线的真实经历与实用指南。
             </Typography>
           </Box>
 
