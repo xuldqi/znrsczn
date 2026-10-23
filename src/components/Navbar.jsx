@@ -113,7 +113,7 @@ const Navbar = () => {
     { path: '/transformation', label: '技能转型 / 重新出发', desc: '跨界转行、大龄技术转型、第二增长曲线', icon: <TrendingUpIcon sx={{ color: '#ea580c' }} /> },
     { path: '/interests', label: '兴趣爱好 / 精神寄托', desc: '纯粹热爱、独处放空、户外徒步、心流充电', icon: <Diamond sx={{ color: '#0284c7' }} /> },
     { path: '/midlife-crisis', label: '中年危机 / 避坑突围', desc: '35岁+危机应对、认知重构、拒绝加盟踩坑', icon: <FeedbackIcon sx={{ color: '#dc2626' }} /> },
-    { path: '/articles', label: '全部实战文库', desc: '全网精选自救实录全景总库 (125篇)', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
+    { path: '/articles', label: '全部实战文库', desc: '全网精选自救实录全景总库 (260+篇)', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
   ]
 
   // 实战工具体系
