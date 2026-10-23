@@ -185,7 +185,7 @@ const Home = () => {
                   '&:hover': { bgcolor: 'transparent', textDecoration: 'underline' }
                 }}
               >
-                有知有行温度计与四笔钱 →
+                全市场估值水位与资产四分法 →
               </Button>
               <Button
                 size="small"

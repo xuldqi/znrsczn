@@ -119,7 +119,7 @@ const Navbar = () => {
 
   // 实战工具体系
   const toolItems = [
-    { path: '/market-temperature', label: '有知有行温度计与四笔钱', desc: '全市场估值冷热度、有知有行四笔钱自测与股债资产配置', icon: <ThermostatIcon sx={{ color: '#c2410c' }} /> },
+    { path: '/market-temperature', label: '全市场估值与资产四分法', desc: '全市场估值冷热度、股债性价比与家庭资产四分法自测', icon: <ThermostatIcon sx={{ color: '#c2410c' }} /> },
     { path: '/layoff-calculator', label: '裁员赔偿精算器', desc: 'N+1 / 2N / 试用期 / 社平3倍封顶与仲裁测算', icon: <GavelIcon sx={{ color: '#c2410c' }} /> },
     { path: '/retirement-calculator', label: '法定延迟退休金精算器', desc: '2025新规改革方案、基础与个人账户养老金', icon: <CalculateIcon sx={{ color: '#d97706' }} /> },
     { path: '/savings-planner', label: '36个月生存与存钱规划', desc: '失业现金流跑道测算、极简存钱、消费降级', icon: <SavingsIcon sx={{ color: '#047857' }} /> },

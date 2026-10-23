@@ -281,7 +281,7 @@ export default function MarketTemperature() {
             自救工具
           </Button>
           <Typography sx={{ color: '#111827', fontWeight: 600, fontSize: '0.85rem' }}>
-            有知有行温度计与四笔钱
+            全市场估值与资产四分法
           </Typography>
         </Breadcrumbs>
 
@@ -298,11 +298,11 @@ export default function MarketTemperature() {
                 letterSpacing: '-0.02em'
               }}
             >
-              有知有行 · 全市场温度计与四笔钱资产配置
+              全市场估值水位与家庭资产四分法
             </Typography>
           </Stack>
           <Typography variant="body1" sx={{ color: '#4b5563', maxWidth: 860, lineHeight: 1.7, fontSize: '0.98rem' }}>
-            借鉴有知有行（孟岩）核心资产配置模型与全市场估值温度计，为处于逆境、降薪或失业过渡期的家庭提供资产健康体检、全市场冷热度推演与战时四笔钱稳健配置方案。
+            基于全市场历史估值分位数、ERP 股债风险溢价与标准普尔家庭资产象限模型，为处于逆境、降薪或失业过渡期的家庭提供资产健康体检、全市场冷热度推演与战时稳健资产配置方案。
           </Typography>
         </Box>
 
@@ -361,7 +361,7 @@ export default function MarketTemperature() {
               '&:hover': { bgcolor: activeTab === 'philosophy' ? '#9a3412' : '#f3f4f6' }
             }}
           >
-            有知有行极简投资心法
+            周期与配置经典常识
           </Button>
         </Paper>
 
@@ -490,7 +490,7 @@ export default function MarketTemperature() {
                       <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 0.5 }}>
                         <TuneIcon sx={{ fontSize: 16, color: '#6b7280' }} />
                         <Typography variant="caption" sx={{ color: '#4b5563', fontWeight: 700 }}>
-                          互动模拟：滑动调整温度，查看有知有行资产配置建议联动
+                          互动模拟：滑动调整估值温度，查看股债资产配置建议联动
                         </Typography>
                       </Stack>
                       <Slider
@@ -510,7 +510,7 @@ export default function MarketTemperature() {
                     </Box>
                   </Box>
 
-                  {/* 孟岩/有知有行战时配置指导卡片 */}
+                  {/* 战时配置指导卡片 */}
                   <Paper
                     elevation={0}
                     sx={{
@@ -523,7 +523,7 @@ export default function MarketTemperature() {
                     <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
                       <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#9a3412', display: 'flex', alignItems: 'center', gap: 0.8 }}>
                         <AccountBalanceIcon sx={{ fontSize: 18 }} />
-                        有知有行战时股债比例指引
+                        战时股债动态配置比例指引
                       </Typography>
                       <Chip
                         label={tempStrategy.action}
@@ -673,8 +673,8 @@ export default function MarketTemperature() {
           <Box>
             <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }}>
               <Typography variant="body2" sx={{ fontSize: '0.88rem', lineHeight: 1.6 }}>
-                <strong>有知有行“四笔钱”核心哲学：</strong>
-                把钱分成四笔，各司其职。永远不要把下个月要还房贷的“活钱”、或者三年内孩子要交学费的“稳健钱”，投入高波动的股市中。只有真正做到长钱长投，才能在周期中立于不败之地。
+                <strong>家庭资产四分法核心逻辑：</strong>
+                把资金严格分成四笔，各司其职。永远不要把下个月要还房贷的“活钱储备”、或者三年内孩子要交学费的“稳健刚需”，投入高波动的权益股市中。只有真正做到长钱长投，才能在周期中立于不败之地。
               </Typography>
             </Alert>
 
@@ -865,7 +865,7 @@ export default function MarketTemperature() {
                         第二步：家庭资产四笔钱健康诊断
                       </Typography>
                       <Typography variant="caption" sx={{ color: '#6b7280' }}>
-                        对照有知有行战时防御标准测算
+                        对照标普与战时家庭防御标准测算
                       </Typography>
                     </Box>
 
@@ -1009,7 +1009,7 @@ export default function MarketTemperature() {
                   {/* 定制调仓自救动作建议 */}
                   <Box sx={{ p: 2.2, bgcolor: '#fffbf5', borderRadius: 2, border: '1px solid #ffedd5' }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#9a3412', mb: 1 }}>
-                      有知有行战时调仓建议清单：
+                      战时家庭资产防线调仓建议：
                     </Typography>
                     <Stack spacing={1}>
                       {!fourPotsAnalysis.isLivingSafe && (
@@ -1040,7 +1040,7 @@ export default function MarketTemperature() {
           </Box>
         )}
 
-        {/* TAB 3: 有知有行极简投资心法 */}
+        {/* TAB 3: 周期与配置经典常识 */}
         {activeTab === 'philosophy' && (
           <Box>
             <Paper
@@ -1054,10 +1054,10 @@ export default function MarketTemperature() {
               }}
             >
               <Typography variant="h5" sx={{ fontWeight: 800, color: '#111827', mb: 1 }}>
-                孟岩 · 有知有行投资第一课经典心法
+                大师经典：周期与资产配置常识
               </Typography>
               <Typography variant="body2" sx={{ color: '#6b7280', mb: 3 }}>
-                真正的投资能力，不是看你能不能抓到下个月的涨停板，而是看你在狂风暴雨的周期低谷中，能不能平静地留在牌桌上。
+                真正的投资能力，不是看你能不能猜到下周市场的涨跌，而是看你在狂风暴雨的周期低谷中，家庭底盘能不能完好无损、平静地留在牌桌上。
               </Typography>
 
               <Grid container spacing={3}>
@@ -1148,6 +1148,13 @@ export default function MarketTemperature() {
             </Paper>
           </Box>
         )}
+
+        {/* 底部免责声明 */}
+        <Box sx={{ mt: 4, mb: 2, p: 2, bgcolor: '#f9fafb', borderRadius: 2, border: '1px solid #f3f4f6' }}>
+          <Typography variant="caption" sx={{ color: '#9ca3af', lineHeight: 1.6, display: 'block', textAlign: 'center' }}>
+            免责声明：本工具模型基于公开发布的全市场历史估值分位数、ERP 股权风险溢价模型与标准普尔家庭资产象限理论设计，仅供个人或家庭防范现金流危机与资产自我体检参考，不构成任何具体的投资咨询、证券投资建议或金融产品推介。市场有风险，决策需理性谨慎。
+          </Typography>
+        </Box>
       </Container>
       <Footer />
     </Box>
