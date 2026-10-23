@@ -110,11 +110,14 @@ const Home = () => {
 
   // 分类 Tabs
   const feedTabs = useMemo(() => [
-    { id: 'hot', name: '全网热帖', filter: () => true },
-    { id: 'career', name: '职场与维权', filter: a => ['职场发展', '转型升级'].includes(a.category) },
+    { id: 'hot', name: '全网精选', filter: () => true },
+    { id: 'career', name: '找不到工作 / 维权', filter: a => ['职场发展', '转型升级'].includes(a.category) },
     { id: 'side', name: '副业与搞钱', filter: a => ['副业指南'].includes(a.category) },
     { id: 'finance', name: '房贷与钱袋子', filter: a => ['财务管理'].includes(a.category) },
-    { id: 'mind', name: '生活与心态', filter: a => ['中年危机', '心理健康', '家庭关系', '生活技能'].includes(a.category) },
+    { id: 'frugal', name: '极简省钱', filter: a => ['生活技能'].includes(a.category) },
+    { id: 'family', name: '夫妻与育儿', filter: a => ['家庭关系'].includes(a.category) },
+    { id: 'mind', name: '心态调适', filter: a => ['心理健康', '中年危机'].includes(a.category) },
+    { id: 'interests', name: '爱好与寄托', filter: a => ['兴趣爱好'].includes(a.category) },
   ], [])
 
   const currentTab = feedTabs[activeTab] || feedTabs[0]

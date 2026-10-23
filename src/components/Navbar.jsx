@@ -39,7 +39,9 @@ import {
   AutoStories as BookIcon,
   SpaceDashboard as DashboardIcon,
   Gavel as GavelIcon,
-  Savings as SavingsIcon
+  Savings as SavingsIcon,
+  TrendingUp as TrendingUpIcon,
+  Build as BuildIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -50,6 +52,7 @@ const Navbar = () => {
   const { user, logout } = useAuth()
   const [userAnchorEl, setUserAnchorEl] = useState(null)
   const [guideAnchorEl, setGuideAnchorEl] = useState(null)
+  const [toolsAnchorEl, setToolsAnchorEl] = useState(null)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleUserMenuOpen = (event) => {
@@ -66,6 +69,14 @@ const Navbar = () => {
 
   const handleGuideMenuClose = () => {
     setGuideAnchorEl(null)
+  }
+
+  const handleToolsMenuOpen = (event) => {
+    setToolsAnchorEl(event.currentTarget)
+  }
+
+  const handleToolsMenuClose = () => {
+    setToolsAnchorEl(null)
   }
 
   const handleDrawerToggle = () => {
@@ -87,20 +98,35 @@ const Navbar = () => {
   const handleNavClick = (path) => {
     setMobileOpen(false)
     handleGuideMenuClose()
+    handleToolsMenuClose()
     navigate(path)
   }
 
-  // 指南专栏下拉聚合
+  // 实战分类体系 (覆盖职场求职、副业搞钱、房贷债务、省钱降级、夫妻育儿、心态调适、转型升级、兴趣爱好、中年危机)
   const guideCategories = [
-    { path: '/articles', label: '全网热帖文库', desc: '天涯神贴、LINUX DO搞钱、小宇宙对谈', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
-    { path: '/career', label: '职场与维权', desc: '裁员自救、争取2N赔偿、35岁找工作', icon: <Work sx={{ color: '#2563eb' }} /> },
-    { path: '/side-business', label: '副业与搞钱', desc: 'Chrome插件出海、独立开发、接单外包', icon: <MonetizationOnIcon sx={{ color: '#059669' }} /> },
-    { path: '/finance', label: '房贷与钱袋子', desc: '防断供、银行协商延期、家庭备用金', icon: <AccountBalance sx={{ color: '#d97706' }} /> },
-    { path: '/family', label: '生活日常', desc: '极简省钱做饭、闲鱼出清、家庭开销', icon: <FamilyRestroom sx={{ color: '#db2777' }} /> },
-    { path: '/psychology', label: '心态调适', desc: '拒绝精神内耗、放下虚荣心、接纳平凡', icon: <Psychology sx={{ color: '#7c3aed' }} /> },
+    { path: '/career', label: '找不到工作 / 职场求生', desc: '裁员应对、争取2N赔偿、35岁找工作面试', icon: <Work sx={{ color: '#2563eb' }} /> },
+    { path: '/side-business', label: '副业搞钱 / 技能变现', desc: '一人企业、独立出海、接单外包、小生意', icon: <MonetizationOnIcon sx={{ color: '#059669' }} /> },
+    { path: '/finance', label: '房贷债务 / 资产保全', desc: '防断供、银行协商延期还本、保本理财', icon: <AccountBalance sx={{ color: '#d97706' }} /> },
+    { path: '/life-skills', label: '省钱降级 / 极简生活', desc: '战时预算、极简做饭备餐、降低开销', icon: <SavingsIcon sx={{ color: '#047857' }} /> },
+    { path: '/family', label: '夫妻育儿 / 家庭防线', desc: '夫妻减压沟通、不转嫁金钱焦虑、亲子陪伴', icon: <FamilyRestroom sx={{ color: '#db2777' }} /> },
+    { path: '/psychology', label: '心态调适 / 拒绝内耗', desc: '打破失业耻感、放下虚荣心、接纳平凡', icon: <Psychology sx={{ color: '#7c3aed' }} /> },
+    { path: '/transformation', label: '技能转型 / 重新出发', desc: '跨界转行、大龄技术转型、第二增长曲线', icon: <TrendingUpIcon sx={{ color: '#ea580c' }} /> },
+    { path: '/interests', label: '兴趣爱好 / 精神寄托', desc: '纯粹热爱、独处放空、户外徒步、心流充电', icon: <Diamond sx={{ color: '#0284c7' }} /> },
+    { path: '/midlife-crisis', label: '中年危机 / 避坑突围', desc: '35岁+危机应对、认知重构、拒绝加盟踩坑', icon: <FeedbackIcon sx={{ color: '#dc2626' }} /> },
+    { path: '/articles', label: '全部实战文库', desc: '全网精选自救实录全景总库 (125篇)', icon: <BookIcon sx={{ color: '#c2410c' }} /> },
   ]
 
-  const isGuideActive = ['/articles', '/career', '/side-business', '/finance', '/family', '/psychology'].some(p => location.pathname === p)
+  // 实战工具体系
+  const toolItems = [
+    { path: '/layoff-calculator', label: '裁员赔偿精算器', desc: 'N+1 / 2N / 试用期 / 社平3倍封顶与仲裁测算', icon: <GavelIcon sx={{ color: '#c2410c' }} /> },
+    { path: '/retirement-calculator', label: '法定延迟退休金精算器', desc: '2025新规改革方案、基础与个人账户养老金', icon: <CalculateIcon sx={{ color: '#d97706' }} /> },
+    { path: '/savings-planner', label: '36个月生存与存钱规划', desc: '失业现金流跑道测算、极简存钱、消费降级', icon: <SavingsIcon sx={{ color: '#047857' }} /> },
+    { path: '/dashboard', label: '自救工作台', desc: '一站式应急指挥中枢、自救待办与工具集合', icon: <DashboardIcon sx={{ color: '#2563eb' }} /> },
+    { path: '/pension-planner', label: '品质养老生活规划', desc: '退休后生活成本精算与储备金跑道推演', icon: <AccountBalance sx={{ color: '#059669' }} /> },
+  ]
+
+  const isGuideActive = guideCategories.some(c => location.pathname === c.path)
+  const isToolsActive = toolItems.some(t => location.pathname === t.path)
 
   return (
     <AppBar
@@ -189,32 +215,7 @@ const Navbar = () => {
               首页
             </Button>
 
-            {/* 2. 自救工作台 */}
-            <Button
-              component={Link}
-              to="/dashboard"
-              sx={{
-                color: location.pathname === '/dashboard' ? '#c2410c' : '#1c1917',
-                px: 2,
-                py: 0.8,
-                borderRadius: 2,
-                fontWeight: location.pathname === '/dashboard' ? 700 : 600,
-                fontSize: '0.92rem',
-                whiteSpace: 'nowrap',
-                backgroundColor: location.pathname === '/dashboard' ? 'rgba(194, 65, 12, 0.1)' : 'rgba(0, 0, 0, 0.03)',
-                border: '1px solid',
-                borderColor: location.pathname === '/dashboard' ? '#c2410c' : '#e7e5e4',
-                '&:hover': {
-                  backgroundColor: 'rgba(194, 65, 12, 0.08)',
-                  borderColor: '#c2410c',
-                  color: '#c2410c'
-                }
-              }}
-            >
-              自救工作台
-            </Button>
-
-            {/* 3. 实战指南 (下拉聚合) */}
+            {/* 2. 实战分类 (下拉聚合) */}
             <Button
               onClick={handleGuideMenuOpen}
               endIcon={<ArrowDownIcon sx={{ fontSize: 18 }} />}
@@ -233,7 +234,7 @@ const Navbar = () => {
                 }
               }}
             >
-              实战指南
+              实战分类
             </Button>
 
             <Menu
@@ -246,9 +247,10 @@ const Navbar = () => {
                 elevation: 4,
                 sx: {
                   mt: 1.5,
-                  p: 1,
+                  p: 1.5,
                   borderRadius: 3,
-                  width: 280,
+                  width: { xs: 320, sm: 580 },
+                  maxHeight: 520,
                   bgcolor: '#ffffff',
                   color: '#1c1917',
                   border: '1px solid #e7e5e4',
@@ -256,99 +258,110 @@ const Navbar = () => {
                 }
               }}
             >
-              {guideCategories.map((item) => (
+              <Box sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                gap: 1
+              }}>
+                {guideCategories.map((item) => (
+                  <MenuItem
+                    key={item.path}
+                    onClick={() => handleNavClick(item.path)}
+                    sx={{
+                      p: 1.2,
+                      borderRadius: 2,
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 1.5,
+                      '&:hover': {
+                        bgcolor: 'rgba(194, 65, 12, 0.05)'
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.3 }}>{item.icon}</Box>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '0.88rem' }}>
+                        {item.label}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.73rem', display: 'block', lineHeight: 1.4 }}>
+                        {item.desc}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                ))}
+              </Box>
+            </Menu>
+
+            {/* 3. 自救工具 (下拉聚合) */}
+            <Button
+              onClick={handleToolsMenuOpen}
+              endIcon={<ArrowDownIcon sx={{ fontSize: 18 }} />}
+              sx={{
+                color: isToolsActive ? '#c2410c' : '#57534e',
+                px: 2,
+                py: 0.8,
+                borderRadius: 2,
+                fontWeight: isToolsActive ? 700 : 500,
+                fontSize: '0.92rem',
+                whiteSpace: 'nowrap',
+                backgroundColor: isToolsActive ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  color: '#1c1917'
+                }
+              }}
+            >
+              自救工具
+            </Button>
+
+            <Menu
+              anchorEl={toolsAnchorEl}
+              open={Boolean(toolsAnchorEl)}
+              onClose={handleToolsMenuClose}
+              transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+              PaperProps={{
+                elevation: 4,
+                sx: {
+                  mt: 1.5,
+                  p: 1.5,
+                  borderRadius: 3,
+                  width: 320,
+                  bgcolor: '#ffffff',
+                  color: '#1c1917',
+                  border: '1px solid #e7e5e4',
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)'
+                }
+              }}
+            >
+              {toolItems.map((item) => (
                 <MenuItem
                   key={item.path}
                   onClick={() => handleNavClick(item.path)}
                   sx={{
-                    p: 1.5,
+                    p: 1.2,
                     borderRadius: 2,
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     gap: 1.5,
+                    mb: 0.5,
                     '&:hover': {
                       bgcolor: 'rgba(194, 65, 12, 0.05)'
                     }
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>{item.icon}</Box>
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '0.9rem' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.3 }}>{item.icon}</Box>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '0.88rem' }}>
                       {item.label}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.75rem' }}>
+                    <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.73rem', display: 'block', lineHeight: 1.4 }}>
                       {item.desc}
                     </Typography>
                   </Box>
                 </MenuItem>
               ))}
             </Menu>
-
-            {/* 3. 裁员赔偿 */}
-            <Button
-              component={Link}
-              to="/layoff-calculator"
-              sx={{
-                color: location.pathname === '/layoff-calculator' ? '#c2410c' : '#57534e',
-                px: 1.5,
-                py: 0.8,
-                borderRadius: 2,
-                fontWeight: location.pathname === '/layoff-calculator' ? 700 : 500,
-                fontSize: '0.92rem',
-                whiteSpace: 'nowrap',
-                backgroundColor: location.pathname === '/layoff-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  color: '#1c1917'
-                }
-              }}
-            >
-              裁员赔偿
-            </Button>
-
-            {/* 4. 退休金测算 */}
-            <Button
-              component={Link}
-              to="/retirement-calculator"
-              sx={{
-                color: location.pathname === '/retirement-calculator' ? '#c2410c' : '#57534e',
-                px: 1.5,
-                py: 0.8,
-                borderRadius: 2,
-                fontWeight: location.pathname === '/retirement-calculator' ? 700 : 500,
-                fontSize: '0.92rem',
-                whiteSpace: 'nowrap',
-                backgroundColor: location.pathname === '/retirement-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  color: '#1c1917'
-                }
-              }}
-            >
-              退休金测算
-            </Button>
-
-            {/* 5. 存钱降级 */}
-            <Button
-              component={Link}
-              to="/savings-planner"
-              sx={{
-                color: location.pathname === '/savings-planner' ? '#c2410c' : '#57534e',
-                px: 1.5,
-                py: 0.8,
-                borderRadius: 2,
-                fontWeight: location.pathname === '/savings-planner' ? 700 : 500,
-                fontSize: '0.92rem',
-                whiteSpace: 'nowrap',
-                backgroundColor: location.pathname === '/savings-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  color: '#1c1917'
-                }
-              }}
-            >
-              存钱降级
-            </Button>
 
             {/* 4. 精选好物 */}
             <Button
@@ -504,7 +517,7 @@ const Navbar = () => {
         <Divider sx={{ mb: 2 }} />
 
         <Typography variant="caption" sx={{ px: 1.5, mb: 1, display: 'block', fontWeight: 700, color: '#a8a29e' }}>
-          实战自救专栏
+          核心导航
         </Typography>
 
         <List disablePadding>
@@ -523,17 +536,56 @@ const Navbar = () => {
 
           <ListItem disablePadding sx={{ mb: 0.6 }}>
             <ListItemButton
-              onClick={() => handleNavClick('/dashboard')}
-              selected={location.pathname === '/dashboard'}
-              sx={{ borderRadius: 2, color: location.pathname === '/dashboard' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/dashboard' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
+              onClick={() => handleNavClick('/products')}
+              selected={location.pathname === '/products'}
+              sx={{ borderRadius: 2, color: location.pathname === '/products' ? '#c2410c' : '#44403c' }}
             >
-              <ListItemIcon sx={{ color: location.pathname === '/dashboard' ? '#c2410c' : '#78716c', minWidth: 38 }}>
-                <DashboardIcon />
+              <ListItemIcon sx={{ color: location.pathname === '/products' ? '#c2410c' : '#78716c', minWidth: 38 }}>
+                <Store />
               </ListItemIcon>
-              <ListItemText primary="自救工作台" primaryTypographyProps={{ fontWeight: 700, fontSize: '0.92rem' }} />
+              <ListItemText primary="精选好物" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
             </ListItemButton>
           </ListItem>
+        </List>
 
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="caption" sx={{ px: 1.5, mb: 1, display: 'block', fontWeight: 700, color: '#a8a29e' }}>
+          自救实用工具
+        </Typography>
+
+        <List disablePadding>
+          {toolItems.map((item) => {
+            const isActive = location.pathname === item.path
+            return (
+              <ListItem key={item.path} disablePadding sx={{ mb: 0.6 }}>
+                <ListItemButton
+                  onClick={() => handleNavClick(item.path)}
+                  selected={isActive}
+                  sx={{
+                    borderRadius: 2,
+                    color: isActive ? '#c2410c' : '#44403c',
+                    '&.Mui-selected': { bgcolor: 'rgba(194, 65, 12, 0.08)' }
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 38 }}>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    primaryTypographyProps={{ fontWeight: isActive ? 700 : 500, fontSize: '0.9rem' }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            )
+          })}
+        </List>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="caption" sx={{ px: 1.5, mb: 1, display: 'block', fontWeight: 700, color: '#a8a29e' }}>
+          实战主题分类
+        </Typography>
+
+        <List disablePadding>
           {guideCategories.map((item) => {
             const isActive = location.pathname === item.path
             return (
@@ -550,7 +602,7 @@ const Navbar = () => {
                   <ListItemIcon sx={{ minWidth: 38 }}>{item.icon}</ListItemIcon>
                   <ListItemText
                     primary={item.label}
-                    primaryTypographyProps={{ fontWeight: isActive ? 700 : 500, fontSize: '0.92rem' }}
+                    primaryTypographyProps={{ fontWeight: isActive ? 700 : 500, fontSize: '0.9rem' }}
                   />
                 </ListItemButton>
               </ListItem>
@@ -560,61 +612,7 @@ const Navbar = () => {
 
         <Divider sx={{ my: 2 }} />
 
-        <Typography variant="caption" sx={{ px: 1.5, mb: 1, display: 'block', fontWeight: 700, color: '#a8a29e' }}>
-          工具与服务
-        </Typography>
-
         <List disablePadding>
-          <ListItem disablePadding sx={{ mb: 0.6 }}>
-            <ListItemButton
-              onClick={() => handleNavClick('/layoff-calculator')}
-              selected={location.pathname === '/layoff-calculator'}
-              sx={{ borderRadius: 2, color: location.pathname === '/layoff-calculator' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/layoff-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
-            >
-              <ListItemIcon sx={{ color: '#c2410c', minWidth: 38 }}><GavelIcon /></ListItemIcon>
-              <ListItemText primary="裁员赔偿测算 (N+1/2N)" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ mb: 0.6 }}>
-            <ListItemButton
-              onClick={() => handleNavClick('/retirement-calculator')}
-              selected={location.pathname === '/retirement-calculator'}
-              sx={{ borderRadius: 2, color: location.pathname === '/retirement-calculator' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/retirement-calculator' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
-            >
-              <ListItemIcon sx={{ color: '#d97706', minWidth: 38 }}><CalculateIcon /></ListItemIcon>
-              <ListItemText primary="法定退休金与延迟退休" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ mb: 0.6 }}>
-            <ListItemButton
-              onClick={() => handleNavClick('/savings-planner')}
-              selected={location.pathname === '/savings-planner'}
-              sx={{ borderRadius: 2, color: location.pathname === '/savings-planner' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/savings-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
-            >
-              <ListItemIcon sx={{ color: '#047857', minWidth: 38 }}><SavingsIcon /></ListItemIcon>
-              <ListItemText primary="36个月存钱与降级规划" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ mb: 0.6 }}>
-            <ListItemButton
-              onClick={() => handleNavClick('/pension-planner')}
-              selected={location.pathname === '/pension-planner'}
-              sx={{ borderRadius: 2, color: location.pathname === '/pension-planner' ? '#c2410c' : '#44403c', bgcolor: location.pathname === '/pension-planner' ? 'rgba(194, 65, 12, 0.08)' : 'transparent' }}
-            >
-              <ListItemIcon sx={{ color: '#78716c', minWidth: 38 }}><CalculateIcon /></ListItemIcon>
-              <ListItemText primary="商业养老金缺口模型" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ mb: 0.6 }}>
-            <ListItemButton
-              onClick={() => handleNavClick('/products')}
-              selected={location.pathname === '/products'}
-              sx={{ borderRadius: 2, color: '#44403c' }}
-            >
-              <ListItemIcon sx={{ color: '#059669', minWidth: 38 }}><Store /></ListItemIcon>
-              <ListItemText primary="精选好物推荐" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
-            </ListItemButton>
-          </ListItem>
           <ListItem disablePadding sx={{ mb: 0.6 }}>
             <ListItemButton
               onClick={() => handleNavClick('/complaints')}
@@ -622,7 +620,7 @@ const Navbar = () => {
               sx={{ borderRadius: 2, color: '#44403c' }}
             >
               <ListItemIcon sx={{ color: '#78716c', minWidth: 38 }}><FeedbackIcon /></ListItemIcon>
-              <ListItemText primary="建议与想法反馈" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+              <ListItemText primary="建议与反馈" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.9rem' }} />
             </ListItemButton>
           </ListItem>
         </List>
