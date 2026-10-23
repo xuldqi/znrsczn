@@ -1,16 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-TrendRadar Simplified (实战版全网自救趋势采集引擎)
-专为《中年自救指南》定制的多源实时文章抓取、清洗与自动化定时入库引擎
+TrendRadar Simplified (实战版《中年自救指南》垂直内容采集引擎)
+专为《中年自救指南》定制的高门槛、强过滤、防杂质文章抓取入库引擎
 
-核心特性：
-1. 每日自动抓取配额保证：精准控制每日新增 5 - 10 篇高质量自救/职场/财务实录
-2. 真实网络全量抓取：覆盖少数派 (SSPAI)、知乎精选/日报、阮一峰网络日志、V2EX 职场精选等多渠道
-3. 智能去重与防重保全：对比已有文章 ID 与标题指纹，已入库内容绝不重复收录，不冲抵老数据
-4. 深度正文清洗与转排：HTML 自动转换为结构化清爽 Markdown，保留层级标题、引用与段落
-5. 严格 0 Emoji 规范：彻底滤除所有 Emoji 表情符，确保严肃雅致的阅读体验
-6. 站内阅读体验：isExternal 设为 False，支持全站原地沉浸式精读，同时保留原帖出处链接
-7. Linux Crontab 无人值守守护：支持每日凌晨自动定时触发，自动记录运行日志到系统日志中
+核心筛选标准（铁律）：
+1. 绝对针对 30-45+ 岁中年人群的四大核心自救痛点：
+   - 职场与维权：裁员、失业、大龄求职、劳动仲裁、N+1/2N维权、PIP考核反制、体制内考公经历；
+   - 房贷与钱袋子：房贷断供应对、银行延期还本、消费降级、极简生活、存钱攒钱、社保医保断缴补缴；
+   - 副业与搞钱：一人企业 (Solo)、独立开发、出海、自由职业、真实接单外包与副业变现复盘；
+   - 心态与健康：中年抗焦虑、停止精神内耗、体检指标异常逆转、家庭伴侣关系协同。
+2. 一票否决黑名单（命中任何一项立即丢弃）：
+   - 历史考据、考古文物、古城遗址、朝代断代；
+   - 天体物理、外星球、太空科幻脑洞；
+   - 电影推荐、追剧观影、明星八卦、娱乐综艺、动漫二次元；
+   - 旅游游记、网红打卡、景点攻略；
+   - 纯数码外设开箱（键盘、轴体、相机镜头、手机壳）；
+   - 幽默吐槽、段子合集、无营养灌水；
+   - 医美整容、化妆穿搭。
+3. 加权评分门槛机制：
+   - 必须通过白名单关键词密度与加权打分（阈值 >= 60分）；
+   - 正文字数必须 >= 600 字；
+   - 宁缺毋滥：若当日全网无足够高分自救文章，绝不盲目充数！
 """
 
 import os
@@ -28,32 +38,71 @@ HTTP_HEADERS = {
     'Accept': 'application/json, text/html, application/xml, */*'
 }
 
-# 每日新增文章目标区间 (5 - 10 篇)
-DAILY_TARGET_MIN = 5
-DAILY_TARGET_MAX = 10
+# 每日抓取上限（严格控制，宁缺毋滥）
+DAILY_TARGET_MAX = 8
 
-# 中年自救关键词白名单库
-RELEVANT_KEYWORDS = [
-    "35岁", "40岁", "中年", "裁员", "离职", "辞职", "失业", "求职", "面试", "职场", "大厂", "降薪",
-    "副业", "自由职业", "接单", "外包", "出海", "独立开发", "一人企业", "Solo", "变现", "做生意", "创业",
-    "存钱", "攒钱", "消费降级", "极简", "房贷", "断供", "资产", "理财", "养老", "退休", "负债",
-    "内耗", "焦虑", "精神内耗", "心态", "情绪", "迷茫", "人生", "家庭", "健康", "习惯", "折腾", "转型"
+# 四大核心自救板块关键词白名单
+PILLAR_KEYWORDS = {
+    "职场与维权": [
+        "裁员", "被裁", "离职", "辞职", "失业", "待业", "求职", "面试", "降薪",
+        "35岁", "40岁", "职场", "劳动仲裁", "经济补偿", "赔偿", "n+1", "2n",
+        "pip", "调岗", "考公", "考编", "大厂", "中层", "中年危机", "找工作", "合同法"
+    ],
+    "房贷与钱袋子": [
+        "房贷", "断供", "延期还本", "协商还款", "法拍", "消费降级", "极简", "攒钱",
+        "存钱", "记账", "资产配置", "高股息", "红利", "定投", "理财", "负债",
+        "养老金", "退休金", "退休", "社保", "医保", "断缴", "灵活就业", "失业金", "开销"
+    ],
+    "副业与搞钱": [
+        "一人企业", "一人公司", "独立开发", "solo builder", "indie hacker", "出海",
+        "自由职业", "远程工作", "接单", "外包", "副业", "搞钱", "变现", "小生意",
+        "自媒体", "数字游民", "做生意"
+    ],
+    "生活与心态": [
+        "内耗", "精神内耗", "焦虑", "迷茫", "抑郁", "心态", "松弛", "情绪稳定",
+        "体检", "脂肪肝", "尿酸", "逆转", "健康", "家庭", "伴侣"
+    ]
+}
+
+# 扁平化所有核心关键词
+ALL_WHITELIST_KEYWORDS = []
+for kws in PILLAR_KEYWORDS.values():
+    ALL_WHITELIST_KEYWORDS.extend(kws)
+ALL_WHITELIST_KEYWORDS = list(set(ALL_WHITELIST_KEYWORDS))
+
+# 一票否决负向黑名单
+BLACKLIST_KEYWORDS = [
+    # 历史与文博考古
+    "丝绸之路", "古城", "遗址", "文物", "考古", "朝代", "五代十国", "唐朝", "宋朝", "明朝",
+    "清朝", "战国", "秦始皇", "博物馆", "兵马俑", "墓葬", "青铜器",
+    # 天体与科幻脑洞
+    "外星", "星球", "宇宙", "天体", "黑洞", "科幻", "建材", "恒星", "光年",
+    # 娱乐影视追剧
+    "电影", "电视剧", "剧集", "观影", "本周看什么", "影评", "动漫", "番剧", "明星", "八卦",
+    "综艺", "演唱会", "追星",
+    # 旅游与探店打卡
+    "旅游", "游记", "景点", "关西", "东京", "酒店", "门票", "自由行", "民宿",
+    # 硬件外设与数码开箱
+    "机械键盘", "轴体", "手机壳", "相机镜头", "摄影镜头", "单反", "微单", "开箱",
+    # 杂谈吐槽与搞笑段子
+    "吐槽", "段子", "瞎扯", "搞笑", "脑筋急转弯",
+    # 医美与整容
+    "尸皮针", "医美", "整容", "双眼皮", "化妆", "穿搭"
 ]
 
-# 智能分类规则
 CATEGORY_RULES = [
-    (r"(裁员|下岗|35岁|40岁|求职|HR|离职|被裁|面试|跳槽|职场|工作|大厂|薪资|晋升)", "职场发展"),
-    (r"(房贷|债务|破产|逾期|还本|借款|高股息|红利|康波|资产|定投|国债|利息|存钱|养老金|退休金|理财|降薪|基金)", "财务管理"),
-    (r"(副业|接单|外包|咨询|做生意|摆摊|变现|一人公司|独立开发|出海|SaaS|小生意|自媒体|小红书)", "副业指南"),
+    (r"(裁员|下岗|35岁|40岁|求职|HR|离职|被裁|面试|跳槽|职场|工作|大厂|薪资|晋升|pip|劳动仲裁|2n|n\+1)", "职场发展"),
+    (r"(房贷|债务|破产|逾期|还本|借款|高股息|红利|康波|资产|定投|国债|利息|存钱|养老金|退休金|理财|降薪|基金|记账)", "财务管理"),
+    (r"(副业|接单|外包|咨询|做生意|摆摊|变现|一人公司|独立开发|出海|saas|小生意|自媒体|solo builder|自由职业)", "副业指南"),
     (r"(原生家庭|父母|夫妻|婚姻|伴侣|亲戚|借钱|补习|育儿|孩子|养老院)", "家庭关系"),
     (r"(极简|降本|做饭|体检|失业金|医保|断缴|社保|买菜|二手|房租|生活|断舍离)", "生活技能"),
-    (r"(内耗|焦虑|虚荣|抑郁|自尊|心理|松弛|平和|心态|情绪|迷茫|精神|抑郁症)", "心理健康"),
-    (r"(转型|独立开发|远程工作|海外接单|数字化|技术|周刊|转行|编程|AI|效能)", "转型升级"),
+    (r"(内耗|焦虑|虚荣|抑郁|自尊|心理|松弛|平和|心态|情绪|迷茫|精神)", "心理健康"),
+    (r"(转型|独立开发|远程工作|海外接单|数字化|技术|周刊|转行|编程|ai|效能)", "转型升级"),
     (r"(危机|中年危机|自救|逆风翻盘)", "中年危机"),
 ]
 
 def clean_emojis(text):
-    """彻底剥离任何表情符号，保持严肃雅致排版"""
+    """彻底剥离任何表情符号"""
     if not isinstance(text, str):
         return text
     emoji_pattern = re.compile(
@@ -62,21 +111,18 @@ def clean_emojis(text):
     return emoji_pattern.sub('', text)
 
 def normalize_title(title):
-    """标准化标题用于去重对比"""
     if not title:
         return ""
     return re.sub(r'[^\w\u4e00-\u9fa5]', '', title).lower()
 
 def infer_category(title, content):
-    """根据标题与内容自动匹配最贴合的栏目分类"""
-    combined = f"{title} {content}"
+    combined = f"{title} {content}".lower()
     for pattern, cat in CATEGORY_RULES:
         if re.search(pattern, combined):
             return cat
     return "职场发展"
 
 def html_to_markdown(html_str):
-    """将 HTML 富文本转换为结构规范的 Markdown"""
     if not html_str:
         return ""
     text = html_str
@@ -101,11 +147,50 @@ def html_to_markdown(html_str):
     text = re.sub(r'<[^>]+>', '', text)
     # 实体转义
     text = text.replace('&nbsp;', ' ').replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&').replace('&quot;', '"')
-    # 规范空行
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
-class TrendRadarCollector:
+def evaluate_relevance(title, summary, content):
+    """
+    加权评估一篇文章是否真正符合《中年自救指南》收录标准
+    返回: (passed: bool, reason: str, score: int)
+    """
+    full_text = f"{title} {summary} {content}".lower()
+    lower_title = title.lower()
+
+    # 1. 严格黑名单一票否决
+    for bl in BLACKLIST_KEYWORDS:
+        if bl in lower_title:
+            return False, f"标题命中禁止黑名单词汇: [{bl}]", -200
+        if full_text.count(bl) >= 2:
+            return False, f"正文高频命中禁止黑名单词汇: [{bl}]", -200
+
+    # 2. 正文字数门槛检验（必须是深度有信息量的实战长文）
+    clean_len = len(re.sub(r'\s+', '', content))
+    if clean_len < 600:
+        return False, f"正文字数过少 ({clean_len}字 < 600字门槛)，非深度文章", 0
+
+    # 3. 白名单命中评分计算
+    score = 0
+    title_hits = [kw for kw in ALL_WHITELIST_KEYWORDS if kw in lower_title]
+    if title_hits:
+        score += 50
+
+    body_hit_count = sum(full_text.count(kw) for kw in ALL_WHITELIST_KEYWORDS)
+    if body_hit_count >= 6:
+        score += 40
+    elif body_hit_count >= 3:
+        score += 25
+    elif body_hit_count >= 1:
+        score += 10
+
+    # 4. 判定必须达到 60 分，且标题或正文有扎实的自救语义
+    if score >= 60 and (len(title_hits) > 0 or body_hit_count >= 4):
+        return True, f"符合标准 (得分: {score}分 | 标题命中: {title_hits} | 全文关键词密度: {body_hit_count})", score
+
+    return False, f"相关度不足 (得分: {score}分 < 60分门槛 | 关键词命中过低)", score
+
+class StrictTrendCollector:
     def __init__(self, existing_articles):
         self.existing_articles = existing_articles
         self.existing_ids = set(existing_articles.keys())
@@ -121,11 +206,10 @@ class TrendRadarCollector:
                     return json.loads(content)
                 return content
         except Exception as e:
-            print(f"  [抓取跳过] 请求异常: {url} -> {e}")
+            print(f"  [抓取跳过] 网络请求异常: {url} -> {e}")
             return None
 
     def is_already_collected(self, art_id, title):
-        """严格检查文章是否已收录"""
         if art_id in self.existing_ids:
             return True
         norm_title = normalize_title(title)
@@ -136,29 +220,31 @@ class TrendRadarCollector:
                 return True
         return False
 
-    def is_keyword_relevant(self, title, summary=""):
-        combined = f"{title} {summary}"
-        return any(kw in combined for kw in RELEVANT_KEYWORDS)
-
-    def add_article(self, article):
+    def try_admit_article(self, article, raw_summary=""):
+        """严格审核把关文章，只有合格才入库"""
         if self.is_already_collected(article["id"], article["title"]):
             return False
         if len(self.new_articles) >= DAILY_TARGET_MAX:
             return False
-        
+
+        passed, reason, score = evaluate_relevance(article["title"], raw_summary, article["content"])
+        if not passed:
+            print(f"  [✕ 拦截淘汰] 《{article['title']}》 -> {reason}")
+            return False
+
         self.new_articles.append(article)
         self.existing_ids.add(article["id"])
         self.existing_titles.add(normalize_title(article["title"]))
-        print(f"  [+] 成功入库: 《{article['title']}》 ({len(article['content'])}字 | {article['category']} | {article['source']})")
+        print(f"  [✓ 成功入库] 《{article['title']}》 ({len(article['content'])}字 | {article['category']} | 得分: {score})")
         return True
 
-    def crawl_sspai(self, tag, offset=0, limit=5):
-        """从少数派标签频道抓取真实长文"""
+    def crawl_sspai_channel(self, tag, limit=6):
+        """精准采集少数派优质专栏"""
         if len(self.new_articles) >= DAILY_TARGET_MAX:
             return
-        print(f"正在扫描少数派频道 [{tag}] (offset={offset})...")
+        print(f"扫描少数派垂直专栏 [{tag}]...")
         encoded_tag = urllib.parse.quote(tag)
-        list_url = f"https://sspai.com/api/v1/article/tag/page/get?limit={limit}&offset={offset}&tag={encoded_tag}"
+        list_url = f"https://sspai.com/api/v1/article/tag/page/get?limit={limit}&offset=0&tag={encoded_tag}"
         res = self.fetch_url(list_url)
         if not res or not res.get("data"):
             return
@@ -182,8 +268,6 @@ class TrendRadarCollector:
 
             md_content = html_to_markdown(body_html) if body_html else f"# {title}\n\n{summary}"
             md_content = clean_emojis(md_content)
-            if len(md_content) < 300:
-                continue
 
             author = clean_emojis(item.get("author", {}).get("nickname", "少数派作者"))
             created_ts = item.get("created_at") or item.get("released_time")
@@ -197,7 +281,7 @@ class TrendRadarCollector:
 
             category = infer_category(title, md_content)
 
-            self.add_article({
+            self.try_admit_article({
                 "id": art_id,
                 "title": title,
                 "excerpt": summary[:160] + "..." if len(summary) > 160 else summary,
@@ -205,74 +289,19 @@ class TrendRadarCollector:
                 "date": date_str,
                 "readTime": f"{max(3, round(len(md_content) / 450))}分钟精读",
                 "category": category,
-                "tags": [tag, category, "少数派"],
+                "tags": [tag, category, "深度实操"],
                 "source": "少数派",
                 "sourceUrl": f"https://sspai.com/post/{item['id']}",
                 "content": md_content,
                 "status": "published",
                 "isExternal": False
-            })
-
-    def crawl_zhihu_daily(self, date_str=None, limit=5):
-        """从知乎精选/日报抓取深度专栏"""
-        if len(self.new_articles) >= DAILY_TARGET_MAX:
-            return
-        
-        if date_str:
-            print(f"正在扫描知乎历史精选 (日期={date_str})...")
-            url = f"https://news-at.zhihu.com/api/4/news/before/{date_str}"
-        else:
-            print("正在扫描知乎精选深度专栏 (今日最新)...")
-            url = "https://news-at.zhihu.com/api/4/news/latest"
-
-        res = self.fetch_url(url)
-        if not res or not res.get("stories"):
-            return
-
-        for story in res.get("stories", [])[:limit]:
-            if len(self.new_articles) >= DAILY_TARGET_MAX:
-                break
-            sid = story["id"]
-            title = clean_emojis(story.get("title", "").strip())
-            art_id = f"zhihu-daily-{sid}"
-
-            if self.is_already_collected(art_id, title):
-                continue
-
-            detail_url = f"https://news-at.zhihu.com/api/4/news/{sid}"
-            det_res = self.fetch_url(detail_url)
-            if not det_res:
-                continue
-
-            body_html = det_res.get("body", "")
-            md_content = clean_emojis(html_to_markdown(body_html))
-            if len(md_content) < 350:
-                continue
-
-            category = infer_category(title, md_content)
-            cur_date = datetime.date.today().strftime("%Y-%m-%d")
-
-            self.add_article({
-                "id": art_id,
-                "title": title,
-                "excerpt": md_content[:150].replace('\n', ' ') + "...",
-                "author": "知乎精选答主",
-                "date": cur_date,
-                "readTime": f"{max(3, round(len(md_content) / 450))}分钟精读",
-                "category": category,
-                "tags": ["知乎精选", category, "深度长文"],
-                "source": "知乎",
-                "sourceUrl": det_res.get("share_url") or f"https://daily.zhihu.com/story/{sid}",
-                "content": md_content,
-                "status": "published",
-                "isExternal": False
-            })
+            }, raw_summary=summary)
 
     def crawl_ruanyifeng_weekly(self):
-        """从阮一峰科技爱好者周刊抓取职业与技术思考"""
+        """精准采集阮一峰周刊思考与职业探讨"""
         if len(self.new_articles) >= DAILY_TARGET_MAX:
             return
-        print("正在扫描阮一峰网络日志精选...")
+        print("扫描阮一峰网络周刊思考...")
         feed_url = "https://www.ruanyifeng.com/blog/atom.xml"
         xml_data = self.fetch_url(feed_url, is_json=False)
         if not xml_data:
@@ -294,7 +323,7 @@ class TrendRadarCollector:
                 md_content = clean_emojis(html_to_markdown(body_html))
 
                 category = infer_category(title, md_content)
-                self.add_article({
+                self.try_admit_article({
                     "id": art_id,
                     "title": title,
                     "excerpt": md_content[:160].replace('\n', ' ') + "...",
@@ -308,105 +337,32 @@ class TrendRadarCollector:
                     "content": md_content,
                     "status": "published",
                     "isExternal": False
-                })
+                }, raw_summary=md_content[:150])
         except Exception as e:
-            print(f"  [解析错误] 阮一峰周刊解析异常: {e}")
+            print(f"  [解析异常] 阮一峰周刊解析错误: {e}")
 
-    def crawl_v2ex_hot(self):
-        """从 V2EX 热门与职场主题抓取深度讨论"""
-        if len(self.new_articles) >= DAILY_TARGET_MAX:
-            return
-        print("正在扫描 V2EX 热门话题与职场思考...")
-        feed_url = "https://www.v2ex.com/index.xml"
-        xml_data = self.fetch_url(feed_url, is_json=False)
-        if not xml_data:
-            return
+    def execute_collection(self):
+        # 1. 少数派高权重自救专栏
+        self.crawl_sspai_channel("职场", limit=6)
+        self.crawl_sspai_channel("效率思维", limit=6)
+        self.crawl_sspai_channel("生活方式", limit=6)
 
-        try:
-            root = ET.fromstring(xml_data)
-            entries = root.findall('{http://www.w3.org/2005/Atom}entry')
-            for entry in entries[:5]:
-                if len(self.new_articles) >= DAILY_TARGET_MAX:
-                    break
-                title = clean_emojis(entry.find('{http://www.w3.org/2005/Atom}title').text.strip())
-                art_id = f"v2ex-{abs(hash(title))}"
-                if self.is_already_collected(art_id, title):
-                    continue
-
-                content_el = entry.find('{http://www.w3.org/2005/Atom}content')
-                body_html = content_el.text if content_el is not None else ""
-                md_content = clean_emojis(html_to_markdown(body_html))
-
-                if len(md_content) < 200:
-                    continue
-
-                category = infer_category(title, md_content)
-                self.add_article({
-                    "id": art_id,
-                    "title": title,
-                    "excerpt": md_content[:150].replace('\n', ' ') + "...",
-                    "author": "V2EX 开发者",
-                    "date": datetime.date.today().strftime("%Y-%m-%d"),
-                    "readTime": f"{max(2, round(len(md_content) / 450))}分钟精读",
-                    "category": category,
-                    "tags": ["职场思考", "独立开发", "V2EX"],
-                    "source": "V2EX",
-                    "sourceUrl": "https://www.v2ex.com",
-                    "content": md_content,
-                    "status": "published",
-                    "isExternal": False
-                })
-        except Exception as e:
-            print(f"  [解析错误] V2EX 解析异常: {e}")
-
-    def execute_daily_batch(self):
-        """执行每日抓取任务，确保新增文章数量达到 5 - 10 篇"""
-        # 1. 抓取少数派高相关频道
-        sspai_tags = ["职场", "效率思维", "生活方式", "个人成长", "工作流", "效率工具"]
-        for tag in sspai_tags:
-            self.crawl_sspai(tag, offset=0, limit=4)
-            if len(self.new_articles) >= DAILY_TARGET_MAX:
-                break
-
-        # 2. 抓取知乎日报最新
-        if len(self.new_articles) < DAILY_TARGET_MIN:
-            self.crawl_zhihu_daily(limit=4)
-
-        # 3. 抓取阮一峰专栏
-        if len(self.new_articles) < DAILY_TARGET_MIN:
-            self.crawl_ruanyifeng_weekly()
-
-        # 4. 抓取 V2EX 热门
-        if len(self.new_articles) < DAILY_TARGET_MIN:
-            self.crawl_v2ex_hot()
-
-        # 5. 保底补充：如果本日新增仍未达到 5 篇，深翻少数派第 2 页及知乎前日精选
-        if len(self.new_articles) < DAILY_TARGET_MIN:
-            print(f"当前新增 {len(self.new_articles)} 篇，启动深度翻页补充以确保满足每日保底 5 篇要求...")
-            for tag in ["职场", "效率思维", "个人成长"]:
-                self.crawl_sspai(tag, offset=5, limit=5)
-                if len(self.new_articles) >= DAILY_TARGET_MIN:
-                    break
-
-        if len(self.new_articles) < DAILY_TARGET_MIN:
-            yesterday_str = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d")
-            self.crawl_zhihu_daily(date_str=yesterday_str, limit=5)
+        # 2. 阮一峰周刊深度观点
+        self.crawl_ruanyifeng_weekly()
 
         return self.new_articles
 
 def main():
     start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print("=" * 60)
-    print(f"[{start_time}] 启动 TrendRadar Simplified 每日自动化抓取任务")
-    print("=" * 60)
+    print("=" * 65)
+    print(f"[{start_time}] 启动 TrendRadar Simplified 严格高门槛自救文章采集团")
+    print("=" * 65)
 
-    # 确定目标文件路径
     target_file = "articles.json"
     if not os.path.exists(target_file):
         if os.path.exists("/var/www/bambumoon-sites/main-site/articles.json"):
             target_file = "/var/www/bambumoon-sites/main-site/articles.json"
 
-    # 读取已有文章
     articles_db = {}
     if os.path.exists(target_file):
         with open(target_file, "r", encoding="utf-8") as f:
@@ -419,35 +375,34 @@ def main():
     initial_count = len(articles_db)
     print(f"当前系统文章库总数: {initial_count} 篇\n")
 
-    # 执行每日采集
-    collector = TrendRadarCollector(articles_db)
-    new_articles = collector.execute_daily_batch()
+    # 执行严格筛选采集
+    collector = StrictTrendCollector(articles_db)
+    new_articles = collector.execute_collection()
 
-    print(f"\n每日抓取阶段完成，本次成功采纳 {len(new_articles)} 篇新文章 (目标区间: 5 - 10 篇)。")
+    print(f"\n审核过滤阶段完成，本次严格采纳通过: {len(new_articles)} 篇高质量自救文章。")
 
-    # 入库合并
-    for item in new_articles:
-        articles_db[item["id"]] = item
+    if new_articles:
+        for item in new_articles:
+            articles_db[item["id"]] = item
 
-    # 严格 0 Emoji 全量消毒
-    emoji_pattern = re.compile(r'[\U00010000-\U0010ffff]|[\u2600-\u27bf]|[\u2300-\u23ff]|[\u2b50]|[\u3030]|[\u200d]')
-    for k, v in articles_db.items():
-        for field in ["title", "excerpt", "author", "content"]:
-            val = v.get(field, "")
-            if isinstance(val, str) and emoji_pattern.search(val):
-                v[field] = emoji_pattern.sub('', val)
+        # 严格 0 Emoji 全量过滤
+        emoji_pattern = re.compile(r'[\U00010000-\U0010ffff]|[\u2600-\u27bf]|[\u2300-\u23ff]|[\u2b50]|[\u3030]|[\u200d]')
+        for k, v in articles_db.items():
+            for field in ["title", "excerpt", "author", "content"]:
+                val = v.get(field, "")
+                if isinstance(val, str) and emoji_pattern.search(val):
+                    v[field] = emoji_pattern.sub('', val)
 
-    # 写入文件
-    with open(target_file, "w", encoding="utf-8") as f:
-        json.dump(articles_db, f, ensure_ascii=False, indent=2)
+        with open(target_file, "w", encoding="utf-8") as f:
+            json.dump(articles_db, f, ensure_ascii=False, indent=2)
 
     total_count = len(articles_db)
     end_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print("=" * 60)
-    print(f"[{end_time}] 每日抓取与入库成功！")
-    print(f"本日新增入库: {len(new_articles)} 篇")
-    print(f"全站最新文章规模: {total_count} 篇")
-    print("=" * 60)
+    print("=" * 65)
+    print(f"[{end_time}] 任务执行完毕！")
+    print(f"本日合格入库: {len(new_articles)} 篇 (宁缺毋滥，拒绝垃圾内容)")
+    print(f"全站有效文章规模: {total_count} 篇")
+    print("=" * 65)
 
 if __name__ == "__main__":
     main()
