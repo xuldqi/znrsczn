@@ -1,26 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-TrendRadar Simplified (实战版《中年自救指南》垂直内容采集引擎)
-专为《中年自救指南》定制的高门槛、强过滤、防杂质文章抓取入库引擎
+TrendRadar Simplified (实战版《35+指南》垂直内容采集引擎)
+专为《35+指南》定制的高门槛、强过滤、防杂质文章抓取入库引擎
 
 核心筛选标准（铁律）：
-1. 绝对针对 30-45+ 岁中年人群的四大核心自救痛点：
-   - 职场与维权：裁员、失业、大龄求职、劳动仲裁、N+1/2N维权、PIP考核反制、体制内考公经历；
-   - 房贷与钱袋子：房贷断供应对、银行延期还本、消费降级、极简生活、存钱攒钱、社保医保断缴补缴；
-   - 副业与搞钱：一人企业 (Solo)、独立开发、出海、自由职业、真实接单外包与副业变现复盘；
-   - 心态与健康：中年抗焦虑、停止精神内耗、体检指标异常逆转、家庭伴侣关系协同。
-2. 一票否决黑名单（命中任何一项立即丢弃）：
-   - 历史考据、考古文物、古城遗址、朝代断代；
-   - 天体物理、外星球、太空科幻脑洞；
-   - 电影推荐、追剧观影、明星八卦、娱乐综艺、动漫二次元；
-   - 旅游游记、网红打卡、景点攻略；
-   - 纯数码外设开箱（键盘、轴体、相机镜头、手机壳）；
-   - 幽默吐槽、段子合集、无营养灌水；
-   - 医美整容、化妆穿搭。
-3. 加权评分门槛机制：
-   - 必须通过白名单关键词密度与加权打分（阈值 >= 60分）；
-   - 正文字数必须 >= 600 字；
-   - 宁缺毋滥：若当日全网无足够高分自救文章，绝不盲目充数！
+1. 针对 35+ 人群核心痛点：职场突围、大龄求职、劳动维权、一人公司、独立开发、出海搞钱、记账存钱、资产配置、防断供与身心健康；
+2. 标题一票否决黑名单：古城文物、天体科幻、电影剧集、娱乐八卦、旅游打卡、数码开箱、整容医美；
+3. 正文字数 >= 500 字，白名单关键词加权打分 >= 40 分；
+4. 宁缺毋滥，每批采集 5-8 篇高价值实操文章，全站保持 0 Emoji 标准。
 """
 
 import os
@@ -38,29 +25,29 @@ HTTP_HEADERS = {
     'Accept': 'application/json, text/html, application/xml, */*'
 }
 
-# 每日抓取上限（严格控制，宁缺毋滥）
-DAILY_TARGET_MAX = 8
+# 每日抓取上限
+DAILY_TARGET_MAX = 6
 
 # 四大核心自救板块关键词白名单
 PILLAR_KEYWORDS = {
     "职场与维权": [
         "裁员", "被裁", "离职", "辞职", "失业", "待业", "求职", "面试", "降薪",
         "35岁", "40岁", "职场", "劳动仲裁", "经济补偿", "赔偿", "n+1", "2n",
-        "pip", "调岗", "考公", "考编", "大厂", "中层", "中年危机", "找工作", "合同法"
+        "pip", "调岗", "考公", "考编", "大厂", "中层", "中年危机", "找工作", "合同法", "sop"
     ],
     "房贷与钱袋子": [
         "房贷", "断供", "延期还本", "协商还款", "法拍", "消费降级", "极简", "攒钱",
         "存钱", "记账", "资产配置", "高股息", "红利", "定投", "理财", "负债",
-        "养老金", "退休金", "退休", "社保", "医保", "断缴", "灵活就业", "失业金", "开销"
+        "养老金", "退休金", "退休", "社保", "医保", "断缴", "灵活就业", "失业金", "开销", "资产"
     ],
     "副业与搞钱": [
         "一人企业", "一人公司", "独立开发", "solo builder", "indie hacker", "出海",
         "自由职业", "远程工作", "接单", "外包", "副业", "搞钱", "变现", "小生意",
-        "自媒体", "数字游民", "做生意"
+        "自媒体", "数字游民", "做生意", "商业化"
     ],
     "生活与心态": [
         "内耗", "精神内耗", "焦虑", "迷茫", "抑郁", "心态", "松弛", "情绪稳定",
-        "体检", "脂肪肝", "尿酸", "逆转", "健康", "家庭", "伴侣"
+        "体检", "脂肪肝", "尿酸", "逆转", "健康", "家庭", "伴侣", "习惯"
     ]
 }
 
@@ -70,24 +57,22 @@ for kws in PILLAR_KEYWORDS.values():
     ALL_WHITELIST_KEYWORDS.extend(kws)
 ALL_WHITELIST_KEYWORDS = list(set(ALL_WHITELIST_KEYWORDS))
 
-# 一票否决负向黑名单
-BLACKLIST_KEYWORDS = [
-    # 历史与文博考古
+# 标题一票否决黑名单
+TITLE_BLACKLIST = [
     "丝绸之路", "古城", "遗址", "文物", "考古", "朝代", "五代十国", "唐朝", "宋朝", "明朝",
     "清朝", "战国", "秦始皇", "博物馆", "兵马俑", "墓葬", "青铜器",
-    # 天体与科幻脑洞
-    "外星", "星球", "宇宙", "天体", "黑洞", "科幻", "建材", "恒星", "光年",
-    # 娱乐影视追剧
+    "外星", "星球", "宇宙", "天体", "黑洞", "科幻", "恒星", "光年",
     "电影", "电视剧", "剧集", "观影", "本周看什么", "影评", "动漫", "番剧", "明星", "八卦",
     "综艺", "演唱会", "追星",
-    # 旅游与探店打卡
     "旅游", "游记", "景点", "关西", "东京", "酒店", "门票", "自由行", "民宿",
-    # 硬件外设与数码开箱
     "机械键盘", "轴体", "手机壳", "相机镜头", "摄影镜头", "单反", "微单", "开箱",
-    # 杂谈吐槽与搞笑段子
     "吐槽", "段子", "瞎扯", "搞笑", "脑筋急转弯",
-    # 医美与整容
     "尸皮针", "医美", "整容", "双眼皮", "化妆", "穿搭"
+]
+
+# 正文一票否决恶性垃圾黑名单
+BODY_BLACKLIST = [
+    "尸皮针", "整容医院", "八卦爆料", "番剧更新", "键盘轴体", "单反镜头", "青铜器出土", "本周看什么"
 ]
 
 CATEGORY_RULES = [
@@ -152,43 +137,50 @@ def html_to_markdown(html_str):
 
 def evaluate_relevance(title, summary, content):
     """
-    加权评估一篇文章是否真正符合《中年自救指南》收录标准
+    加权评估一篇文章是否真正符合《35+指南》收录标准
     返回: (passed: bool, reason: str, score: int)
     """
     full_text = f"{title} {summary} {content}".lower()
     lower_title = title.lower()
 
-    # 1. 严格黑名单一票否决
-    for bl in BLACKLIST_KEYWORDS:
+    # 1. 标题一票否决黑名单
+    for bl in TITLE_BLACKLIST:
         if bl in lower_title:
             return False, f"标题命中禁止黑名单词汇: [{bl}]", -200
-        if full_text.count(bl) >= 2:
-            return False, f"正文高频命中禁止黑名单词汇: [{bl}]", -200
 
-    # 2. 正文字数门槛检验（必须是深度有信息量的实战长文）
+    # 2. 正文恶性垃圾词一票否决
+    for bl in BODY_BLACKLIST:
+        if bl in full_text:
+            return False, f"正文命中恶性垃圾词汇: [{bl}]", -200
+
+    # 3. 影视娱乐或文博历史密度过大淘汰
+    if full_text.count("电影") >= 8 or full_text.count("电视剧") >= 5 or full_text.count("古城") >= 4:
+        return False, "正文偏向娱乐影视或历史文博，非实操文章", -100
+
+    # 4. 正文字数门槛检验（必须是深度有信息量的实战长文）
     clean_len = len(re.sub(r'\s+', '', content))
-    if clean_len < 600:
-        return False, f"正文字数过少 ({clean_len}字 < 600字门槛)，非深度文章", 0
+    if clean_len < 450:
+        return False, f"正文字数过少 ({clean_len}字 < 450字门槛)，非深度文章", 0
 
-    # 3. 白名单命中评分计算
+    # 5. 白名单命中评分计算
     score = 0
     title_hits = [kw for kw in ALL_WHITELIST_KEYWORDS if kw in lower_title]
     if title_hits:
         score += 50
 
     body_hit_count = sum(full_text.count(kw) for kw in ALL_WHITELIST_KEYWORDS)
-    if body_hit_count >= 6:
+    if body_hit_count >= 5:
         score += 40
-    elif body_hit_count >= 3:
+    elif body_hit_count >= 2:
         score += 25
     elif body_hit_count >= 1:
-        score += 10
+        score += 15
 
-    # 4. 判定必须达到 60 分，且标题或正文有扎实的自救语义
-    if score >= 60 and (len(title_hits) > 0 or body_hit_count >= 4):
+    # 6. 判定达到 40 分，且标题或正文有核心痛点覆盖
+    if score >= 40 and (len(title_hits) > 0 or body_hit_count >= 3):
         return True, f"符合标准 (得分: {score}分 | 标题命中: {title_hits} | 全文关键词密度: {body_hit_count})", score
 
-    return False, f"相关度不足 (得分: {score}分 < 60分门槛 | 关键词命中过低)", score
+    return False, f"相关度不足 (得分: {score}分 < 40分门槛 | 关键词命中过低)", score
 
 class StrictTrendCollector:
     def __init__(self, existing_articles):
@@ -342,13 +334,16 @@ class StrictTrendCollector:
             print(f"  [解析异常] 阮一峰周刊解析错误: {e}")
 
     def execute_collection(self):
-        # 1. 少数派高权重自救专栏
-        self.crawl_sspai_channel("职场", limit=6)
-        self.crawl_sspai_channel("效率思维", limit=6)
-        self.crawl_sspai_channel("生活方式", limit=6)
+        # 1. 少数派垂直高权重专栏 (理财、记账、职场、工作、效率思维、生活、健康)
+        channels = ["理财", "记账", "职场", "工作", "效率思维", "生活", "健康"]
+        for ch in channels:
+            if len(self.new_articles) >= DAILY_TARGET_MAX:
+                break
+            self.crawl_sspai_channel(ch, limit=6)
 
         # 2. 阮一峰周刊深度观点
-        self.crawl_ruanyifeng_weekly()
+        if len(self.new_articles) < DAILY_TARGET_MAX:
+            self.crawl_ruanyifeng_weekly()
 
         return self.new_articles
 
