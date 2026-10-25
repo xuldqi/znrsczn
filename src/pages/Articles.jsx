@@ -76,7 +76,11 @@ const Articles = () => {
 
   // 排序：最新的排前
   const sortedArticles = useMemo(() => {
-    return [...publishedArticles].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+    return [...publishedArticles].sort((a, b) => {
+      const diff = new Date(b.date || 0) - new Date(a.date || 0)
+      if (diff !== 0) return diff
+      return (b.id || '').localeCompare(a.id || '')
+    })
   }, [publishedArticles])
 
   // 筛选

@@ -262,14 +262,8 @@ class StrictTrendCollector:
             md_content = clean_emojis(md_content)
 
             author = clean_emojis(item.get("author", {}).get("nickname", "少数派作者"))
-            created_ts = item.get("created_at") or item.get("released_time")
-            if created_ts:
-                try:
-                    date_str = datetime.datetime.fromtimestamp(created_ts).strftime("%Y-%m-%d")
-                except Exception:
-                    date_str = datetime.date.today().strftime("%Y-%m-%d")
-            else:
-                date_str = datetime.date.today().strftime("%Y-%m-%d")
+            # 入库日期使用当前采集入库日期，确保在首页信息流最前部优先展现
+            date_str = datetime.date.today().strftime("%Y-%m-%d")
 
             category = infer_category(title, md_content)
 
