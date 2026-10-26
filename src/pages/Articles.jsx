@@ -74,13 +74,39 @@ const Articles = () => {
     return getAllArticles().filter(a => a.status === 'published')
   }, [getAllArticles])
 
-  // 排序：最新的排前
+  // 排序：最新的排前，结合多社区轮巡打散
   const sortedArticles = useMemo(() => {
-    return [...publishedArticles].sort((a, b) => {
+    const base = [...publishedArticles].sort((a, b) => {
       const diff = new Date(b.date || 0) - new Date(a.date || 0)
       if (diff !== 0) return diff
       return (b.id || '').localeCompare(a.id || '')
     })
+
+    const interleaved = []
+    const pool = [...base]
+    const recentSources = []
+    const windowSize = 4
+
+    while (pool.length > 0) {
+      let chosenIdx = pool.findIndex(art => !recentSources.includes(art.source))
+      if (chosenIdx === -1) {
+        const lastSource = recentSources[recentSources.length - 1]
+        chosenIdx = pool.findIndex(art => art.source !== lastSource)
+      }
+      if (chosenIdx === -1) {
+        chosenIdx = 0
+      }
+
+      const [chosen] = pool.splice(chosenIdx, 1)
+      interleaved.push(chosen)
+
+      recentSources.push(chosen.source)
+      if (recentSources.length > windowSize) {
+        recentSources.shift()
+      }
+    }
+
+    return interleaved
   }, [publishedArticles])
 
   // 筛选

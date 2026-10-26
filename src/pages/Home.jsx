@@ -82,11 +82,39 @@ const Home = () => {
   }, [getAllArticles])
 
   const sortedArticles = useMemo(() => {
-    return [...publishedArticles].sort((a, b) => {
+    // 基础按日期降序与 ID 倒序
+    const base = [...publishedArticles].sort((a, b) => {
       const diff = new Date(b.date || 0) - new Date(a.date || 0)
       if (diff !== 0) return diff
       return (b.id || '').localeCompare(a.id || '')
     })
+
+    // 多社区轮巡打散算法：保证连续展示时来源交替，坚决杜绝单一社区刷屏
+    const interleaved = []
+    const pool = [...base]
+    const recentSources = []
+    const windowSize = 4 // 确保最近 4 篇内来源尽量不重复
+
+    while (pool.length > 0) {
+      let chosenIdx = pool.findIndex(art => !recentSources.includes(art.source))
+      if (chosenIdx === -1) {
+        const lastSource = recentSources[recentSources.length - 1]
+        chosenIdx = pool.findIndex(art => art.source !== lastSource)
+      }
+      if (chosenIdx === -1) {
+        chosenIdx = 0
+      }
+
+      const [chosen] = pool.splice(chosenIdx, 1)
+      interleaved.push(chosen)
+
+      recentSources.push(chosen.source)
+      if (recentSources.length > windowSize) {
+        recentSources.shift()
+      }
+    }
+
+    return interleaved
   }, [publishedArticles])
 
   // 各来源平台统计数
@@ -99,18 +127,12 @@ const Home = () => {
     return counts
   }, [publishedArticles])
 
-  // 今日置顶精选（高信噪比置顶焦点头条）
-  const heroArticle = sortedArticles[0] || {
-    id: 'web-tianya-cycle-survival',
-    title: '康波周期与大变局下，普通人如何保全资产与守住现金流',
-    excerpt: '重读周金涛与天涯经济周期研判：面对经济下行与降薪风险，普通家庭最核心的不是追求超额收益，而是切断高风险杠杆，储备 36 个月刚性流动资金跑道。',
-    author: 'KKndme',
-    date: '2026-10-22',
-    readTime: '12分钟精读',
-    category: '财务管理',
-    source: '天涯论坛',
-    sourceUrl: 'https://bbs.tianya.cn/'
-  }
+  // 今日置顶精选（固定选用全网最高信噪比、奠定站点硬核基调的经典长文）
+  const heroArticle = useMemo(() => {
+    return publishedArticles.find(a => a.id === 'web-tianya-cycle-survival') ||
+           publishedArticles.find(a => a.id === 'web-zhihu-35-developer-real') ||
+           sortedArticles[0]
+  }, [publishedArticles, sortedArticles])
 
   // 分类 Tabs
   const feedTabs = useMemo(() => [
@@ -128,6 +150,11 @@ const Home = () => {
 
   const filteredArticles = useMemo(() => {
     return sortedArticles.filter(article => {
+      // 避免与今日置顶焦点重复显示
+      if (activeTab === 0 && selectedSource === '全部' && !searchTerm.trim() && article.id === heroArticle?.id) {
+        return false
+      }
+
       // 1. 分类匹配
       const matchCategory = currentTab.filter(article)
       if (!matchCategory) return false

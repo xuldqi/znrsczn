@@ -57,7 +57,7 @@ for kws in PILLAR_KEYWORDS.values():
     ALL_WHITELIST_KEYWORDS.extend(kws)
 ALL_WHITELIST_KEYWORDS = list(set(ALL_WHITELIST_KEYWORDS))
 
-# 标题一票否决黑名单
+# 标题一票否决黑名单（坚决杜绝非自救、纯娱乐、纯数码数码软件类杂质）
 TITLE_BLACKLIST = [
     "丝绸之路", "古城", "遗址", "文物", "考古", "朝代", "五代十国", "唐朝", "宋朝", "明朝",
     "清朝", "战国", "秦始皇", "博物馆", "兵马俑", "墓葬", "青铜器",
@@ -67,8 +67,14 @@ TITLE_BLACKLIST = [
     "旅游", "游记", "景点", "关西", "东京", "酒店", "门票", "自由行", "民宿",
     "机械键盘", "轴体", "手机壳", "相机镜头", "摄影镜头", "单反", "微单", "开箱",
     "吐槽", "段子", "瞎扯", "搞笑", "脑筋急转弯",
-    "尸皮针", "医美", "整容", "双眼皮", "化妆", "穿搭"
+    "尸皮针", "医美", "整容", "双眼皮", "化妆", "穿搭",
+    # 纯极客数码软件与效率玄学
+    "食用指南", "标签页", "生产力App", "软件的新形式", "信息处理系统", "上帝模式",
+    "Notion", "Obsidian", "Logseq", "插件", "油猴", "桌搭", "外设", "工位", "桌面"
 ]
+
+# 单一平台单日入库上限，坚决杜绝单一社区刷屏霸榜
+MAX_PER_SOURCE_DAILY = 2
 
 # 正文一票否决恶性垃圾黑名单
 BODY_BLACKLIST = [
@@ -217,6 +223,13 @@ class StrictTrendCollector:
         if self.is_already_collected(article["id"], article["title"]):
             return False
         if len(self.new_articles) >= DAILY_TARGET_MAX:
+            return False
+
+        # 单一来源单日配额限制，坚决杜绝单一平台刷屏
+        source = article.get("source", "其他")
+        source_count = sum(1 for a in self.new_articles if a.get("source") == source)
+        if source_count >= MAX_PER_SOURCE_DAILY:
+            print(f"  [✕ 配额限制] 《{article['title']}》 -> 来源 [{source}] 今日已达上限 ({MAX_PER_SOURCE_DAILY}篇)，防刷屏拦截")
             return False
 
         passed, reason, score = evaluate_relevance(article["title"], raw_summary, article["content"])
