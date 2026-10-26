@@ -249,10 +249,9 @@ const Navbar = () => {
                 elevation: 4,
                 sx: {
                   mt: 1.5,
-                  p: 1.5,
+                  p: 1.2,
                   borderRadius: 3,
-                  width: { xs: 320, sm: 580 },
-                  maxHeight: 520,
+                  width: { xs: 280, sm: 460 },
                   bgcolor: '#ffffff',
                   color: '#1c1917',
                   border: '1px solid #e7e5e4',
@@ -263,32 +262,28 @@ const Navbar = () => {
               <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-                gap: 1
+                gap: 0.6
               }}>
                 {guideCategories.map((item) => (
                   <MenuItem
                     key={item.path}
                     onClick={() => handleNavClick(item.path)}
                     sx={{
-                      p: 1.2,
-                      borderRadius: 2,
+                      px: 1.5,
+                      py: 1,
+                      borderRadius: 1.5,
                       display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: 1.5,
+                      alignItems: 'center',
+                      gap: 1.2,
                       '&:hover': {
                         bgcolor: 'rgba(194, 65, 12, 0.05)'
                       }
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.3 }}>{item.icon}</Box>
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '0.88rem' }}>
-                        {item.label}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.73rem', display: 'block', lineHeight: 1.4 }}>
-                        {item.desc}
-                      </Typography>
-                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>{item.icon}</Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#1c1917', fontSize: '0.88rem' }}>
+                      {item.label}
+                    </Typography>
                   </MenuItem>
                 ))}
               </Box>
@@ -326,9 +321,9 @@ const Navbar = () => {
                 elevation: 4,
                 sx: {
                   mt: 1.5,
-                  p: 1.5,
+                  p: 1.2,
                   borderRadius: 3,
-                  width: 320,
+                  width: 230,
                   bgcolor: '#ffffff',
                   color: '#1c1917',
                   border: '1px solid #e7e5e4',
@@ -341,26 +336,22 @@ const Navbar = () => {
                   key={item.path}
                   onClick={() => handleNavClick(item.path)}
                   sx={{
-                    p: 1.2,
-                    borderRadius: 2,
+                    px: 1.5,
+                    py: 1,
+                    borderRadius: 1.5,
                     display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 1.5,
-                    mb: 0.5,
+                    alignItems: 'center',
+                    gap: 1.2,
+                    mb: 0.3,
                     '&:hover': {
                       bgcolor: 'rgba(194, 65, 12, 0.05)'
                     }
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.3 }}>{item.icon}</Box>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917', fontSize: '0.88rem' }}>
-                      {item.label}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.73rem', display: 'block', lineHeight: 1.4 }}>
-                      {item.desc}
-                    </Typography>
-                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>{item.icon}</Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#1c1917', fontSize: '0.88rem' }}>
+                    {item.label}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
