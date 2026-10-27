@@ -42,7 +42,8 @@ import {
   Savings as SavingsIcon,
   TrendingUp as TrendingUpIcon,
   Build as BuildIcon,
-  Thermostat as ThermostatIcon
+  Thermostat as ThermostatIcon,
+  FindReplace as FindReplaceIcon
 } from '@mui/icons-material'
 import SearchBar from './SearchBar'
 import { useAuth } from '../contexts/AuthContext'
@@ -356,7 +357,7 @@ const Navbar = () => {
               ))}
             </Menu>
 
-            {/* 4. 精选好物 */}
+            {/* 4. 平替库 */}
             <Button
               component={Link}
               to="/products"
@@ -375,7 +376,7 @@ const Navbar = () => {
                 }
               }}
             >
-              精选好物
+              平替库
             </Button>
           </Box>
 
@@ -534,9 +535,9 @@ const Navbar = () => {
               sx={{ borderRadius: 2, color: location.pathname === '/products' ? '#c2410c' : '#44403c' }}
             >
               <ListItemIcon sx={{ color: location.pathname === '/products' ? '#c2410c' : '#78716c', minWidth: 38 }}>
-                <Store />
+                <FindReplaceIcon />
               </ListItemIcon>
-              <ListItemText primary="精选好物" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
+              <ListItemText primary="平替库" primaryTypographyProps={{ fontWeight: 600, fontSize: '0.92rem' }} />
             </ListItemButton>
           </ListItem>
         </List>
