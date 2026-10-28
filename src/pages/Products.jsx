@@ -142,13 +142,34 @@ const Products = () => {
   const [selectedPlatform, setSelectedPlatform] = useState('all') // 'all' or platform name
   const [selectedTarget, setSelectedTarget] = useState('all') // 'all' or target slug
   const [sortBy, setSortBy] = useState('featured') // 'featured' | 'stars' | 'tier'
+  const [chineseOnly, setChineseOnly] = useState(false) // 仅查看国产中文付费软件平替
 
   // 详情弹窗状态
   const [detailItem, setDetailItem] = useState(null)
 
   const { categories, targets, alternatives } = alternativesData
 
-  // 热门被替代软件快捷入口（按替代款数量降序挑选前 10 款）
+  // 国产中文付费平替总数
+  const chineseAltsCount = useMemo(() => {
+    return alternatives.filter((a) => a.is_chinese || a.target?.is_chinese).length
+  }, [alternatives])
+
+  // 各分类数量统计
+  const categoryCounts = useMemo(() => {
+    const counts = {}
+    alternatives.forEach((alt) => {
+      const cslug = alt.target?.category_slug
+      if (cslug) {
+        counts[cslug] = (counts[cslug] || 0) + 1
+      }
+      if (alt.is_chinese || alt.target?.is_chinese) {
+        counts['china'] = (counts['china'] || 0) + 1
+      }
+    })
+    return counts
+  }, [alternatives])
+
+  // 热门被替代软件快捷入口（优先展示国内高频收费软件）
   const hotTargets = useMemo(() => {
     const counts = {}
     alternatives.forEach((alt) => {
@@ -157,11 +178,36 @@ const Products = () => {
         counts[slug] = (counts[slug] || 0) + 1
       }
     })
+
+    const prioritySlugs = [
+      'wps',
+      'baidu-pan',
+      'capcut-pro',
+      'sunlogin-todesk',
+      'xmind',
+      'youdao-note',
+      'netease-music',
+      'xunlei',
+      'china-pdf-tools',
+      'china-screen-mirror',
+      'wechat-backup-tools',
+      'photoshop',
+      'cursor',
+      'notion'
+    ]
+
     return targets
       .map((t) => ({ ...t, count: counts[t.slug] || 0 }))
       .filter((t) => t.count > 0)
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10)
+      .sort((a, b) => {
+        const pA = prioritySlugs.indexOf(a.slug)
+        const pB = prioritySlugs.indexOf(b.slug)
+        if (pA !== -1 && pB !== -1) return pA - pB
+        if (pA !== -1) return -1
+        if (pB !== -1) return 1
+        return b.count - a.count
+      })
+      .slice(0, 14)
   }, [targets, alternatives])
 
   // 所有可用平台列表
@@ -178,6 +224,13 @@ const Products = () => {
   // 过滤与排序
   const filteredAlternatives = useMemo(() => {
     return alternatives.filter((item) => {
+      // 0. 国产中文付费平替专区筛选
+      if (chineseOnly) {
+        if (!item.is_chinese && !item.target?.is_chinese && item.target?.category_slug !== 'china') {
+          return false
+        }
+      }
+
       // 1. 搜索
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim()
@@ -196,9 +249,15 @@ const Products = () => {
         return false
       }
 
-      // 3. 分类
-      if (selectedCategory !== 'all' && item.target?.category_slug !== selectedCategory) {
-        return false
+      // 3. 分类（当选择「国产软件」时，包含所有替代国内收费软件的项目）
+      if (selectedCategory !== 'all') {
+        if (selectedCategory === 'china') {
+          if (!item.is_chinese && !item.target?.is_chinese && item.target?.category_slug !== 'china') {
+            return false
+          }
+        } else if (item.target?.category_slug !== selectedCategory) {
+          return false
+        }
       }
 
       // 4. 平台
@@ -222,7 +281,7 @@ const Products = () => {
       // 'featured'
       return a.free_tier - b.free_tier || (b.github_stars || 0) - (a.github_stars || 0)
     })
-  }, [alternatives, searchQuery, selectedTier, selectedCategory, selectedPlatform, selectedTarget, sortBy])
+  }, [alternatives, searchQuery, selectedTier, selectedCategory, selectedPlatform, selectedTarget, sortBy, chineseOnly])
 
   // 重置所有筛选
   const handleResetFilters = () => {
@@ -232,9 +291,10 @@ const Products = () => {
     setSelectedPlatform('all')
     setSelectedTarget('all')
     setSortBy('featured')
+    setChineseOnly(false)
   }
 
-  const hasActiveFilters = searchQuery || selectedTier !== 'all' || selectedCategory !== 'all' || selectedPlatform !== 'all' || selectedTarget !== 'all'
+  const hasActiveFilters = searchQuery || selectedTier !== 'all' || selectedCategory !== 'all' || selectedPlatform !== 'all' || selectedTarget !== 'all' || chineseOnly
 
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
@@ -428,10 +488,10 @@ const Products = () => {
               }}
             >
               {/* 搜索框 */}
-              <Box sx={{ mb: 2.5 }}>
+              <Box sx={{ mb: 2 }}>
                 <TextField
                   fullWidth
-                  placeholder="搜索平替软件、被替代原版 (如 Cursor, Notion, Photoshop, 7-Zip) 或功能特性..."
+                  placeholder="搜索平替软件、被替代原版 (如 WPS, 百度网盘, 剪映, 向日葵, XMind, Photoshop, Cursor)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   InputProps={{
@@ -459,21 +519,74 @@ const Products = () => {
                 />
               </Box>
 
+              {/* 国产中文付费软件平替专区高亮入口 */}
+              <Box
+                sx={{
+                  mb: 2.5,
+                  p: 1.5,
+                  borderRadius: 2,
+                  bgcolor: chineseOnly ? 'rgba(194, 65, 12, 0.08)' : 'rgba(194, 65, 12, 0.03)',
+                  border: '1px solid',
+                  borderColor: chineseOnly ? '#c2410c' : 'rgba(194, 65, 12, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 1.5
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                  <VerifiedOutlined sx={{ fontSize: 18, color: '#c2410c' }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917' }}>
+                    国产中文付费软件平替专区
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: '#78716c' }}>
+                    收录 WPS / 百度网盘 / 剪映 / 向日葵 / XMind / 有道云笔记 / 网易云等 {chineseAltsCount} 款常见收费软件平替
+                  </Typography>
+                </Box>
+                <Button
+                  size="small"
+                  variant={chineseOnly ? 'contained' : 'outlined'}
+                  onClick={() => {
+                    const next = !chineseOnly
+                    setChineseOnly(next)
+                    if (next) setSelectedCategory('all')
+                  }}
+                  sx={{
+                    bgcolor: chineseOnly ? '#c2410c' : '#ffffff',
+                    color: chineseOnly ? '#ffffff' : '#c2410c',
+                    borderColor: '#c2410c',
+                    fontWeight: 700,
+                    fontSize: '0.8rem',
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    py: 0.5,
+                    px: 1.8,
+                    '&:hover': { bgcolor: chineseOnly ? '#9a3412' : 'rgba(194, 65, 12, 0.08)' }
+                  }}
+                >
+                  {chineseOnly ? '正在筛选：国产平替 (点击恢复全部)' : `一键筛选：国产付费平替 (${chineseAltsCount})`}
+                </Button>
+              </Box>
+
               {/* 热门目标软件快捷跳转 */}
               <Box sx={{ mb: 2 }}>
                 <Typography variant="caption" sx={{ fontWeight: 700, color: '#78716c', mb: 1, display: 'block' }}>
-                  热门替代专题：
+                  热门替代专题（点击直达对应原版平替）：
                 </Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ gap: 0.8 }}>
                   <Chip
                     label="全部软件"
                     size="small"
                     clickable
-                    onClick={() => setSelectedTarget('all')}
+                    onClick={() => {
+                      setSelectedTarget('all')
+                      setChineseOnly(false)
+                    }}
                     sx={{
                       fontWeight: 600,
-                      bgcolor: selectedTarget === 'all' ? '#1c1917' : '#f5f5f4',
-                      color: selectedTarget === 'all' ? '#ffffff' : '#57534e'
+                      bgcolor: selectedTarget === 'all' && !chineseOnly ? '#1c1917' : '#f5f5f4',
+                      color: selectedTarget === 'all' && !chineseOnly ? '#ffffff' : '#57534e'
                     }}
                   />
                   {hotTargets.map((t) => (
@@ -482,7 +595,10 @@ const Products = () => {
                       label={`${t.name} (${t.count})`}
                       size="small"
                       clickable
-                      onClick={() => setSelectedTarget(selectedTarget === t.slug ? 'all' : t.slug)}
+                      onClick={() => {
+                        setSelectedTarget(selectedTarget === t.slug ? 'all' : t.slug)
+                        setChineseOnly(false)
+                      }}
                       sx={{
                         fontWeight: 500,
                         bgcolor: selectedTarget === t.slug ? '#c2410c' : '#f5f5f4',
@@ -512,22 +628,28 @@ const Products = () => {
                       color: selectedCategory === 'all' ? '#ffffff' : '#57534e'
                     }}
                   />
-                  {categories.map((cat) => (
-                    <Chip
-                      key={cat.slug}
-                      label={cat.name}
-                      size="small"
-                      clickable
-                      onClick={() => setSelectedCategory(selectedCategory === cat.slug ? 'all' : cat.slug)}
-                      sx={{
-                        fontWeight: 500,
-                        bgcolor: selectedCategory === cat.slug ? '#c2410c' : '#f5f5f4',
-                        color: selectedCategory === cat.slug ? '#ffffff' : '#44403c',
-                        border: '1px solid',
-                        borderColor: selectedCategory === cat.slug ? '#c2410c' : '#e7e5e4'
-                      }}
-                    />
-                  ))}
+                  {categories.map((cat) => {
+                    const count = cat.slug === 'china' ? chineseAltsCount : (categoryCounts[cat.slug] || 0)
+                    return (
+                      <Chip
+                        key={cat.slug}
+                        label={`${cat.name} (${count})`}
+                        size="small"
+                        clickable
+                        onClick={() => {
+                          setSelectedCategory(selectedCategory === cat.slug ? 'all' : cat.slug)
+                          if (cat.slug === 'china') setChineseOnly(false)
+                        }}
+                        sx={{
+                          fontWeight: 500,
+                          bgcolor: selectedCategory === cat.slug ? '#c2410c' : '#f5f5f4',
+                          color: selectedCategory === cat.slug ? '#ffffff' : '#44403c',
+                          border: '1px solid',
+                          borderColor: selectedCategory === cat.slug ? '#c2410c' : '#e7e5e4'
+                        }}
+                      />
+                    )
+                  })}
                 </Stack>
               </Box>
 
@@ -695,7 +817,7 @@ const Products = () => {
                             </Box>
 
                             {/* 替代目标 */}
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5, flexWrap: 'wrap' }}>
                               <SwapHoriz sx={{ fontSize: 15, color: '#c2410c' }} />
                               <Typography variant="caption" sx={{ color: '#78716c' }}>
                                 替代{' '}
@@ -708,6 +830,21 @@ const Products = () => {
                                   </Box>
                                 )}
                               </Typography>
+                              {(item.is_chinese || item.target?.is_chinese) && (
+                                <Box
+                                  sx={{
+                                    px: 0.6,
+                                    py: 0.1,
+                                    borderRadius: 0.8,
+                                    bgcolor: 'rgba(194, 65, 12, 0.08)',
+                                    color: '#c2410c',
+                                    fontSize: '0.68rem',
+                                    fontWeight: 600
+                                  }}
+                                >
+                                  国产替代
+                                </Box>
+                              )}
                             </Box>
                           </Box>
 

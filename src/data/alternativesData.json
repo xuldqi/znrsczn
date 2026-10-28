@@ -74,7 +74,8 @@
       "description": null,
       "official_url": "https://cursor.com",
       "price_info": "$20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 2,
@@ -85,7 +86,8 @@
       "description": null,
       "official_url": "https://github.com/features/copilot",
       "price_info": "$10/月起",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 3,
@@ -96,7 +98,8 @@
       "description": null,
       "official_url": "https://chat.openai.com",
       "price_info": "$20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 4,
@@ -107,7 +110,8 @@
       "description": null,
       "official_url": "https://notion.so",
       "price_info": "$10/月起",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 5,
@@ -118,7 +122,8 @@
       "description": null,
       "official_url": "https://xmind.app",
       "price_info": "¥399 一次性",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 6,
@@ -129,7 +134,8 @@
       "description": null,
       "official_url": "https://www.wps.cn",
       "price_info": "¥169/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 7,
@@ -140,7 +146,8 @@
       "description": null,
       "official_url": "https://www.adobe.com/photoshop",
       "price_info": "$20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 8,
@@ -151,7 +158,8 @@
       "description": null,
       "official_url": "https://www.capcut.com",
       "price_info": "部分功能收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 9,
@@ -162,7 +170,8 @@
       "description": null,
       "official_url": "https://www.adobe.com/illustrator",
       "price_info": "$20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 10,
@@ -173,7 +182,8 @@
       "description": "网易出品的云笔记，付费版空间大、OCR 强",
       "official_url": "https://note.youdao.com",
       "price_info": "¥198/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 11,
@@ -184,7 +194,8 @@
       "description": "腾讯在线协作文档，对标 Google Docs/飞书",
       "official_url": "https://docs.qq.com",
       "price_info": "部分功能收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 12,
@@ -195,7 +206,8 @@
       "description": "阿里出品的企业 IM，骚扰电话多",
       "official_url": "https://www.dingtalk.com",
       "price_info": "基础免费/高级收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 13,
@@ -206,7 +218,8 @@
       "description": "字节出品的企业协作套件",
       "official_url": "https://www.feishu.cn",
       "price_info": "基础免费/高级收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 14,
@@ -217,7 +230,8 @@
       "description": "国内最大网盘，免费限速严重",
       "official_url": "https://pan.baidu.com",
       "price_info": "会员收费限速",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 15,
@@ -228,7 +242,8 @@
       "description": "下载工具，资源被版权方诟病",
       "official_url": "https://www.xunlei.com",
       "price_info": "会员收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 16,
@@ -239,7 +254,8 @@
       "description": "老牌网盘，VIP 才能下载",
       "official_url": "https://115.com",
       "price_info": "VIP 收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 17,
@@ -250,7 +266,8 @@
       "description": "阿里出品的网盘，速度不错但有下载限制",
       "official_url": "https://www.alipan.com",
       "price_info": "部分限速",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 18,
@@ -261,7 +278,8 @@
       "description": "360 出品浏览器，弹窗广告多",
       "official_url": "https://browser.360.cn",
       "price_info": "免费但有广告",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 19,
@@ -272,7 +290,8 @@
       "description": "商业数学软件，学术界必备",
       "official_url": "https://www.mathworks.com",
       "price_info": "$2000+ 永久授权",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 20,
@@ -283,7 +302,8 @@
       "description": "IBM 统计软件，社会科学标配",
       "official_url": "https://www.ibm.com/spss",
       "price_info": "$1000+/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 21,
@@ -294,7 +314,8 @@
       "description": "专业 CAD 软件",
       "official_url": "https://www.autodesk.com/autocad",
       "price_info": "$1700+/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 22,
@@ -305,7 +326,8 @@
       "description": "3D 建模入门软件",
       "official_url": "https://www.sketchup.com",
       "price_info": "$300+/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 23,
@@ -316,7 +338,8 @@
       "description": "专业录屏 + 剪辑",
       "official_url": "https://www.techsmith.com/camtasia",
       "price_info": "$250 一次性",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 24,
@@ -327,7 +350,8 @@
       "description": "专业视频剪辑软件",
       "official_url": "https://www.adobe.com/premiere",
       "price_info": "$20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 25,
@@ -338,7 +362,8 @@
       "description": "学术文献管理软件",
       "official_url": "https://endnote.com",
       "price_info": "$250 一次性",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 26,
@@ -349,7 +374,8 @@
       "description": "Wolfram 数学软件",
       "official_url": "https://www.wolfram.com/mathematica",
       "price_info": "$300+/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 27,
@@ -360,7 +386,8 @@
       "description": "Mac 系统清理工具",
       "official_url": "https://macpaw.com/cleanmymac",
       "price_info": "$40/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 28,
@@ -371,7 +398,8 @@
       "description": "所见即所得 Markdown 编辑器，已正式收费",
       "official_url": "https://typora.io",
       "price_info": "¥89 一次性",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 29,
@@ -382,7 +410,8 @@
       "description": "专业音频编辑软件",
       "official_url": "https://www.adobe.com/audition",
       "price_info": "$20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 30,
@@ -393,7 +422,8 @@
       "description": "数字音乐工作站",
       "official_url": "https://www.image-line.com",
       "price_info": "$99+",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 31,
@@ -404,7 +434,8 @@
       "description": "远程桌面软件，免费版有使用时长限制",
       "official_url": "https://www.teamviewer.com",
       "price_info": "个人版被限制商业使用",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 32,
@@ -415,7 +446,8 @@
       "description": "企业 IM，免费版消息限制 90 天",
       "official_url": "https://slack.com",
       "price_info": "$7.25/月起",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 33,
@@ -426,7 +458,8 @@
       "description": "代码编辑器，无限试用但有弹窗",
       "official_url": "https://www.sublimetext.com",
       "price_info": "$99 一次性",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 34,
@@ -437,7 +470,8 @@
       "description": "数据库管理客户端",
       "official_url": "https://www.navicat.com",
       "price_info": "$1300+",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 35,
@@ -448,7 +482,8 @@
       "description": "系统清理工具，被 Avast 收购后捆绑安装",
       "official_url": "https://www.ccleaner.com",
       "price_info": "$19/年起",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 36,
@@ -459,7 +494,8 @@
       "description": "长文写作软件",
       "official_url": "https://www.literatureandlatte.com/scrivener",
       "price_info": "$59 一次性",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 37,
@@ -470,7 +506,8 @@
       "description": "国内音乐流媒体，部分歌单需会员",
       "official_url": "https://music.163.com",
       "price_info": "¥18/月会员",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": true
     },
     {
       "id": 38,
@@ -481,7 +518,8 @@
       "description": "微软笔记软件，功能强但慢",
       "official_url": "https://www.onenote.com",
       "price_info": "完全免费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 39,
@@ -492,7 +530,8 @@
       "description": "看板项目管理工具，免费版有限制",
       "official_url": "https://trello.com",
       "price_info": "$5/月起",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 40,
@@ -503,7 +542,8 @@
       "description": "Mac 系统清理优化工具，知名但贵",
       "official_url": "https://macpaw.com/cleanmymac",
       "price_info": "$39/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 41,
@@ -514,7 +554,8 @@
       "description": "Windows 磁盘空间分析工具",
       "official_url": "https://www.jam-software.com/treesize",
       "price_info": "$50+",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 42,
@@ -525,7 +566,8 @@
       "description": "Windows 自带搜索，速度慢功能弱",
       "official_url": "",
       "price_info": "免费（但太慢）",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 43,
@@ -536,7 +578,8 @@
       "description": "全球主流对象存储，国内用容易超支",
       "official_url": "https://aws.amazon.com/s3",
       "price_info": "按量付费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 44,
@@ -547,7 +590,8 @@
       "description": "各种收费的图片托管服务，有些有流量限制",
       "official_url": "",
       "price_info": "¥30+/年",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 45,
@@ -558,7 +602,8 @@
       "description": "AI 图片放大软件，收费高",
       "official_url": "https://www.topazlabs.com/gigapixel",
       "price_info": "$99",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 46,
@@ -569,7 +614,8 @@
       "description": "在线抠图，付费版才有高清下载",
       "official_url": "https://www.remove.bg",
       "price_info": "按张收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 47,
@@ -580,7 +626,8 @@
       "description": "在线视频压缩，很多网站限制大小且收费",
       "official_url": "",
       "price_info": "按次/按月收费",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 48,
@@ -591,7 +638,8 @@
       "description": "在线视频编辑/字幕/转换，免费版有限制",
       "official_url": "",
       "price_info": "$5-20/月",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 49,
@@ -602,7 +650,8 @@
       "description": "Mac 窗口管理，一次付费",
       "official_url": "https://magnet.crowdcafe.com",
       "price_info": "$9.99 买断",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 50,
@@ -613,7 +662,8 @@
       "description": "Mac 启动器，核心功能需 Powerpack",
       "official_url": "https://www.alfredapp.com",
       "price_info": "£34 买断",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 51,
@@ -624,7 +674,8 @@
       "description": "Mac 菜单栏管理，收费且更新慢",
       "official_url": "https://www.macbartender.com",
       "price_info": "$20 买断",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 52,
@@ -635,7 +686,8 @@
       "description": "API 调试工具，团队协作需要付费",
       "official_url": "https://www.postman.com",
       "price_info": "$14/月起",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 53,
@@ -646,7 +698,8 @@
       "description": "Adobe Creative Cloud，订阅费高",
       "official_url": "https://www.adobe.com",
       "price_info": "订阅制",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 54,
@@ -657,7 +710,8 @@
       "description": "苹果隔空投送，仅限苹果设备",
       "official_url": "",
       "price_info": "免费但仅 Apple",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 55,
@@ -668,7 +722,8 @@
       "description": "Downie 等视频下载工具需要付费",
       "official_url": "",
       "price_info": "$20+ 买断",
-      "sort_order": 0
+      "sort_order": 0,
+      "is_chinese": false
     },
     {
       "id": 56,
@@ -679,7 +734,8 @@
       "description": "微软经典电子表格软件，用于数据计算、统计图表与报表，依赖 Microsoft 365 订阅",
       "official_url": "https://www.microsoft.com/microsoft-365/excel",
       "price_info": "¥398/年起",
-      "sort_order": 10
+      "sort_order": 10,
+      "is_chinese": false
     },
     {
       "id": 57,
@@ -690,7 +746,8 @@
       "description": "微软文字排版与文档处理软件，依赖 Microsoft 365 订阅",
       "official_url": "https://www.microsoft.com/microsoft-365/word",
       "price_info": "¥398/年起",
-      "sort_order": 11
+      "sort_order": 11,
+      "is_chinese": false
     },
     {
       "id": 58,
@@ -701,71 +758,152 @@
       "description": "Adobe 专业 PDF 编辑阅读与转换工具，月费昂贵且高级功能受限",
       "official_url": "https://www.adobe.com/acrobat.html",
       "price_info": "¥118/月",
-      "sort_order": 12
+      "sort_order": 12,
+      "is_chinese": false
+    },
+    {
+      "id": 59,
+      "name": "向日葵 / ToDesk 远程控制",
+      "slug": "sunlogin-todesk",
+      "category_id": 5,
+      "logo_url": null,
+      "description": "国内主流远程桌面与控制软件，免费版限速30帧且限制多设备，付费版每年上百元。",
+      "official_url": "https://sunlogin.oray.com/",
+      "price_info": "¥158/年起或限速限设备",
+      "sort_order": 1,
+      "is_chinese": true
+    },
+    {
+      "id": 60,
+      "name": "国产流氓/付费 PDF 转换器",
+      "slug": "china-pdf-tools",
+      "category_id": 8,
+      "logo_url": null,
+      "description": "国产常见PDF转换软件，常见套路为转换前声称免费，转完导出时强制按页收取高额费用。",
+      "official_url": "",
+      "price_info": "¥68-198/年或按页扣费",
+      "sort_order": 2,
+      "is_chinese": true
+    },
+    {
+      "id": 61,
+      "name": "各类国产投屏收费软件 (傲软投屏/幕连)",
+      "slug": "china-screen-mirror",
+      "category_id": 4,
+      "logo_url": null,
+      "description": "手机投屏到电脑的商业软件，免费版限制时长10分钟、强制水印且画质压缩模糊。",
+      "official_url": "",
+      "price_info": "¥128/年或按分钟限时",
+      "sort_order": 3,
+      "is_chinese": true
+    },
+    {
+      "id": 62,
+      "name": "微信聊天记录备份/手机助手收费软件",
+      "slug": "wechat-backup-tools",
+      "category_id": 4,
+      "logo_url": null,
+      "description": "商业手机备份与微信数据恢复工具，利用微信存储爆满痛点收取数百元买断费用。",
+      "official_url": "",
+      "price_info": "¥199/终身买断",
+      "sort_order": 4,
+      "is_chinese": true
+    },
+    {
+      "id": 63,
+      "name": "微信读书 / 收费网络小说平台",
+      "slug": "china-reader-apps",
+      "category_id": 2,
+      "logo_url": null,
+      "description": "主流网文与电子书平台，强制开通付费卡、插播连环广告且部分热门书籍反复加价。",
+      "official_url": "",
+      "price_info": "¥19-40/月付费卡",
+      "sort_order": 5,
+      "is_chinese": true
+    },
+    {
+      "id": 64,
+      "name": "国产流氓解压软件 (快压/好压/360压缩国内版)",
+      "slug": "china-zip-tools",
+      "category_id": 4,
+      "logo_url": null,
+      "description": "捆绑全家桶弹窗、右下角低俗网页弹窗广告的流氓压缩工具。",
+      "official_url": "",
+      "price_info": "免费但强制流氓弹窗广告",
+      "sort_order": 6,
+      "is_chinese": true
     }
   ],
   "alternatives": [
     {
-      "id": 75,
+      "id": 136,
       "name": "RustDesk",
       "slug": "rustdesk",
       "free_tier": 1,
-      "free_tier_detail": "完全开源免费，可自部署",
+      "free_tier_detail": "开源跨平台远程桌面，官方公共中继完全免费，支持自建私有服务器实现 0 元满速",
       "tags": [
-        "开源",
-        "远程桌面",
-        "国产",
-        "自部署"
+        "开源神作",
+        "76kStars",
+        "远程控制",
+        "自建服务器",
+        "低延迟"
       ],
       "platforms": [
         "Windows",
         "macOS",
         "Linux",
         "iOS",
-        "Android"
+        "Android",
+        "Web"
       ],
       "pricing_truth": {
         "core": {
           "status": "free",
-          "note": "远程桌面连接完全开源免费"
+          "note": "远程桌面控制、文件传输、双向剪贴板完全免费无限制"
         },
         "sync": {
-          "status": "self_host",
-          "note": "可用中继服务器自部署"
+          "status": "free",
+          "note": "无设备数量绑定限制，点对点 P2P 直连无需中转费用"
         },
         "ai": {
-          "status": "free",
-          "note": "无 AI"
-        },
-        "export": {
-          "status": "free",
-          "note": "支持文件传输"
+          "status": "self_host",
+          "note": "可自建轻量服务器中继，彻底摆脱公共高峰期排队"
         }
       },
-      "hack_guide": null,
-      "official_url": "https://rustdesk.com",
+      "hack_guide": {
+        "has_hack": true,
+        "title": "3分钟自建专属 60 帧满速远程桌面",
+        "steps": [
+          "在被控端和主控端分别安装 RustDesk 客户端",
+          "日常直接输入 ID 与密码即可通过公共服务器一键远程连接",
+          "若需追求极致低延迟，可在个人 99 元/年轻量服务器运行官方一键 Docker 命令",
+          "在客户端填入自己的中继 IP，即刻获得超越向日葵数百元 VIP 的 60 帧流畅体验"
+        ],
+        "difficulty": "medium"
+      },
+      "official_url": "https://rustdesk.com/",
       "github_url": "https://github.com/rustdesk/rustdesk",
       "github_stars": 76000,
-      "description": "国产开源远程桌面软件，替代 TeamViewer",
+      "description": "GitHub 7.6 万星标的开源远程桌面第一神器。向日葵与 ToDesk 的终极开源平替，无设备绑定上限，P2P 直连满速不卡顿。",
       "pros": [
-        "完全开源",
-        "国产中文",
-        "可自部署",
-        "手机也能用"
+        "开源纯净无广告，无向日葵令人发指的 30 帧限速和多设备收费",
+        "端到端加密，杜绝商业远程软件的隐私泄露风险",
+        "支持全平台控制"
       ],
       "cons": [
-        "性能弱于 TeamViewer",
-        "中继服务器需自建"
+        "全国晚高峰时官方公共中继偶尔有延迟，自建服务器体验最佳"
       ],
+      "is_chinese": true,
       "target": {
-        "id": 31,
-        "name": "TeamViewer",
-        "slug": "teamviewer",
-        "price_info": "个人版被限制商业使用",
-        "official_url": "https://www.teamviewer.com",
-        "category_id": 4,
-        "category_name": "日常工具",
-        "category_slug": "daily"
+        "id": 59,
+        "name": "向日葵 / ToDesk 远程控制",
+        "slug": "sunlogin-todesk",
+        "price_info": "¥158/年起或限速限设备",
+        "official_url": "https://sunlogin.oray.com/",
+        "category_id": 5,
+        "category_name": "国产软件",
+        "category_slug": "china",
+        "is_chinese": true
       }
     },
     {
@@ -823,7 +961,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 120,
@@ -887,7 +1026,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 31,
@@ -944,7 +1084,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 68,
@@ -1005,7 +1146,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 46,
@@ -1061,8 +1203,10 @@
         "official_url": "https://www.xunlei.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 20,
@@ -1129,7 +1273,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 39,
@@ -1186,8 +1331,10 @@
         "official_url": "https://www.dingtalk.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 41,
@@ -1244,8 +1391,10 @@
         "official_url": "https://www.feishu.cn",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 80,
@@ -1306,7 +1455,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 12,
@@ -1374,7 +1524,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 122,
@@ -1435,7 +1586,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 112,
@@ -1496,7 +1648,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 43,
@@ -1553,8 +1706,10 @@
         "official_url": "https://pan.baidu.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 107,
@@ -1613,7 +1768,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 58,
@@ -1670,7 +1826,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 86,
@@ -1729,7 +1886,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 48,
@@ -1785,8 +1943,10 @@
         "official_url": "https://115.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 55,
@@ -1843,7 +2003,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 83,
@@ -1903,7 +2064,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 101,
@@ -1965,7 +2127,8 @@
         "category_id": 8,
         "category_name": "文件转换与压缩",
         "category_slug": "convert"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 125,
@@ -2036,7 +2199,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 35,
@@ -2093,7 +2257,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 67,
@@ -2152,7 +2317,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 109,
@@ -2211,7 +2377,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 10,
@@ -2263,8 +2430,10 @@
         "official_url": "https://www.capcut.com",
         "category_id": 3,
         "category_name": "设计与多媒体",
-        "category_slug": "design"
-      }
+        "category_slug": "design",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 73,
@@ -2326,7 +2495,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 124,
@@ -2398,7 +2568,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 127,
@@ -2469,7 +2640,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 128,
@@ -2528,8 +2700,10 @@
         "official_url": "https://www.wps.cn",
         "category_id": 2,
         "category_name": "生产力与笔记",
-        "category_slug": "productivity"
-      }
+        "category_slug": "productivity",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 129,
@@ -2589,7 +2763,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 130,
@@ -2649,7 +2824,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 131,
@@ -2709,7 +2885,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 74,
@@ -2771,7 +2948,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 29,
@@ -2827,7 +3005,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 22,
@@ -2884,7 +3063,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 81,
@@ -2947,8 +3127,10 @@
         "official_url": "https://music.163.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 37,
@@ -3005,8 +3187,10 @@
         "official_url": "https://docs.qq.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 27,
@@ -3063,8 +3247,10 @@
         "official_url": "https://www.capcut.com",
         "category_id": 3,
         "category_name": "设计与多媒体",
-        "category_slug": "design"
-      }
+        "category_slug": "design",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 30,
@@ -3132,7 +3318,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 63,
@@ -3193,7 +3380,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 69,
@@ -3253,7 +3441,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 87,
@@ -3312,7 +3501,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 1,
@@ -3366,7 +3556,8 @@
         "category_id": 1,
         "category_name": "AI 编程工具",
         "category_slug": "ai-coding"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 4,
@@ -3420,7 +3611,8 @@
         "category_id": 1,
         "category_name": "AI 编程工具",
         "category_slug": "ai-coding"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 6,
@@ -3489,7 +3681,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 8,
@@ -3544,7 +3737,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 16,
@@ -3601,8 +3795,10 @@
         "official_url": "https://xmind.app",
         "category_id": 2,
         "category_name": "生产力与笔记",
-        "category_slug": "productivity"
-      }
+        "category_slug": "productivity",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 18,
@@ -3667,8 +3863,10 @@
         "official_url": "https://www.wps.cn",
         "category_id": 2,
         "category_name": "生产力与笔记",
-        "category_slug": "productivity"
-      }
+        "category_slug": "productivity",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 25,
@@ -3726,7 +3924,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 34,
@@ -3784,7 +3983,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 36,
@@ -3841,8 +4041,10 @@
         "official_url": "https://note.youdao.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 49,
@@ -3907,8 +4109,10 @@
         "official_url": "https://www.alipan.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 50,
@@ -3964,8 +4168,10 @@
         "official_url": "https://browser.360.cn",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 51,
@@ -4023,7 +4229,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 53,
@@ -4080,7 +4287,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 57,
@@ -4138,7 +4346,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 59,
@@ -4205,7 +4414,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 60,
@@ -4263,7 +4473,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 61,
@@ -4321,7 +4532,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 64,
@@ -4382,7 +4594,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 78,
@@ -4446,7 +4659,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 79,
@@ -4508,7 +4722,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 89,
@@ -4567,7 +4782,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 90,
@@ -4627,7 +4843,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 95,
@@ -4688,7 +4905,8 @@
         "category_id": 9,
         "category_name": "图床与存储",
         "category_slug": "hosting"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 96,
@@ -4748,7 +4966,8 @@
         "category_id": 9,
         "category_name": "图床与存储",
         "category_slug": "hosting"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 103,
@@ -4807,7 +5026,8 @@
         "category_id": 8,
         "category_name": "文件转换与压缩",
         "category_slug": "convert"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 104,
@@ -4867,7 +5087,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 108,
@@ -4926,7 +5147,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 115,
@@ -4988,7 +5210,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 123,
@@ -5057,7 +5280,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 113,
@@ -5117,7 +5341,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 42,
@@ -5174,8 +5399,10 @@
         "official_url": "https://www.feishu.cn",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 82,
@@ -5235,7 +5462,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 13,
@@ -5292,7 +5520,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 65,
@@ -5351,7 +5580,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 2,
@@ -5415,7 +5645,8 @@
         "category_id": 1,
         "category_name": "AI 编程工具",
         "category_slug": "ai-coding"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 91,
@@ -5476,7 +5707,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 126,
@@ -5546,7 +5778,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 121,
@@ -5606,7 +5839,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 7,
@@ -5664,7 +5898,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 38,
@@ -5721,8 +5956,10 @@
         "official_url": "https://docs.qq.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 110,
@@ -5781,7 +6018,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 40,
@@ -5838,8 +6076,10 @@
         "official_url": "https://www.dingtalk.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 132,
@@ -5900,7 +6140,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 21,
@@ -5958,7 +6199,8 @@
         "category_id": null,
         "category_name": null,
         "category_slug": null
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 47,
@@ -6014,8 +6256,10 @@
         "official_url": "https://www.xunlei.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 9,
@@ -6069,7 +6313,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 17,
@@ -6126,8 +6371,10 @@
         "official_url": "https://xmind.app",
         "category_id": 2,
         "category_name": "生产力与笔记",
-        "category_slug": "productivity"
-      }
+        "category_slug": "productivity",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 19,
@@ -6183,8 +6430,10 @@
         "official_url": "https://www.wps.cn",
         "category_id": 2,
         "category_name": "生产力与笔记",
-        "category_slug": "productivity"
-      }
+        "category_slug": "productivity",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 11,
@@ -6236,8 +6485,10 @@
         "official_url": "https://www.capcut.com",
         "category_id": 3,
         "category_name": "设计与多媒体",
-        "category_slug": "design"
-      }
+        "category_slug": "design",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 92,
@@ -6296,7 +6547,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 62,
@@ -6353,7 +6605,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 5,
@@ -6406,7 +6659,8 @@
         "category_id": 1,
         "category_name": "AI 编程工具",
         "category_slug": "ai-coding"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 23,
@@ -6463,7 +6717,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 26,
@@ -6520,7 +6775,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 28,
@@ -6576,8 +6832,10 @@
         "official_url": "https://www.capcut.com",
         "category_id": 3,
         "category_name": "设计与多媒体",
-        "category_slug": "design"
-      }
+        "category_slug": "design",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 32,
@@ -6635,7 +6893,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 44,
@@ -6692,8 +6951,10 @@
         "official_url": "https://pan.baidu.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 52,
@@ -6750,7 +7011,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 54,
@@ -6807,7 +7069,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 56,
@@ -6865,7 +7128,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 70,
@@ -6936,7 +7200,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 76,
@@ -6999,7 +7264,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 85,
@@ -7058,7 +7324,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 88,
@@ -7118,7 +7385,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 97,
@@ -7177,7 +7445,8 @@
         "category_id": 9,
         "category_name": "图床与存储",
         "category_slug": "hosting"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 99,
@@ -7237,7 +7506,8 @@
         "category_id": 9,
         "category_name": "图床与存储",
         "category_slug": "hosting"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 102,
@@ -7296,7 +7566,8 @@
         "category_id": 8,
         "category_name": "文件转换与压缩",
         "category_slug": "convert"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 116,
@@ -7357,7 +7628,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 117,
@@ -7417,7 +7689,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 45,
@@ -7474,8 +7747,10 @@
         "official_url": "https://pan.baidu.com",
         "category_id": 5,
         "category_name": "国产软件",
-        "category_slug": "china"
-      }
+        "category_slug": "china",
+        "is_chinese": true
+      },
+      "is_chinese": true
     },
     {
       "id": 114,
@@ -7535,7 +7810,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 66,
@@ -7594,7 +7870,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 118,
@@ -7656,7 +7933,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 98,
@@ -7715,7 +7993,8 @@
         "category_id": 9,
         "category_name": "图床与存储",
         "category_slug": "hosting"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 14,
@@ -7774,7 +8053,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 3,
@@ -7827,7 +8107,8 @@
         "category_id": 1,
         "category_name": "AI 编程工具",
         "category_slug": "ai-coding"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 24,
@@ -7883,7 +8164,8 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 71,
@@ -7943,7 +8225,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 72,
@@ -8015,7 +8298,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 77,
@@ -8076,7 +8360,8 @@
         "category_id": 4,
         "category_name": "日常工具",
         "category_slug": "daily"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 84,
@@ -8137,7 +8422,8 @@
         "category_id": 6,
         "category_name": "专业软件",
         "category_slug": "pro"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 100,
@@ -8196,7 +8482,8 @@
         "category_id": 9,
         "category_name": "图床与存储",
         "category_slug": "hosting"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 105,
@@ -8255,7 +8542,8 @@
         "category_id": 8,
         "category_name": "文件转换与压缩",
         "category_slug": "convert"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 15,
@@ -8313,7 +8601,8 @@
         "category_id": 2,
         "category_name": "生产力与笔记",
         "category_slug": "productivity"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 106,
@@ -8372,7 +8661,8 @@
         "category_id": 8,
         "category_name": "文件转换与压缩",
         "category_slug": "convert"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 111,
@@ -8431,7 +8721,8 @@
         "category_id": 7,
         "category_name": "Mac 工具",
         "category_slug": "mac-tools"
-      }
+      },
+      "is_chinese": false
     },
     {
       "id": 119,
@@ -8492,6 +8783,756 @@
         "category_id": 3,
         "category_name": "设计与多媒体",
         "category_slug": "design"
+      },
+      "is_chinese": false
+    },
+    {
+      "id": 133,
+      "name": "必剪",
+      "slug": "bicut",
+      "free_tier": 1,
+      "free_tier_detail": "B站官方出品，所有特效花字贴纸与智能语音转字幕完全免费，无水印，支持 4K 60fps 导出",
+      "tags": [
+        "国产良心",
+        "B站出品",
+        "自动生成字幕",
+        "无水印",
+        "自媒体必备"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "iOS",
+        "Android"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "多轨道剪辑、画中画、变速等核心剪辑功能全部免费"
+        },
+        "ai": {
+          "status": "free",
+          "note": "智能语音一键识别生成字幕、AI 抠像、朗读配音完全免费"
+        },
+        "export": {
+          "status": "free",
+          "note": "最高支持 4K 60fps 高清导出，无任何强制水印"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "0元替代剪映专业版全套VIP功能",
+        "steps": [
+          "下载安装必剪电脑端或手机端（直接在官网或应用商店获取）",
+          "使用普通 B 站账号登录（不需要开通大会员）",
+          "导入视频素材，使用「文本 -> 语音识别」自动生成卡点字幕",
+          "自由使用全部分类下的热门贴纸与花字，导出时勾选 4K 60fps 原画画质"
+        ],
+        "difficulty": "low"
+      },
+      "official_url": "https://bcut.bilibili.com/",
+      "github_url": "",
+      "github_stars": 0,
+      "description": "B站官方专为视频创作者打造的无广告全能剪辑软件。拥有完全不输剪映的特效、海量贴纸与高精度智能语音转字幕功能，终身零元无套路。",
+      "pros": [
+        "智能语音转字幕极度准确，大幅节省打字时间",
+        "无强制 VIP 机制，特效花字全部免收割",
+        "导出画质纯净无水印"
+      ],
+      "cons": [
+        "偏向中短视频与自媒体，好莱坞级复杂调色不如达芬奇"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 8,
+        "name": "剪映专业版",
+        "slug": "capcut-pro",
+        "price_info": "部分功能收费",
+        "official_url": "https://www.capcut.com",
+        "category_id": 3,
+        "category_name": "设计与多媒体",
+        "category_slug": "design",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 134,
+      "name": "知犀思维导图",
+      "slug": "zhixi-mind",
+      "free_tier": 3,
+      "free_tier_detail": "个人基础版不限节点数量，无水印高清导出 PDF 与超清图片，云端实时自动保存",
+      "tags": [
+        "国产良心",
+        "0节点限制",
+        "导出无水印",
+        "思维导图",
+        "全平台同步"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Web",
+        "iOS",
+        "Android"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "思维导图、逻辑图、组织结构图绘制完全免费，不限制节点总数"
+        },
+        "sync": {
+          "status": "free",
+          "note": "个人多设备云端自动实时同步存储"
+        },
+        "export": {
+          "status": "free",
+          "note": "免费导出高清 PNG、PDF，绝无 XMind 免费版的巨幅居中水印"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "零元绘制大型思维导图并高清无水印导出",
+        "steps": [
+          "访问知犀思维导图网页版或客户端注册个人账号",
+          "新建导图，支持自由添加上百个子节点（无任何收费弹窗卡顿）",
+          "点击右上角「导出」，选择 PDF 或 PNG 格式，直接下载高清净版文件"
+        ],
+        "difficulty": "low"
+      },
+      "official_url": "https://www.zhixi.com/",
+      "github_url": "",
+      "github_stars": 0,
+      "description": "打破 XMind 与幕布收费限制的国产良心思维导图工具。个人使用不限节点数量、导出完全无水印，真正做到零门槛开箱即用。",
+      "pros": [
+        "不限制节点数量，支持绘制千节点超大知识脑图",
+        "导出 PDF/图片无水印，可直接用于汇报展示",
+        "全平台云端同步无缝漫游"
+      ],
+      "cons": [
+        "超大附件文件嵌入或企业团队多人实时协作需要团队权限"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 5,
+        "name": "XMind",
+        "slug": "xmind",
+        "price_info": "¥399 一次性",
+        "official_url": "https://xmind.app",
+        "category_id": 2,
+        "category_name": "生产力与笔记",
+        "category_slug": "productivity",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 135,
+      "name": "思源笔记 (SiYuan)",
+      "slug": "siyuan-note",
+      "free_tier": 1,
+      "free_tier_detail": "核心客户端完全开源，本地离线使用 100% 免费无限制，无登录设备数量限制，支持自建云同步",
+      "tags": [
+        "开源神器",
+        "国产自研",
+        "本地优先",
+        "块级双链",
+        "支持Docker"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux",
+        "iOS",
+        "Android",
+        "Web"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "块级大纲双链笔记、思维导图互转、PDF 标注全部本地免费"
+        },
+        "sync": {
+          "status": "self_host",
+          "note": "可零元使用 WebDAV、S3、自建 Docker 服务端或移动硬盘同步"
+        },
+        "export": {
+          "status": "free",
+          "note": "支持导出 Markdown、PDF、Word 与完整知识库离线包"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "零元搭建私有多端同步知识库",
+        "steps": [
+          "安装思源笔记客户端（支持 Windows / Mac / 手机）",
+          "在「设置 -> 同步」中选择 WebDAV 模式",
+          "填入阿里云盘或自建 WebDAV 服务器连接信息",
+          "实现电脑与手机端零成本、无限容量的端到端加密同步"
+        ],
+        "difficulty": "medium"
+      },
+      "official_url": "https://b3log.org/siyuan/",
+      "github_url": "https://github.com/siyuan-note/siyuan",
+      "github_stars": 19000,
+      "description": "国产开源本地优先的个人知识管理系统。支持块级双链、大纲笔记与闪卡复习，彻底摆脱有道云笔记设备登录上限与开屏广告骚扰。",
+      "pros": [
+        "数据完全保存在本地磁盘，隐私绝对安全，无需担心被封号",
+        "无任何设备数量限制，支持局域网直接同步",
+        "块级引用细粒度行业顶级"
+      ],
+      "cons": [
+        "官方云端一键托管服务需要订阅（但自建 WebDAV 零元可用）"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 10,
+        "name": "有道云笔记",
+        "slug": "youdao-note",
+        "price_info": "¥198/年",
+        "official_url": "https://note.youdao.com",
+        "category_id": 5,
+        "category_name": "国产软件",
+        "category_slug": "china",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 137,
+      "name": "RayLink",
+      "slug": "raylink",
+      "free_tier": 3,
+      "free_tier_detail": "个人免费版提供 4K 60fps 画面传输、超低延迟、支持数位板压感与游戏手柄穿透",
+      "tags": [
+        "超低延迟",
+        "4K60帧",
+        "设计师首选",
+        "个人免费",
+        "免配置"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "iOS",
+        "Android"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "个人远程控制、4K 60fps 传输、手柄/数位板穿透全部免费"
+        },
+        "sync": {
+          "status": "free",
+          "note": "个人绑定设备无繁琐限制"
+        },
+        "export": {
+          "status": "free",
+          "note": "免费大文件点对点高速传输"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "免折腾获得 4K 60fps 设计级远程体验",
+        "steps": [
+          "在两台电脑分别下载并安装 RayLink",
+          "注册个人账号登录并绑定设备",
+          "在显示设置中勾选「4K 超清」与「60 FPS 高帧率模式」",
+          "享受丝滑如本地操作的远程剪辑、制图与办公"
+        ],
+        "difficulty": "low"
+      },
+      "official_url": "https://www.raylink.com/",
+      "github_url": "",
+      "github_stars": 0,
+      "description": "专为设计、视频后期与游戏开发打造的高性能远程控制软件。个人版免费提供 4K 60 帧画质和数位板压感，色彩精准，免除商业版限速困扰。",
+      "pros": [
+        "画质极高，色彩还原远超向日葵普通版",
+        "支持数位板手绘压感穿透",
+        "免自建服务器，小白下载即享超高帧率"
+      ],
+      "cons": [
+        "多路并发集中管控需团队版支持"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 59,
+        "name": "向日葵 / ToDesk 远程控制",
+        "slug": "sunlogin-todesk",
+        "price_info": "¥158/年起或限速限设备",
+        "official_url": "https://sunlogin.oray.com/",
+        "category_id": 5,
+        "category_name": "国产软件",
+        "category_slug": "china",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 138,
+      "name": "123云盘",
+      "slug": "123pan",
+      "free_tier": 3,
+      "free_tier_detail": "注册即赠 2TB 免费空间，下载完全不限速，分享文件他人无需登录即可满速下载",
+      "tags": [
+        "国内免限速",
+        "2TB免费空间",
+        "免登录下载",
+        "良心网盘",
+        "满速直链"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Android",
+        "iOS",
+        "Web"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "上传、在线解压、极速下载完全免费，绝无几十KB限速"
+        },
+        "sync": {
+          "status": "free",
+          "note": "2TB 免费超大云端储存空间"
+        },
+        "export": {
+          "status": "free",
+          "note": "分享文件接收方免安装客户端、免登录直接网页高速下载"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "免开超级会员实现文件满速分发与下载",
+        "steps": [
+          "注册 123 云盘账号直接领取免费 2TB 空间",
+          "上传需要分发的大文件（视频、安装包、资料）",
+          "创建分享链接发送给朋友或同事",
+          "对方在手机或电脑浏览器中直接点击即可跑满宽带下载，无需被强制装 App"
+        ],
+        "difficulty": "low"
+      },
+      "official_url": "https://www.123pan.com/",
+      "github_url": "",
+      "github_stars": 0,
+      "description": "国内少有的真正良心不限速网盘。免费赠送 2TB 空间，不设恶性限速墙，大文件分享接收方无需登录直接满速下载，百度网盘的完美平替。",
+      "pros": [
+        "下载不限速，实测轻松跑满 1000M 宽带",
+        "分享文件接收方体验极佳，免登录免装 App",
+        "免费存储空间充裕"
+      ],
+      "cons": [
+        "单日超大批量 GB 转存有合规审核额度"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 14,
+        "name": "百度网盘",
+        "slug": "baidu-pan",
+        "price_info": "会员收费限速",
+        "official_url": "https://pan.baidu.com",
+        "category_id": 5,
+        "category_name": "国产软件",
+        "category_slug": "china",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 139,
+      "name": "PDF24 Creator",
+      "slug": "pdf24-creator",
+      "free_tier": 1,
+      "free_tier_detail": "德国著名完全免费无广告 PDF 工具箱，本地离线运行，PDF 转 Word、合并、压缩、OCR 全部无限制免费",
+      "tags": [
+        "德国神器",
+        "100%离线免费",
+        "零广告",
+        "PDF转换",
+        "无限制"
+      ],
+      "platforms": [
+        "Windows",
+        "Web"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "PDF 转 Word/Excel/PPT、页面提取、页面排序完全免费"
+        },
+        "sync": {
+          "status": "free",
+          "note": "本地客户端 100% 离线运算，机密合同绝不上传云端"
+        },
+        "export": {
+          "status": "free",
+          "note": "不限页数、不限大小、无任何导出限制与收费弹窗"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "告别国产流氓 PDF 转换器按页收费套路",
+        "steps": [
+          "前往 PDF24 官网下载 Windows 客户端（安装包干净无捆绑）",
+          "打开工具箱，选择「PDF 转 Word」或「PDF 文本识别 OCR」",
+          "拖入任何几十上百页的长文档，本地极速转换完成",
+          "直接打开生成的 .docx 文件，排版保持原样，分文不花"
+        ],
+        "difficulty": "low"
+      },
+      "official_url": "https://www.pdf24.org/",
+      "github_url": "",
+      "github_stars": 0,
+      "description": "享誉全球的极客级全能 PDF 工具箱。彻底终结国产 PDF 软件转前免费、转后按页敲诈的流氓行径，无广告无限制，支持离线 OCR 文字识别。",
+      "pros": [
+        "不限制转换页数与次数，终身零元使用",
+        "本地离线处理，避免机密商务合同被上传泄密",
+        "功能极其丰富，涵盖 30+ 种 PDF 工具"
+      ],
+      "cons": [
+        "客户端仅原生支持 Windows，Mac 用户推荐使用其纯净网页版或 Stirling-PDF"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 60,
+        "name": "国产流氓/付费 PDF 转换器",
+        "slug": "china-pdf-tools",
+        "price_info": "¥68-198/年或按页扣费",
+        "official_url": "",
+        "category_id": 8,
+        "category_name": "文件转换与压缩",
+        "category_slug": "convert",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 140,
+      "name": "LX Music (洛雪音乐助手)",
+      "slug": "lx-music",
+      "free_tier": 1,
+      "free_tier_detail": "开源纯净多平台音乐客户端，本身零广告开源免费，支持导入社区公开音源畅听全网无损",
+      "tags": [
+        "开源神作",
+        "50kStars",
+        "全网曲库",
+        "无损畅听",
+        "零广告"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux",
+        "Android"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "歌曲搜索、无损播放、歌词滚动、歌单管理全部免费"
+        },
+        "sync": {
+          "status": "free",
+          "note": "支持本地备份与 WebDAV 歌单云同步"
+        },
+        "export": {
+          "status": "free",
+          "note": "音质支持标准、高品与无损 FLAC 模式"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "一键激活全网无损音乐曲库",
+        "steps": [
+          "从 GitHub 下载安装 LX Music 客户端",
+          "打开软件进入「设置 -> 基本设置 -> 自定义源管理」",
+          "导入社区开源的六音音源脚本接口 URL",
+          "搜索任何周杰伦、陈奕迅等 VIP 变灰歌曲，直接享受无损原音畅听"
+        ],
+        "difficulty": "medium"
+      },
+      "official_url": "https://github.com/lyswhut/lx-music-desktop",
+      "github_url": "https://github.com/lyswhut/lx-music-desktop",
+      "github_stars": 51000,
+      "description": "GitHub 超 5 万星标的开源音乐第一神器。彻底摆脱网易云音乐与 QQ 音乐满屏直播广告、歌曲频繁变灰需要购买多份 VIP 的烦恼。",
+      "pros": [
+        "界面干净优雅现代，没有任何直播、社交开屏广告骚扰",
+        "跨平台支持 Windows、Mac 和安卓手机",
+        "支持无损音质自由切换"
+      ],
+      "cons": [
+        "首次使用需花 1 分钟导入公开音源脚本"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 37,
+        "name": "网易云音乐",
+        "slug": "netease-music",
+        "price_info": "¥18/月会员",
+        "official_url": "https://music.163.com",
+        "category_id": 5,
+        "category_name": "国产软件",
+        "category_slug": "china",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 141,
+      "name": "Legado (开源阅读)",
+      "slug": "legado-reader",
+      "free_tier": 1,
+      "free_tier_detail": "GitHub 8万星标安卓开源最强阅读神器，0广告0收费，支持一键导入全网海量公开书源与微软真人朗读",
+      "tags": [
+        "80kStars",
+        "开源阅读第一",
+        "全网书源",
+        "微软晓晓TTS",
+        "零广告"
+      ],
+      "platforms": [
+        "Android",
+        "Web"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "书籍阅读、目录解析、翻页特效、离线缓存全部免费"
+        },
+        "ai": {
+          "status": "free",
+          "note": "支持接入微软 Edge 晓晓等高质量神经拟真真人语音朗读"
+        },
+        "sync": {
+          "status": "free",
+          "note": "支持 WebDAV 免费多端云同步进度与书架"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "打造全网免费个人移动图书馆",
+        "steps": [
+          "安卓手机安装开源阅读（Legado）App",
+          "进入「我的 -> 书源管理 -> 网络导入」，填入社区通用公开优质书源网络地址",
+          "搜索任何网络小说或出版名著，一键加入书架，享受无任何弹窗广告的精致阅读体验"
+        ],
+        "difficulty": "medium"
+      },
+      "official_url": "https://github.com/gedoor/legado",
+      "github_url": "https://github.com/gedoor/legado",
+      "github_stars": 82000,
+      "description": "安卓生态无出其右的开源阅读神器。无需开通连环扣费会员卡，0 弹窗广告，支持导入海量正规书源与微软满血真人语音听书。",
+      "pros": [
+        "零广告体验极度沉浸，排版精致美观",
+        "接入微软晓晓等顶级 AI 拟真语音，堪比专业有声书主播",
+        "离线缓存无流量忧虑"
+      ],
+      "cons": [
+        "原生仅限安卓生态，iOS 平台推荐使用爱阅书香或源阅读"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 63,
+        "name": "微信读书 / 收费网络小说平台",
+        "slug": "china-reader-apps",
+        "price_info": "¥19-40/月付费卡",
+        "official_url": "",
+        "category_id": 2,
+        "category_name": "生产力与笔记",
+        "category_slug": "productivity",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 142,
+      "name": "Scrcpy",
+      "slug": "scrcpy",
+      "free_tier": 1,
+      "free_tier_detail": "11万星标开源安卓超清低延迟投屏与反向控制神器，USB/WiFi 即插即用，免费提供 4K 60fps 满帧传输",
+      "tags": [
+        "110kStars",
+        "低延迟投屏",
+        "4K60帧",
+        "免Root",
+        "跨平台神器"
+      ],
+      "platforms": [
+        "Windows",
+        "macOS",
+        "Linux"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "高清投屏、鼠标键盘反向操控、剪贴板互通完全免费"
+        },
+        "sync": {
+          "status": "free",
+          "note": "支持声音同步传输与录屏无水印输出"
+        },
+        "export": {
+          "status": "free",
+          "note": "无需在手机安装任何驻留 App，免 Root"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "0元获得专业级 60 帧无感投屏体验",
+        "steps": [
+          "在电脑端解压 Scrcpy 绿色版，手机在设置中开启「USB 调试」",
+          "通过数据线连接电脑，双击运行 scrcpy.exe",
+          "手机屏幕即刻以 60fps 超低延迟镜像在电脑屏幕上，支持直接用电脑键鼠打字与刷视频"
+        ],
+        "difficulty": "medium"
+      },
+      "official_url": "https://github.com/Genymobile/scrcpy",
+      "github_url": "https://github.com/Genymobile/scrcpy",
+      "github_stars": 118000,
+      "description": "全球排名第一的开源安卓投屏与电脑控制工具。替代各类国产投屏软件繁琐的广告与按月付费套路，纯净、满帧、免安装手机客户端。",
+      "pros": [
+        "延迟低至 30ms，几乎感知不到任何画面拖影",
+        "支持电脑直接拖拽文件快速传输到手机",
+        "完全免费无限制"
+      ],
+      "cons": [
+        "初次使用需要在安卓手机开启开发者模式和 USB 调试"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 61,
+        "name": "各类国产投屏收费软件 (傲软投屏/幕连)",
+        "slug": "china-screen-mirror",
+        "price_info": "¥128/年或按分钟限时",
+        "official_url": "",
+        "category_id": 4,
+        "category_name": "日常工具",
+        "category_slug": "daily",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 143,
+      "name": "留痕 (MemoTrace)",
+      "slug": "memotrace",
+      "free_tier": 1,
+      "free_tier_detail": "开源离线微信聊天记录提取、备份与数据还原神器，本地解密，支持导出网页 HTML、PDF 与文本",
+      "tags": [
+        "微信备份",
+        "聊天记录导出",
+        "本地离线安全",
+        "开源免费",
+        "换机必备"
+      ],
+      "platforms": [
+        "Windows"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "微信个人/群聊记录提取、语音转文字、图片视频还原全部免费"
+        },
+        "sync": {
+          "status": "free",
+          "note": "本地磁盘直接读取，绝不上报任何私人对话数据"
+        },
+        "export": {
+          "status": "free",
+          "note": "支持完整导出为优雅排版的离线网页、PDF 电子书"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "永久备份并导出珍贵微信聊天记录",
+        "steps": [
+          "下载并运行 MemoTrace（留痕）开源客户端",
+          "打开电脑端微信并登录，工具自动识别本地离线数据库路径",
+          "选择需要备份的联系人或微信群，一键开始解析",
+          "导出为包含完整表情包、语音、图片的 HTML 网页文件，永久保存在移动硬盘中"
+        ],
+        "difficulty": "medium"
+      },
+      "official_url": "https://memotrace.cn/",
+      "github_url": "https://github.com/LC044/WeChatMsg",
+      "github_stars": 32000,
+      "description": "解决微信占用几十G手机存储且无法放心清理的终极开源神器。本地解密导出微信聊天记录，彻底终结商业数据恢复软件数百元的乱收费陷阱。",
+      "pros": [
+        "完全离线运行在个人电脑上，隐私零泄露风险",
+        "导出的网页完整还原微信真实对话气泡与语音表情",
+        "免费无限制"
+      ],
+      "cons": [
+        "需在电脑端微信曾勾选过保留聊天记录历史"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 62,
+        "name": "微信聊天记录备份/手机助手收费软件",
+        "slug": "wechat-backup-tools",
+        "price_info": "¥199/终身买断",
+        "official_url": "",
+        "category_id": 4,
+        "category_name": "日常工具",
+        "category_slug": "daily",
+        "is_chinese": true
+      }
+    },
+    {
+      "id": 144,
+      "name": "7-Zip / 360压缩国际纯净版",
+      "slug": "clean-zip",
+      "free_tier": 1,
+      "free_tier_detail": "7-Zip 终身开源免费；360压缩国际版面向海外，零弹窗、零开屏广告、零推广关联",
+      "tags": [
+        "开源良心",
+        "零弹窗",
+        "告别流氓软件",
+        "极速解压",
+        "纯净无捆绑"
+      ],
+      "platforms": [
+        "Windows"
+      ],
+      "pricing_truth": {
+        "core": {
+          "status": "free",
+          "note": "7z, zip, rar, tar 等数十种格式压缩与解压全部免费"
+        },
+        "sync": {
+          "status": "free",
+          "note": "本地纯净运行，零联网弹窗骚扰"
+        },
+        "export": {
+          "status": "free",
+          "note": "自研 7z 高压缩比算法，省出大量硬盘空间"
+        }
+      },
+      "hack_guide": {
+        "has_hack": true,
+        "title": "彻底拔除电脑右下角流氓弹窗广告",
+        "steps": [
+          "进入控制面板，卸载好压、快压或各类国产带弹窗的解压软件",
+          "前往 7-Zip 官网或 360 国际官网安装 360 Zip（国际纯净版）",
+          "关联常用 .zip, .rar, .7z 文件后缀",
+          "电脑彻底恢复清爽，右下角再无任何劣质页游与低俗资讯广告弹窗"
+        ],
+        "difficulty": "low"
+      },
+      "official_url": "https://www.7-zip.org/",
+      "github_url": "",
+      "github_stars": 0,
+      "description": "解压软件的唯一正解。7-Zip 开源极客典范，360 国际版无广告现代化界面，彻底消灭国产流氓压缩软件恶性弹窗全家桶。",
+      "pros": [
+        "零广告、零弹窗、零后台静默安装捆绑",
+        "压缩比极高，解压速度飞快",
+        "永久免费放心使用"
+      ],
+      "cons": [
+        "7-Zip 原生图标较为复古，追求高颜值可选择 360 压缩国际版"
+      ],
+      "is_chinese": true,
+      "target": {
+        "id": 64,
+        "name": "国产流氓解压软件 (快压/好压/360压缩国内版)",
+        "slug": "china-zip-tools",
+        "price_info": "免费但强制流氓弹窗广告",
+        "official_url": "",
+        "category_id": 4,
+        "category_name": "日常工具",
+        "category_slug": "daily",
+        "is_chinese": true
       }
     }
   ]
