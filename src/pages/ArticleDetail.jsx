@@ -81,6 +81,90 @@ const renderEditorialMarkdown = (text, headings) => {
     .join('')
 }
 
+const getSourceMeta = (article) => {
+  if (!article) return { canJump: false, badge: '社区精编', sourceText: '全网精选', note: '' }
+  const url = article.sourceUrl || ''
+  const source = article.source || '全网精选'
+
+  // 天涯论坛：已全网停服关停
+  if (url.includes('tianya.cn') || source.includes('天涯')) {
+    return {
+      type: 'tianya_archive',
+      badge: '天涯神帖精编存档',
+      sourceText: '天涯社区经典讨论',
+      note: '天涯社区（bbs.tianya.cn）已于 2023 年全网停服关停。本站特做离线完整文字留存与重排版，便于读者直接查阅。',
+      canJump: false
+    }
+  }
+
+  // 少数派：真实有效文章
+  if (url.includes('sspai.com') || source.includes('少数派')) {
+    return {
+      type: 'valid_link',
+      badge: '少数派精选专栏',
+      sourceText: '少数派 (sspai.com)',
+      note: '本站已对文章做排版存档。如需了解作者更多专栏或参与读者评论，可访问原始发布页面。',
+      canJump: true,
+      jumpText: '访问少数派原文 ↗'
+    }
+  }
+
+  // 阮一峰博客：真实有效
+  if (url.includes('ruanyifeng.com') || source.includes('阮一峰')) {
+    return {
+      type: 'valid_link',
+      badge: '个人博客专栏',
+      sourceText: '阮一峰的网络日志',
+      note: '本站已做完整文字归档。如需查看作者原博客更新，可访问原始发布页面。',
+      canJump: true,
+      jumpText: '访问博客原文 ↗'
+    }
+  }
+
+  // 小宇宙播客：真实有效
+  if (url.includes('xiaoyuzhoufm.com') || source.includes('小宇宙')) {
+    return {
+      type: 'valid_link',
+      badge: '小宇宙音频播客',
+      sourceText: '小宇宙 FM',
+      note: '本篇为播客核心对话与要点整理。如需收听完整长音频与听友互动，可前往小宇宙节目原页。',
+      canJump: true,
+      jumpText: '前往小宇宙收听 ↗'
+    }
+  }
+
+  // 知乎：反爬/需App登录/部分私密
+  if (url.includes('zhihu.com') || source.includes('知乎')) {
+    return {
+      type: 'zhihu_archive',
+      badge: '知乎高赞实操存档',
+      sourceText: '知乎深度讨论整理',
+      note: '知乎原帖受平台防盗链保护，外部直接访问易受限（需知乎 App 登录或原作者已设为私密）。本站已做全文精编留存，可直接在站内畅读。',
+      canJump: false
+    }
+  }
+
+  // 豆瓣：验证码拦截墙/极简小组
+  if (url.includes('douban.com') || source.includes('豆瓣')) {
+    return {
+      type: 'douban_archive',
+      badge: '豆瓣小组精选存档',
+      sourceText: '豆瓣社区讨论精编',
+      note: '豆瓣原帖外部直链常遇安全验证拦截。本站已做完整图文整理，推荐直接在站内沉浸阅读。',
+      canJump: false
+    }
+  }
+
+  // V2EX / 雪球 / 掘金等其他社区
+  return {
+    type: 'community_archive',
+    badge: `${source}精编存档`,
+    sourceText: `${source}社区深度讨论`,
+    note: '部分社区原帖因作者隐私保护已删除或下架。本站已做完整排版与核心要点留存，站内即可直接阅读全文。',
+    canJump: false
+  }
+}
+
 const ArticleDetail = () => {
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -92,6 +176,7 @@ const ArticleDetail = () => {
   const [toastOpen, setToastOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [bookmarked, setBookmarked] = useState(false)
+  const sourceMeta = useMemo(() => getSourceMeta(article), [article])
 
   // 监听滚动计算阅读进度
   useEffect(() => {
@@ -406,7 +491,7 @@ const ArticleDetail = () => {
                 </Box>
 
                 <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                  {article.sourceUrl && (
+                  {sourceMeta.canJump ? (
                     <Button
                       size="small"
                       variant="outlined"
@@ -425,8 +510,21 @@ const ArticleDetail = () => {
                         '&:hover': { bgcolor: '#ffedd5', borderColor: '#c2410c' }
                       }}
                     >
-                      跳转原帖 ↗
+                      {sourceMeta.jumpText}
                     </Button>
+                  ) : (
+                    <Chip
+                      label={sourceMeta.badge}
+                      size="small"
+                      sx={{
+                        bgcolor: '#fafaf9',
+                        color: '#78716c',
+                        border: '1px solid #e7e5e4',
+                        fontSize: '0.74rem',
+                        fontWeight: 600,
+                        height: 26
+                      }}
+                    />
                   )}
                   <Button
                     size="small"
@@ -539,31 +637,31 @@ const ArticleDetail = () => {
             />
 
             {/* 来源与原帖出处卡片 */}
-            {article.sourceUrl && (
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2.2,
-                  mt: 3.5,
-                  mb: 2,
-                  borderRadius: 2,
-                  bgcolor: '#fafaf9',
-                  border: '1px solid #e7e5e4',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: 1.5
-                }}
-              >
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1c1917', fontSize: '0.88rem', mb: 0.3 }}>
-                    内容出处：{article.source || '全网精选'}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.76rem' }}>
-                    本站为方便阅读已做完整排版存档。如需参与原帖网友讨论互动，可前往原始出处。
-                  </Typography>
-                </Box>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.2,
+                mt: 3.5,
+                mb: 2,
+                borderRadius: 2,
+                bgcolor: '#fafaf9',
+                border: '1px solid #e7e5e4',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 1.5
+              }}
+            >
+              <Box sx={{ maxWidth: sourceMeta.canJump ? { xs: '100%', sm: 'calc(100% - 170px)' } : '100%' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#1c1917', fontSize: '0.88rem', mb: 0.3 }}>
+                  内容出处与存档说明：{sourceMeta.sourceText}
+                </Typography>
+                <Typography variant="caption" sx={{ color: '#78716c', fontSize: '0.78rem', lineHeight: 1.6, display: 'block' }}>
+                  {sourceMeta.note}
+                </Typography>
+              </Box>
+              {sourceMeta.canJump && (
                 <Button
                   size="small"
                   variant="outlined"
@@ -585,10 +683,10 @@ const ArticleDetail = () => {
                     '&:hover': { bgcolor: '#fff7ed', borderColor: '#c2410c' }
                   }}
                 >
-                  前往原帖查看讨论 ↗
+                  {sourceMeta.jumpText}
                 </Button>
-              </Paper>
-            )}
+              )}
+            </Paper>
 
             {/* 标签列表 */}
             {article.tags && article.tags.length > 0 && (
