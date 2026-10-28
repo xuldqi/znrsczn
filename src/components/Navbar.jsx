@@ -388,13 +388,7 @@ const Navbar = () => {
 
             {user ? (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <IconButton
-                  onClick={() => navigate('/membership')}
-                  sx={{ color: '#d97706' }}
-                  title="会员中心"
-                >
-                  <Diamond />
-                </IconButton>
+                {/* 暂时隐藏会员中心入口 */}
                 <Tooltip title="个人中心">
                   <IconButton
                     onClick={handleUserMenuOpen}
@@ -427,11 +421,6 @@ const Navbar = () => {
                     }
                   }}
                 >
-                  <MenuItem onClick={() => navigate('/membership')}>
-                    <Diamond fontSize="small" sx={{ mr: 1.5, color: '#d97706' }} />
-                    会员中心
-                  </MenuItem>
-                  <Divider sx={{ my: 1 }} />
                   <MenuItem onClick={handleLogout} sx={{ color: '#dc2626' }}>
                     <ExitToApp fontSize="small" sx={{ mr: 1.5 }} />
                     退出登录

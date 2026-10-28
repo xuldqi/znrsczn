@@ -13,20 +13,23 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    Fade,
     useTheme,
-    Alert
+    Alert,
+    Paper,
+    Stack
 } from '@mui/material'
 import {
-    Star,
     CheckCircle,
-    Speed,
-    Psychology,
-    Group,
-    WorkspacePremium
+    WorkspacePremium,
+    LockReset,
+    ArrowBack,
+    FindReplace
 } from '@mui/icons-material'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate, useLocation } from 'react-router-dom'
+
+// 暂时隐藏会员开通与支付功能控制开关
+const SHOW_MEMBERSHIP_PAYMENT = false
 
 const Membership = () => {
     const theme = useTheme()
@@ -37,6 +40,8 @@ const Membership = () => {
     const [successMsg, setSuccessMsg] = useState('')
 
     useEffect(() => {
+        if (!SHOW_MEMBERSHIP_PAYMENT) return
+
         const params = new URLSearchParams(location.search)
         if (params.get('status') === 'success') {
             setSuccessMsg('支付成功！您已成为专业会员。')
@@ -58,6 +63,7 @@ const Membership = () => {
     }, [location, user, updateProfile])
 
     const handleSubscribe = async (plan) => {
+        if (!SHOW_MEMBERSHIP_PAYMENT) return
         if (!user) {
             navigate('/login', { state: { from: location } })
             return
@@ -121,6 +127,102 @@ const Membership = () => {
             buttonVariant: 'contained'
         }
     ]
+
+    // 如果暂时隐藏会员和支付通道，显示友好温馨的系统维护提示
+    if (!SHOW_MEMBERSHIP_PAYMENT) {
+        return (
+            <Box sx={{ minHeight: '80vh', display: 'flex', alignItems: 'center', py: 8 }}>
+                <Container maxWidth="sm">
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            p: { xs: 4, sm: 6 },
+                            borderRadius: 4,
+                            border: '1px solid #e7e5e4',
+                            bgcolor: '#ffffff',
+                            textAlign: 'center'
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                width: 64,
+                                height: 64,
+                                borderRadius: '50%',
+                                bgcolor: 'rgba(194, 65, 12, 0.08)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mb: 2.5
+                            }}
+                        >
+                            <WorkspacePremium sx={{ fontSize: 32, color: '#c2410c' }} />
+                        </Box>
+
+                        <Typography
+                            variant="h5"
+                            component="h1"
+                            sx={{
+                                fontWeight: 800,
+                                color: '#1c1917',
+                                mb: 1.5,
+                                fontSize: { xs: '1.4rem', sm: '1.6rem' }
+                            }}
+                        >
+                            会员与支付通道升级中
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: '#78716c',
+                                lineHeight: 1.8,
+                                mb: 4,
+                                fontSize: '0.95rem'
+                            }}
+                        >
+                            为保障更好的阅读体验，本站会员订阅与在线支付通道正在系统升级维护中，暂时停止付费办理。目前全站所有深度实战文章、量化自救工具与开源平替库均面向所有用户完全免费开放体验。
+                        </Typography>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center">
+                            <Button
+                                variant="contained"
+                                startIcon={<ArrowBack />}
+                                onClick={() => navigate('/')}
+                                sx={{
+                                    bgcolor: '#c2410c',
+                                    borderRadius: 2,
+                                    py: 1.2,
+                                    px: 3,
+                                    fontWeight: 700,
+                                    textTransform: 'none',
+                                    '&:hover': { bgcolor: '#9a3412' }
+                                }}
+                            >
+                                返回首页
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                startIcon={<FindReplace />}
+                                onClick={() => navigate('/products')}
+                                sx={{
+                                    borderColor: '#d6d3d1',
+                                    color: '#44403c',
+                                    borderRadius: 2,
+                                    py: 1.2,
+                                    px: 3,
+                                    fontWeight: 600,
+                                    textTransform: 'none',
+                                    '&:hover': { borderColor: '#c2410c', color: '#c2410c' }
+                                }}
+                            >
+                                逛逛开源平替库
+                            </Button>
+                        </Stack>
+                    </Paper>
+                </Container>
+            </Box>
+        )
+    }
 
     return (
         <Container maxWidth="lg" sx={{ py: 8 }}>
@@ -190,7 +292,7 @@ const Membership = () => {
                                     backgroundColor: (theme) =>
                                         theme.palette.mode === 'light'
                                             ? theme.palette.grey[50]
-                                            : theme.palette.grey[700],
+                                             : theme.palette.grey[700],
                                     pb: 0
                                 }}
                             />
