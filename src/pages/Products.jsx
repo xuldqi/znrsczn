@@ -13,11 +13,6 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Divider,
   Tabs,
   Tab,
   MenuItem,
@@ -32,98 +27,19 @@ import {
   Star,
   OpenInNew,
   GitHub,
-  CheckCircleOutline,
-  WarningAmber,
   SwapHoriz,
-  LightbulbOutlined,
   VerifiedOutlined,
-  FilterList,
   ArticleOutlined,
   AppsOutlined,
-  InfoOutlined,
-  Check,
-  Close as CloseIcon
+  InfoOutlined
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useArticles } from '../contexts/ArticleContext'
 import alternativesData from '../data/alternativesData.json'
-
-// 免费分级元数据 (无 Unicode Emoji，使用纯净配色与文字)
-const FREE_TIER_META = {
-  1: {
-    level: 1,
-    label: 'L1 永久免费',
-    shortLabel: '永久免费',
-    color: '#059669',
-    bgColor: '#ecfdf5',
-    borderColor: '#a7f3d0',
-    description: '开源、代码公开、不收割变相收费，永久可用'
-  },
-  2: {
-    level: 2,
-    label: 'L2 本地免费',
-    shortLabel: '本地免费',
-    color: '#2563eb',
-    bgColor: '#eff6ff',
-    borderColor: '#bfdbfe',
-    description: '本地使用完全免费，云端同步/高级服务需付费'
-  },
-  3: {
-    level: 3,
-    label: 'L3 免费额度',
-    shortLabel: '免费额度',
-    color: '#d97706',
-    bgColor: '#fffbeb',
-    borderColor: '#fde68a',
-    description: '提供日常可用免费额度，超出限额后需付费'
-  },
-  4: {
-    level: 4,
-    label: 'L4 低价平替',
-    shortLabel: '低价平替',
-    color: '#ea580c',
-    bgColor: '#fff7ed',
-    borderColor: '#fed7aa',
-    description: '非完全免费，但比原版便宜 70%+，无强制连环订阅'
-  },
-  5: {
-    level: 5,
-    label: 'L5 试用/限时',
-    shortLabel: '试用/限时',
-    color: '#dc2626',
-    bgColor: '#fef2f2',
-    borderColor: '#fecaca',
-    description: '公测期/限时免费或学生特惠，政策随时可能变更'
-  }
-}
-
-// 真相雷达状态元数据
-const PRICING_STATUS_META = {
-  free: { label: '免费', color: '#059669', bg: '#ecfdf5', border: '#a7f3d0' },
-  freemium: { label: '部分免费', color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
-  paid: { label: '收费', color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
-  self_host: { label: '可自部署', color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe' }
-}
-
-const PRICING_ROW_LABELS = {
-  core: '核心功能',
-  sync: '云端同步',
-  ai: 'AI / 高级能力',
-  export: '数据导出',
-  collab: '团队协作'
-}
-
-const DIFFICULTY_LABELS = {
-  low: { label: '难度：小白可上手', color: '#059669', bg: '#ecfdf5' },
-  medium: { label: '难度：需要些耐心', color: '#d97706', bg: '#fffbeb' },
-  high: { label: '难度：极客折腾向', color: '#dc2626', bg: '#fef2f2' }
-}
-
-const formatStars = (n) => {
-  if (!n) return '0'
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k'
-  return String(n)
-}
+import {
+  FREE_TIER_META,
+  formatStars
+} from '../data/alternativesConstants'
 
 const Products = () => {
   const navigate = useNavigate()
@@ -142,10 +58,6 @@ const Products = () => {
   const [selectedPlatform, setSelectedPlatform] = useState('all') // 'all' or platform name
   const [selectedTarget, setSelectedTarget] = useState('all') // 'all' or target slug
   const [sortBy, setSortBy] = useState('featured') // 'featured' | 'stars' | 'tier'
-  const [chineseOnly, setChineseOnly] = useState(false) // 仅查看国产中文付费软件平替
-
-  // 详情弹窗状态
-  const [detailItem, setDetailItem] = useState(null)
 
   const { categories, targets, alternatives } = alternativesData
 
@@ -224,13 +136,6 @@ const Products = () => {
   // 过滤与排序
   const filteredAlternatives = useMemo(() => {
     return alternatives.filter((item) => {
-      // 0. 国产中文付费平替专区筛选
-      if (chineseOnly) {
-        if (!item.is_chinese && !item.target?.is_chinese && item.target?.category_slug !== 'china') {
-          return false
-        }
-      }
-
       // 1. 搜索
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim()
@@ -281,7 +186,7 @@ const Products = () => {
       // 'featured'
       return a.free_tier - b.free_tier || (b.github_stars || 0) - (a.github_stars || 0)
     })
-  }, [alternatives, searchQuery, selectedTier, selectedCategory, selectedPlatform, selectedTarget, sortBy, chineseOnly])
+  }, [alternatives, searchQuery, selectedTier, selectedCategory, selectedPlatform, selectedTarget, sortBy])
 
   // 重置所有筛选
   const handleResetFilters = () => {
@@ -291,10 +196,9 @@ const Products = () => {
     setSelectedPlatform('all')
     setSelectedTarget('all')
     setSortBy('featured')
-    setChineseOnly(false)
   }
 
-  const hasActiveFilters = searchQuery || selectedTier !== 'all' || selectedCategory !== 'all' || selectedPlatform !== 'all' || selectedTarget !== 'all' || chineseOnly
+  const hasActiveFilters = searchQuery || selectedTier !== 'all' || selectedCategory !== 'all' || selectedPlatform !== 'all' || selectedTarget !== 'all'
 
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh', py: 4 }}>
@@ -519,56 +423,6 @@ const Products = () => {
                 />
               </Box>
 
-              {/* 国产中文付费软件平替专区高亮入口 */}
-              <Box
-                sx={{
-                  mb: 2.5,
-                  p: 1.5,
-                  borderRadius: 2,
-                  bgcolor: chineseOnly ? 'rgba(194, 65, 12, 0.08)' : 'rgba(194, 65, 12, 0.03)',
-                  border: '1px solid',
-                  borderColor: chineseOnly ? '#c2410c' : 'rgba(194, 65, 12, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: 1.5
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                  <VerifiedOutlined sx={{ fontSize: 18, color: '#c2410c' }} />
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#1c1917' }}>
-                    国产中文付费软件平替专区
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: '#78716c' }}>
-                    收录 WPS / 百度网盘 / 剪映 / 向日葵 / XMind / 有道云笔记 / 网易云等 {chineseAltsCount} 款常见收费软件平替
-                  </Typography>
-                </Box>
-                <Button
-                  size="small"
-                  variant={chineseOnly ? 'contained' : 'outlined'}
-                  onClick={() => {
-                    const next = !chineseOnly
-                    setChineseOnly(next)
-                    if (next) setSelectedCategory('all')
-                  }}
-                  sx={{
-                    bgcolor: chineseOnly ? '#c2410c' : '#ffffff',
-                    color: chineseOnly ? '#ffffff' : '#c2410c',
-                    borderColor: '#c2410c',
-                    fontWeight: 700,
-                    fontSize: '0.8rem',
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 0.5,
-                    px: 1.8,
-                    '&:hover': { bgcolor: chineseOnly ? '#9a3412' : 'rgba(194, 65, 12, 0.08)' }
-                  }}
-                >
-                  {chineseOnly ? '正在筛选：国产平替 (点击恢复全部)' : `一键筛选：国产付费平替 (${chineseAltsCount})`}
-                </Button>
-              </Box>
-
               {/* 热门目标软件快捷跳转 */}
               <Box sx={{ mb: 2 }}>
                 <Typography variant="caption" sx={{ fontWeight: 700, color: '#78716c', mb: 1, display: 'block' }}>
@@ -579,14 +433,11 @@ const Products = () => {
                     label="全部软件"
                     size="small"
                     clickable
-                    onClick={() => {
-                      setSelectedTarget('all')
-                      setChineseOnly(false)
-                    }}
+                    onClick={() => setSelectedTarget('all')}
                     sx={{
                       fontWeight: 600,
-                      bgcolor: selectedTarget === 'all' && !chineseOnly ? '#1c1917' : '#f5f5f4',
-                      color: selectedTarget === 'all' && !chineseOnly ? '#ffffff' : '#57534e'
+                      bgcolor: selectedTarget === 'all' ? '#1c1917' : '#f5f5f4',
+                      color: selectedTarget === 'all' ? '#ffffff' : '#57534e'
                     }}
                   />
                   {hotTargets.map((t) => (
@@ -595,10 +446,7 @@ const Products = () => {
                       label={`${t.name} (${t.count})`}
                       size="small"
                       clickable
-                      onClick={() => {
-                        setSelectedTarget(selectedTarget === t.slug ? 'all' : t.slug)
-                        setChineseOnly(false)
-                      }}
+                      onClick={() => setSelectedTarget(selectedTarget === t.slug ? 'all' : t.slug)}
                       sx={{
                         fontWeight: 500,
                         bgcolor: selectedTarget === t.slug ? '#c2410c' : '#f5f5f4',
@@ -638,7 +486,6 @@ const Products = () => {
                         clickable
                         onClick={() => {
                           setSelectedCategory(selectedCategory === cat.slug ? 'all' : cat.slug)
-                          if (cat.slug === 'china') setChineseOnly(false)
                         }}
                         sx={{
                           fontWeight: 500,
@@ -762,6 +609,7 @@ const Products = () => {
                   return (
                     <Card
                       key={item.id}
+                      onClick={() => navigate(`/products/${item.slug}`)}
                       sx={{
                         height: '100%',
                         display: 'flex',
@@ -771,6 +619,7 @@ const Products = () => {
                         boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
                         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                         backgroundColor: '#ffffff',
+                        cursor: 'pointer',
                         '&:hover': {
                           transform: 'translateY(-4px)',
                           boxShadow: '0 10px 20px rgba(0,0,0,0.06)',
@@ -789,7 +638,7 @@ const Products = () => {
                                 sx={{
                                   fontWeight: 700,
                                   color: '#1c1917',
-                                  fontSize: '1.1rem',
+                                  fontSize: '1.05rem',
                                   lineHeight: 1.3
                                 }}
                               >
@@ -886,119 +735,50 @@ const Products = () => {
                           {item.description || '暂无详细描述'}
                         </Typography>
 
-                        {/* 免费边界说明条：统一 minHeight */}
-                        <Box
-                          sx={{
-                            p: 1.2,
-                            borderRadius: 1.5,
-                            bgcolor: '#faf9f6',
-                            border: '1px solid #f5f5f4',
-                            mb: 1.5,
-                            minHeight: 38,
-                            display: 'flex',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <Typography variant="caption" sx={{ color: '#44403c', display: 'block', lineHeight: 1.4, fontSize: '0.78rem' }}>
-                            <Box component="span" sx={{ fontWeight: 700, color: '#1c1917' }}>免费边界：</Box>
-                            {item.free_tier_detail || '基础功能开源免费'}
-                          </Typography>
-                        </Box>
-
-                        {/* 平台与标签 */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mb: 1.5, minHeight: 26, alignItems: 'center' }}>
+                        {/* 平台支持 */}
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.6, mt: 'auto', pt: 1, alignItems: 'center' }}>
                           {Array.isArray(item.platforms) && item.platforms.map((p) => (
                             <Chip
                               key={p}
                               label={p}
                               size="small"
                               sx={{
-                                height: 20,
-                                fontSize: '0.7rem',
-                                bgcolor: '#ffffff',
-                                border: '1px solid #e7e5e4',
-                                color: '#57534e'
-                              }}
-                            />
-                          ))}
-                          {Array.isArray(item.tags) && item.tags.slice(0, 3).map((t) => (
-                            <Chip
-                              key={t}
-                              label={t}
-                              size="small"
-                              sx={{
-                                height: 20,
-                                fontSize: '0.7rem',
+                                height: 22,
+                                fontSize: '0.72rem',
                                 bgcolor: '#f5f5f4',
-                                color: '#78716c'
+                                color: '#57534e',
+                                border: '1px solid #e7e5e4'
                               }}
                             />
                           ))}
-                        </Box>
-
-                        {/* 优缺点速览：通过 mt: 'auto' 吸底对齐 */}
-                        <Box sx={{ mt: 'auto', pt: 1.2, borderTop: '1px solid #f5f5f4' }}>
-                          {Array.isArray(item.pros) && item.pros.length > 0 && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mb: 0.4 }}>
-                              <CheckCircleOutline sx={{ fontSize: 14, color: '#059669', flexShrink: 0 }} />
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  color: '#57534e',
-                                  fontSize: '0.75rem',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis'
-                                }}
-                              >
-                                {item.pros[0]}
-                              </Typography>
-                            </Box>
-                          )}
-                          {Array.isArray(item.cons) && item.cons.length > 0 && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                              <WarningAmber sx={{ fontSize: 14, color: '#d97706', flexShrink: 0 }} />
-                              <Typography
-                                variant="caption"
-                                sx={{
-                                  color: '#78716c',
-                                  fontSize: '0.75rem',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis'
-                                }}
-                              >
-                                注意：{item.cons[0]}
-                              </Typography>
-                            </Box>
-                          )}
                         </Box>
                       </CardContent>
 
                       {/* 卡片底栏操作按钮 */}
-                      <CardActions sx={{ px: 2.5, py: 1.5, pt: 1, justifyContent: 'space-between', borderTop: '1px solid #f5f5f4' }}>
+                      <CardActions
+                        sx={{ px: 2.5, py: 1.2, justifyContent: 'space-between', borderTop: '1px solid #f5f5f4' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <Button
                           size="small"
-                          variant="outlined"
-                          onClick={() => setDetailItem(item)}
+                          variant="contained"
+                          onClick={() => navigate(`/products/${item.slug}`)}
                           sx={{
-                            borderColor: '#e7e5e4',
-                            color: '#1c1917',
+                            bgcolor: '#c2410c',
+                            color: '#ffffff',
                             fontWeight: 600,
                             fontSize: '0.78rem',
                             textTransform: 'none',
                             borderRadius: 1.5,
-                            '&:hover': {
-                              borderColor: '#c2410c',
-                              bgcolor: 'rgba(194, 65, 12, 0.04)',
-                              color: '#c2410c'
-                            }
+                            px: 1.8,
+                            py: 0.5,
+                            '&:hover': { bgcolor: '#9a3412' }
                           }}
                         >
-                          免费真相与指南
+                          查看详情与避坑指南
                         </Button>
 
-                        <Box sx={{ display: 'flex', gap: 0.8 }}>
+                        <Box sx={{ display: 'flex', gap: 0.6 }}>
                           {item.github_url && (
                             <IconButton
                               size="small"
@@ -1007,6 +787,7 @@ const Products = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               title="前往 GitHub 仓库"
+                              onClick={(e) => e.stopPropagation()}
                               sx={{ color: '#78716c', '&:hover': { color: '#1c1917' } }}
                             >
                               <GitHub sx={{ fontSize: 18 }} />
@@ -1020,11 +801,13 @@ const Products = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                               endIcon={<OpenInNew sx={{ fontSize: 14 }} />}
+                              onClick={(e) => e.stopPropagation()}
                               sx={{
-                                color: '#c2410c',
+                                color: '#78716c',
                                 fontSize: '0.78rem',
                                 textTransform: 'none',
-                                fontWeight: 600
+                                fontWeight: 500,
+                                '&:hover': { color: '#c2410c' }
                               }}
                             >
                               官网直达
@@ -1145,310 +928,6 @@ const Products = () => {
             )}
           </Box>
         )}
-
-        {/* 详情弹窗：免费真相雷达 + 折腾避坑指南 */}
-        <Dialog
-          open={Boolean(detailItem)}
-          onClose={() => setDetailItem(null)}
-          maxWidth="md"
-          fullWidth
-          PaperProps={{
-            sx: { borderRadius: 3, p: 1 }
-          }}
-        >
-          {detailItem && (() => {
-            const tier = FREE_TIER_META[detailItem.free_tier] || FREE_TIER_META[1]
-            const pricing = detailItem.pricing_truth || {}
-            const hack = detailItem.hack_guide
-            const pricingKeys = Object.keys(pricing).filter((k) => pricing[k])
-
-            return (
-              <>
-                <DialogTitle sx={{ px: 3, pt: 2.5, pb: 1.5 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 2 }}>
-                    <Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', mb: 0.5 }}>
-                        <Typography variant="h5" sx={{ fontWeight: 800, color: '#1c1917' }}>
-                          {detailItem.name}
-                        </Typography>
-                        <Chip
-                          size="small"
-                          label={tier.label}
-                          sx={{
-                            bgcolor: tier.bgColor,
-                            color: tier.color,
-                            border: `1px solid ${tier.borderColor}`,
-                            fontWeight: 700
-                          }}
-                        />
-                        {detailItem.github_stars > 0 && (
-                          <Chip
-                            size="small"
-                            icon={<Star sx={{ fontSize: 14, color: '#f59e0b' }} />}
-                            label={`GitHub ${formatStars(detailItem.github_stars)}`}
-                            sx={{ bgcolor: '#f5f5f4', color: '#57534e', fontWeight: 600 }}
-                          />
-                        )}
-                      </Box>
-                      <Typography variant="body2" sx={{ color: '#78716c' }}>
-                        替代付费软件：
-                        <Box component="span" sx={{ fontWeight: 700, color: '#1c1917', ml: 0.5 }}>
-                          {detailItem.target?.name}
-                        </Box>
-                        {detailItem.target?.price_info && (
-                          <Box component="span" sx={{ color: '#ea580c', ml: 1, fontWeight: 500 }}>
-                            (原版参考价：{detailItem.target.price_info})
-                          </Box>
-                        )}
-                      </Typography>
-                    </Box>
-                    <IconButton size="small" onClick={() => setDetailItem(null)}>
-                      <CloseIcon />
-                    </IconButton>
-                  </Box>
-                </DialogTitle>
-
-                <DialogContent dividers sx={{ px: 3, py: 2.5 }}>
-                  {/* 软件概述 */}
-                  {detailItem.description && (
-                    <Typography variant="body1" sx={{ color: '#44403c', lineHeight: 1.7, mb: 3 }}>
-                      {detailItem.description}
-                    </Typography>
-                  )}
-
-                  {/* 免费边界 */}
-                  {detailItem.free_tier_detail && (
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        p: 2,
-                        mb: 3,
-                        borderRadius: 2,
-                        bgcolor: tier.bgColor,
-                        border: `1px solid ${tier.borderColor}`
-                      }}
-                    >
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: tier.color, mb: 0.5 }}>
-                        免费边界详情：
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: '#44403c', lineHeight: 1.6 }}>
-                        {detailItem.free_tier_detail}
-                      </Typography>
-                    </Paper>
-                  )}
-
-                  {/* 免费真相雷达 (Pricing Truth Board) */}
-                  {pricingKeys.length > 0 && (
-                    <Box sx={{ mb: 3 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                        <FilterList sx={{ fontSize: 18, color: '#c2410c' }} />
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1c1917' }}>
-                          免费真相雷达（逐项拆解收费边界）
-                        </Typography>
-                      </Box>
-                      <Paper elevation={0} sx={{ borderRadius: 2, border: '1px solid #e7e5e4', overflow: 'hidden' }}>
-                        {pricingKeys.map((key, idx) => {
-                          const itemVal = pricing[key]
-                          const statusMeta = PRICING_STATUS_META[itemVal.status] || PRICING_STATUS_META.free
-                          const label = PRICING_ROW_LABELS[key] || key
-                          return (
-                            <Box
-                              key={key}
-                              sx={{
-                                display: 'grid',
-                                gridTemplateColumns: { xs: '1fr', sm: '130px 100px 1fr' },
-                                gap: 1.5,
-                                alignItems: 'center',
-                                p: 1.8,
-                                borderBottom: idx < pricingKeys.length - 1 ? '1px solid #f5f5f4' : 'none',
-                                bgcolor: idx % 2 === 0 ? '#ffffff' : '#faf9f6'
-                              }}
-                            >
-                              <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#1c1917', fontSize: '0.88rem' }}>
-                                {label}
-                              </Typography>
-                              <Box>
-                                <Chip
-                                  size="small"
-                                  label={statusMeta.label}
-                                  sx={{
-                                    bgcolor: statusMeta.bg,
-                                    color: statusMeta.color,
-                                    border: `1px solid ${statusMeta.border}`,
-                                    fontWeight: 700,
-                                    height: 22,
-                                    fontSize: '0.72rem'
-                                  }}
-                                />
-                              </Box>
-                              <Typography variant="body2" sx={{ color: '#57534e', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                                {itemVal.note}
-                              </Typography>
-                            </Box>
-                          )
-                        })}
-                      </Paper>
-                    </Box>
-                  )}
-
-                  {/* 避坑与折腾指南 (Hack Guide) */}
-                  {hack && hack.has_hack && Array.isArray(hack.steps) && hack.steps.length > 0 && (
-                    <Box sx={{ mb: 3 }}>
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 2.5,
-                          borderRadius: 2.5,
-                          border: '2px dashed #fde68a',
-                          bgcolor: '#fffbeb'
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <LightbulbOutlined sx={{ fontSize: 20, color: '#d97706' }} />
-                            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#78350f' }}>
-                              {hack.title || '免费避坑与折腾指南'}
-                            </Typography>
-                          </Box>
-                          {hack.difficulty && DIFFICULTY_LABELS[hack.difficulty] && (
-                            <Chip
-                              size="small"
-                              label={DIFFICULTY_LABELS[hack.difficulty].label}
-                              sx={{
-                                bgcolor: DIFFICULTY_LABELS[hack.difficulty].bg,
-                                color: DIFFICULTY_LABELS[hack.difficulty].color,
-                                fontWeight: 700,
-                                fontSize: '0.75rem'
-                              }}
-                            />
-                          )}
-                        </Box>
-                        <Stack spacing={1.5}>
-                          {hack.steps.map((step, sIdx) => (
-                            <Box key={sIdx} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
-                              <Box
-                                sx={{
-                                  width: 22,
-                                  height: 22,
-                                  borderRadius: '50%',
-                                  bgcolor: '#fde68a',
-                                  color: '#78350f',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontSize: '0.75rem',
-                                  fontWeight: 700,
-                                  flexShrink: 0,
-                                  mt: 0.2
-                                }}
-                              >
-                                {sIdx + 1}
-                              </Box>
-                              <Typography variant="body2" sx={{ color: '#78350f', lineHeight: 1.6, fontSize: '0.88rem' }}>
-                                {step}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Paper>
-                    </Box>
-                  )}
-
-                  {/* 优缺点详细清单 */}
-                  <Box
-                    sx={{
-                      display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-                      gap: 2
-                    }}
-                  >
-                    {Array.isArray(detailItem.pros) && detailItem.pros.length > 0 && (
-                      <Paper elevation={0} sx={{ p: 2, borderRadius: 2, bgcolor: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#166534', mb: 1.5, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                          <CheckCircleOutline sx={{ fontSize: 16 }} />
-                          推荐优势
-                        </Typography>
-                        <Stack spacing={1}>
-                          {detailItem.pros.map((p, idx) => (
-                            <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                              <Typography variant="caption" sx={{ color: '#166534', fontWeight: 700 }}>•</Typography>
-                              <Typography variant="body2" sx={{ color: '#14532d', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                                {p}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Paper>
-                    )}
-
-                    {Array.isArray(detailItem.cons) && detailItem.cons.length > 0 && (
-                      <Paper elevation={0} sx={{ p: 2, borderRadius: 2, bgcolor: '#fffbeb', border: '1px solid #fde68a' }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#92400e', mb: 1.5, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                          <WarningAmber sx={{ fontSize: 16 }} />
-                          需要注意的不足
-                        </Typography>
-                        <Stack spacing={1}>
-                          {detailItem.cons.map((c, idx) => (
-                            <Box key={idx} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                              <Typography variant="caption" sx={{ color: '#92400e', fontWeight: 700 }}>•</Typography>
-                              <Typography variant="body2" sx={{ color: '#78350f', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                                {c}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Paper>
-                    )}
-                  </Box>
-                </DialogContent>
-
-                <DialogActions sx={{ px: 3, py: 2, justifyContent: 'space-between' }}>
-                  <Button onClick={() => setDetailItem(null)} sx={{ color: '#78716c' }}>
-                    关闭
-                  </Button>
-                  <Box sx={{ display: 'flex', gap: 1.5 }}>
-                    {detailItem.github_url && (
-                      <Button
-                        variant="outlined"
-                        component="a"
-                        href={detailItem.github_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        startIcon={<GitHub />}
-                        sx={{
-                          borderColor: '#d6d3d1',
-                          color: '#1c1917',
-                          textTransform: 'none',
-                          borderRadius: 2
-                        }}
-                      >
-                        GitHub 仓库
-                      </Button>
-                    )}
-                    {detailItem.official_url && (
-                      <Button
-                        variant="contained"
-                        component="a"
-                        href={detailItem.official_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        endIcon={<OpenInNew />}
-                        sx={{
-                          bgcolor: '#c2410c',
-                          textTransform: 'none',
-                          borderRadius: 2,
-                          '&:hover': { bgcolor: '#9a3412' }
-                        }}
-                      >
-                        访问官网
-                      </Button>
-                    )}
-                  </Box>
-                </DialogActions>
-              </>
-            )
-          })()}
-        </Dialog>
       </Container>
     </Box>
   )

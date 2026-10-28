@@ -17,6 +17,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const TestPage = lazy(() => import('./pages/TestPage'))
 const Articles = lazy(() => import('./pages/Articles'))
 const Products = lazy(() => import('./pages/Products'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 const Psychology = lazy(() => import('./pages/Psychology'))
 const Career = lazy(() => import('./pages/Career'))
 const Family = lazy(() => import('./pages/Family'))
@@ -236,6 +237,8 @@ function App() {
                       <Route path="/articles" element={<Articles />} />
                       <Route path="/article/:slug" element={<ArticleDetail />} />
                       <Route path="/products" element={<Products />} />
+                      <Route path="/products/:slug" element={<ProductDetail />} />
+                      <Route path="/alternative/:slug" element={<ProductDetail />} />
                       <Route path="/psychology" element={<Psychology />} />
                       <Route path="/career" element={<Career />} />
                       <Route path="/family" element={<Family />} />
